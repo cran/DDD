@@ -1,0 +1,11 @@
+f77bb82f6b720baeaa81981bc226e4e6 *DESCRIPTION
+df390c53434517b304ac5db487184641 *NAMESPACE
+c78dd49036a8e9659bc9c8c49f138b6c *R/dd_ML.R
+ef5a7b2a1b1c8cf6347ebd0745bfdeae *R/dd_loglik.R
+d77269075b7d1d392f6daea1df767043 *R/dd_loglik_choosepar.R
+16b5f9ee9b4b1ca92a5c2f4dea50916e *R/dd_loglik_rhs.R
+5f1d8ee9f3e9e31f86fb50e9dfb48ed0 *man/DDD-package.Rd
+ed943ea5ac16049d4258d45346fd10a3 *man/dd_ML.Rd
+fe86a08f0f638bef11ca94359df4fd0e *man/dd_loglik.Rd
+1ef06ce609bf6c43ed775fc631c6e291 *man/dd_loglik_choosepar.Rd
+b15bb0a9232a2ed304510ecd8666c4cd *man/dd_loglik_rhs.Rd
