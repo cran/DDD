@@ -15,9 +15,9 @@ dd_ML = function(brts,initparsopt=c(0.2,0.1,2*length(brts)),idparsopt = 1:3,idpa
 # missnumspec = number of missing species    
 
 options(warn=-1)
+if(is.numeric(brts) == FALSE) { cat("The branching times should be numeric") } else {
 idpars = sort(c(idparsopt,idparsfix))
 if(sum(idpars == (1:3)) != 3) {cat("The parameters to be optimized and fixed are incoherent.") } else {
-
 namepars = c("la","mu","K")
 if(length(namepars[idparsopt]) == 0) { optstr = "nothing" } else { optstr = namepars[idparsopt] }
 cat("You are optimizing",optstr,"\n")
@@ -39,5 +39,6 @@ s1 = sprintf('Maximum likelihood parameter estimates: %f %f %f',MLpars[1],MLpars
 s2 = sprintf('Maxmimum loglikelihood: %f',out$fvalues)
 cat("\n",s1,"\n",s2,"\n")
 return(out)
+}
 }
 }

@@ -22,7 +22,7 @@ dd_ML(brts, initparsopt = c(0.2, 0.1, 2 * length(brts)), idparsopt = 1:3, idpars
    }
   \item{idparsfix}{
 the ids of the parameters that should not be optimized, e.g. c(1,3) if lambda and K
-should not be optimized, but only mu. In that case idparsopt must be. The default is to fix all parameters
+should not be optimized, but only mu. In that case idparsopt must be 2. The default is to fix all parameters
 not specified in idparsopt. 
   }
   \item{parsfix}{ the values of the parameters that should not be optimized }
@@ -58,6 +58,7 @@ as explained in the supplementary material to Etienne et al. 2011.
  \code{\link{optimx}}
 }
 \examples{
+\donttest{
 cat("This will estimate the parameters for a set of branching times brts with the default settings:")
 brts = 1:20
 dd_ML(brts)
@@ -73,6 +74,9 @@ dd_ML(brts, ddmodel = 3)
 cat("This will estimate all parameters under the default model when there are 2 missing species:")
 brts = 1:20
 dd_ML(brts, missnumspec = 2)
-
+}
+\dontshow{
+dd_ML(1:3,c(1.151160,0.000001,3.997702))
+}
 }
 \keyword{ models }

@@ -3,7 +3,7 @@
 \title{ Auxiliary function to dd_loglik}
 \description{
 This function computes the right-hand side of the master equation for the
-diversity-dependent model. It is called from dd_loglik.
+diversity-dependent model. It is called from dd_loglik and from dd_SR_loglik.
 }
 \usage{
 dd_loglik_rhs(t, x, pars)
@@ -24,7 +24,11 @@ dd_loglik_rhs(t, x, pars)
 \references{ Etienne et al. 2011, Proc. Roy. Soc. B, doi: 10.1098/rspb.2011.1439}
 \author{ Rampal S. Etienne & Bart Haegeman }
 
-\seealso{ \code{\link{dd_loglik}} }
+\seealso{
+\code{\link{dd_loglik}}
+\code{\link{dd_SR_loglik}}
+
+}
 \examples{ dd_loglik_rhs(-3,(1:10)/sum(1:10),c(0.2,0.1,100,3,1)) }
 \keyword{ models }
 
