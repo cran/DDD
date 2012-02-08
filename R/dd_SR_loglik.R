@@ -1,9 +1,8 @@
-dd_SR_loglik = function(trpars1,pars2,brts,missnumspec)
+dd_SR_loglik = function(pars1,pars2,brts,missnumspec)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
 # - min(brts) = most recent branching time
-# tr is transformed parameters, pars = parameters
 # - pars1[1] = la = (initial) speciation rate
 # - pars1[2] = mu = extinction rate
 # - pars1[3] = K = carrying capacity
@@ -17,15 +16,15 @@ dd_SR_loglik = function(trpars1,pars2,brts,missnumspec)
 #  . ddep==2 : exponential dependence in speciation rate
 #  . ddep==3 : linear dependence in extinction rate
 #  . ddep==4 : exponential dependence in extinction rate
+# - pars2[3] = cond = conditioning on non-extinction of the phylogeny
 # missnumspec = number of missing species    
 
-pars1 = trpars1/(1 - trpars1)
 abstol = 1e-16
 reltol = 1e-10 
-brts = -sort(as.numeric(brts),decreasing = TRUE)
+brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
 S = length(brts)
-if(max(trpars1) > 1 || min(trpars1) < 0 || trpars1[1] <= trpars1[2] || trpars1[4] <= trpars1[5] || -pars1[7] < min(brts)) { loglik = -Inf } else
+if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <= min(brts)) { loglik = -Inf } else
 {
     la = pars1[1]
     mu = pars1[2]
@@ -37,6 +36,7 @@ if(max(trpars1) > 1 || min(trpars1) < 0 || trpars1[1] <= trpars1[2] || trpars1[4
     if(sum(abs(brts - tshift) < 1E-14) == 1) { tshift = tshift - 1E-8 }
     kshift = 1 + max(which(brts < tshift))
     ddep = pars2[2]
+    cond = pars2[3]
 
     if(ddep == 1 && (ceiling(la/(la - mu) * K) < kshift || ceiling(la/(la - mu) * K2) < S)) { loglik = -Inf } else
     {
@@ -45,6 +45,7 @@ if(max(trpars1) > 1 || min(trpars1) < 0 || trpars1[1] <= trpars1[2] || trpars1[4
        probs[1] = 1 # change if other species at crown age   
       
        loglik = lgamma(S)
+
        if(kshift > 2) {
        for(k in 2:(kshift-1))
        {
@@ -102,19 +103,21 @@ if(max(trpars1) > 1 || min(trpars1) < 0 || trpars1[1] <= trpars1[2] || trpars1[4
 
        if(probs[1+missnumspec]<=0) { loglik = -Inf } else
        {
-          loglik = loglik + log(probs[1 + missnumspec]) - log(S - 1) + log(S + missnumspec + 1) - lgamma(S + missnumspec + 2) + lgamma(S + 2) + lgamma(missnumspec + 1)
- 
-          probs = rep(0,lx)
-          probs[1] = 1
-          # change if other species at crown age
-          k = 2
-          y = lsoda(probs,c(brts[1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol);
-          probs = y[2,2:(lx+1)]
-          y = lsoda(probs,c(tshift,brts[length(brts)]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol);
-          probs = y[2,2:(lx+1)]
-          aux = (2:(lx+1)) * (3:(lx+2))/6
-          logliknorm = log(sum(probs/aux))
-          loglik = loglik - logliknorm
+          loglik = loglik + log(probs[1 + missnumspec]) - log(S - 1) + log(S + missnumspec - 1) - lgamma(S + missnumspec + 2) + lgamma(S + 2) + lgamma(missnumspec + 1)
+          
+          if(cond == TRUE)
+          { 
+             probs = rep(0,lx)
+             probs[1] = 1 # change if other species at crown age
+             k = 2
+             y = lsoda(probs,c(brts[1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol);
+             probs = y[2,2:(lx+1)]
+             y = lsoda(probs,c(tshift,brts[length(brts)]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol);
+             probs = y[2,2:(lx+1)]
+             aux = (2:(lx+1)) * (3:(lx+2))/6
+             logliknorm = log(sum(probs/aux))
+          } else { logliknorm = 0 }
+       loglik = loglik - logliknorm
        }
     }
 }

@@ -1,4 +1,4 @@
-dd_SR_ML = function(brts,initparsopt=c(0.2,0.1,2*(1+length(brts)),2*(1+length(brts)),max(brts)/2),parsfix = NULL,idparsopt=c(1:3,6:7),idparsfix=NULL,idparsnoshift=(1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)],res=10*(1 + length(brts)),ddmodel=1,missnumspec=0)
+dd_SR_ML = function(brts,initparsopt=c(0.2,0.1,2*(1+length(brts)),2*(1+length(brts)),max(brts)/2),parsfix = NULL,idparsopt=c(1:3,6:7),idparsfix=NULL,idparsnoshift=(1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)],res=10*(1 + length(brts)),ddmodel=1,missnumspec=0,cond = TRUE)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -22,6 +22,7 @@ dd_SR_ML = function(brts,initparsopt=c(0.2,0.1,2*(1+length(brts)),2*(1+length(br
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
 # - missnumspec = number of missing species    
+# - cond = conditioning on non-extinction of the phylogeny
 
 options(warn=-1)
 if(is.numeric(brts) == FALSE) { cat("The branching times should be numeric") } else {
@@ -29,15 +30,16 @@ idparsnoshift = sort(idparsnoshift)
 idpars = sort(c(idparsopt,idparsfix,idparsnoshift))
 if(sum(idpars == (1:7)) != 7) {cat("The parameters to be optimized, fixed and not shifted are incoherent.") } else {
 namepars = c("la","mu","K","la2","mu2","K2","tshift")
-cat("You are optimizing",namepars[idparsopt],"\n")
-cat("You are fixing",namepars[idparsfix],"\n")
-cat("You are not shifting",namepars[idparsnoshift],"\n")
+if(length(namepars[idparsopt]) == 0) { optstr = "nothing" } else { optstr = namepars[idparsopt] }
+cat("You are optimizing",optstr,"\n")
+if(length(namepars[idparsfix]) == 0) { fixstr = "nothing" } else { fixstr = namepars[idparsfix] }
+cat("You are fixing",fixstr,"\n")
+if(length(namepars[idparsnoshift]) == 0) { noshiftstr = "nothing" } else { noshiftstr = namepars[idparsnoshift] }
+cat("You are not shifting",noshiftstr,"\n")
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
-print(trparsopt)
 cat("Optimizing the likelihood - this may take a while.","\n")
-cat("Press enter to see some progress.","\n")
-out = optimx(trparsopt,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brts = brts,pars2 = c(res,ddmodel),missnumspec = missnumspec)
+out = optimx(trparsopt,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brts = brts,pars2 = c(res,ddmodel,cond),missnumspec = missnumspec)
 MLtrpars = unlist(out$par)
 MLpars = MLtrpars/(1-MLtrpars)
 out$par = list(MLpars)
