@@ -1,8 +1,8 @@
 Package: DDD
 Type: Package
 Title: Diversity-dependent diversification
-Version: 0.3
-Date: 2012-02-03
+Version: 0.4
+Date: 2012-02-09
 Depends: R (>= 2.14.1), optimx, deSolve
 Author: Rampal S. Etienne & Bart Haegeman
 Maintainer: Rampal S. Etienne <r.s.etienne@rug.nl>
@@ -10,9 +10,7 @@ License: GPL-2
 Description: DDD implements maximum likelihood methods based on the
         diversity-dependent birth-death process to test whether
         speciation or extinction are diversity-dependent.  See Etienne
-        et al. 2011, Proc. Roy. Soc. B, doi: 10.1098/rspb.2011.1439 New
-        in version 0.3: models with shifts in the parameters at a time
-        tshift
-Packaged: 2012-02-03 20:42:24 UTC; Rampal S. Etienne
+        et al. 2011, Proc. Roy. Soc. B, doi: 10.1098/rspb.2011.1439.
+Packaged: 2012-02-08 10:13:50 UTC; Rampal S. Etienne
 Repository: CRAN
-Date/Publication: 2012-02-04 08:39:40
+Date/Publication: 2012-02-08 20:54:46

@@ -1,4 +1,4 @@
-dd_ML = function(brts,initparsopt=c(0.2,0.1,2*length(brts)),idparsopt = 1:3,idparsfix = (1:3)[-idparsopt],parsfix = c(0.2,0.1,2*length(brts))[-idparsopt],res=10*(1+length(brts)),ddmodel=1,missnumspec=0)
+dd_ML = function(brts,initparsopt=c(0.2,0.1,2*length(brts)),idparsopt = 1:3,idparsfix = (1:3)[-idparsopt],parsfix = c(0.2,0.1,2*length(brts))[-idparsopt],res=10*(1+length(brts)),ddmodel=1,missnumspec=0,cond=TRUE)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -12,7 +12,8 @@ dd_ML = function(brts,initparsopt=c(0.2,0.1,2*length(brts)),idparsopt = 1:3,idpa
 #  . ddmodel == 2 : exponential dependence in speciation rate
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
-# missnumspec = number of missing species    
+# - missnumspec = number of missing species    
+# - cond = conditioning on non-extinction of the phylogeny
 
 options(warn=-1)
 if(is.numeric(brts) == FALSE) { cat("The branching times should be numeric") } else {
@@ -26,9 +27,8 @@ cat("You are fixing",fixstr,"\n")
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[parsfix == Inf] = 1
-cat(noquote("Optimizing the likelihood - this may take a while."),"\n")
-#cat(noquote("Press enter to see some progress."),"\n")
-out = optimx(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel),missnumspec = missnumspec)
+cat("Optimizing the likelihood - this may take a while.","\n")
+out = optimx(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond),missnumspec = missnumspec)
 MLtrpars = unlist(out$par)
 MLpars = MLtrpars/(1-MLtrpars)
 out$par = list(MLpars)
