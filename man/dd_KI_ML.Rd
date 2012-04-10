@@ -1,32 +1,36 @@
-\name{dd_SR_ML}
-\alias{dd_SR_ML}
-\title{ Maximization of the loglikelihood under a diversity-dependent diversification model with a shift in the parameters
+\name{dd_KI_ML}
+\alias{dd_KI_ML}
+\title{ Maximization of the loglikelihood under a diversity-dependent diversification model with decoupling of a subclade's diversication dynamics from the main clade's dynamics
 }
 \description{
    This function computes the maximum likelihood estimates of the parameters of a
-   diversity-dependent diversification model with shifting parameters at time t = tshift for a given set of phylogenetic branching times.
+   diversity-dependent diversification model with decoupling of the diversification dynamics of
+   a subclade from the dynamics of the main clade for a given set of phylogenetic branching times
+   of main clade and subclade and the time of splitting of the lineage that will form the subclade.
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_SR_ML(brts, initparsopt = c(0.5, 0.1, 2 * (1 + length(brts)), 2 * (1 + length(brts)),
-   max(brts)/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
-   idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
-   res = 10 * (1 + length(brts)), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1)
+dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM)), 2 * (1 + length(brtsS)),
+    max(c(brtsM, brtsS))/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
+    idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
+    res = 10 * (1 + length(c(brtsM, brtsS))), ddmodel = 1, missnumspec = 0, cond = TRUE)
 }
 \arguments{
-  \item{brts}{A set of branching times of a phylogeny, all positive }
+  \item{brtsM}{A set of branching times of the main clade in a phylogeny, all positive }
+  \item{brtsS}{A set of branching times of the subclade in a phylogeny, all positive }
+  \item{tsplit}{The branching time at which the lineage forming the subclade branches off, positive}
   \item{initparsopt}{The initial values of the parameters that must be optimized }
   \item{parsfix}{The values of the parameters that should not be optimized }
   \item{idparsopt}{
    The ids of the parameters that must be optimized, e.g. 1:7 for all parameters.
    The ids are defined as follows: \cr
-   id == 1 corresponds to lambda (speciation rate) before the shift \cr
-   id == 2 corresponds to mu (extinction rate) before the shift \cr
-   id == 3 corresponds to K (clade-level carrying capacity) before the shift \cr
-   id == 4 corresponds to lambda (speciation rate) after the shift \cr
-   id == 5 corresponds to mu (extinction rate) after the shift \cr
-   id == 6 corresponds to K (clade-level carrying capacity) after the shift \cr
-   id == 7 corresponds to tshift (the time of shift)
+   id == 1 corresponds to lambda_M (speciation rate) of the main clade \cr
+   id == 2 corresponds to mu_M (extinction rate) of the main clade \cr
+   id == 3 corresponds to K_M (clade-level carrying capacity) of the main clade \cr
+   id == 4 corresponds to lambda_S (speciation rate) of the subclade \cr
+   id == 5 corresponds to mu_S (extinction rate) of the subclade \cr
+   id == 6 corresponds to K_S (clade-level carrying capacity) of the subclade \cr
+   id == 7 corresponds to t_d (the time of decoupling)
    }
   \item{idparsfix}{
 The ids of the parameters that should not be optimized, e.g. c(1,3,4,6) if lambda and K
@@ -35,7 +39,7 @@ not specified in idparsopt.
   }
   \item{idparsnoshift}{ The ids of the parameters that should not shift; 
 This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that lambda and mu have the same values before and after tshift }
-  \item{res}{ sets the maximum number of species for which a probability must be computed, must be larger than 1 + length(brts) }
+  \item{res}{ sets the maximum number of species for which a probability must be computed, must be larger than 1 + max(length(brtsM),length(brtsS)) }
   \item{ddmodel}{ sets the model of diversity-dependence: \cr
    ddmodel == 1 : linear dependence in speciation rate \cr
    ddmodel == 2 : exponential dependence in speciation rate \cr
@@ -44,7 +48,6 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
-  \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
 }
 \details{
 The output is a dataframe where $par and $fvalues are the first elements.
@@ -59,25 +62,25 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{fvalues}{gives the maximum loglikelihood}
 }
 \references{
-- Etienne & Haegeman 2012. In review. \cr
-- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 }
+- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne & Haegeman 2012. Am. Nat. In press.
+}
 \author{Rampal S. Etienne & Bart Haegeman }
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.
 }
 \seealso{
- \code{\link{dd_SR_loglik}},
+ \code{\link{dd_KI_loglik}},
  \code{\link{dd_ML}},
- \code{\link{dd_KI_ML}},
+ \code{\link{dd_SR_ML}},
  \code{\link{optimx}}
 }
 \examples{
 \donttest{
-cat("Estimating parameters for a set of branching times brts with the default settings:")
-brts = 1:20
-dd_SR_ML(brts)
-}
-\dontshow{
-dd_SR_ML(1:3,c(11.676626,0.001088,2.183581,3.221303,1.006468),idparsopt = c(1:3,6,7))
+cat("Estimating parameters for two sets of branching times brtsM, brtsS with the default settings:")
+brtsM = 1:20
+brtsS = seq(0.1,3.9,0.5)
+tsplit = 5;
+dd_KI_ML(brtsM,brtsS,tsplit)
 }
 }
 \keyword{ models }

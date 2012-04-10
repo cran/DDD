@@ -11,12 +11,13 @@ dd_SR_loglik = function(pars1,pars2,brts,missnumspec)
 # - pars1[6] = K2 = carrying capacity
 # - pars1[7] = tshift = time of shift
 # - pars2[1] = lx = length of ODE variable x
-# - pars2[2] = ddep = diversity-dependent model,mode of diversity-dependence
+# - pars2[2] = ddep = diversity-dependent model, mode of diversity-dependence
 #  . ddep==1 : linear dependence in speciation rate
 #  . ddep==2 : exponential dependence in speciation rate
 #  . ddep==3 : linear dependence in extinction rate
 #  . ddep==4 : exponential dependence in extinction rate
 # - pars2[3] = cond = conditioning on non-extinction of the phylogeny
+# - pars2[4] = btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
 # missnumspec = number of missing species    
 
 abstol = 1e-16
@@ -37,14 +38,15 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     kshift = 1 + max(which(brts < tshift))
     ddep = pars2[2]
     cond = pars2[3]
+    btorph = pars2[4]
 
-    if(ddep == 1 && (ceiling(la/(la - mu) * K) < kshift || ceiling(la/(la - mu) * K2) < S)) { loglik = -Inf } else
+    if(ddep == 1 && (ceiling(la/(la - mu) * K) < kshift || ceiling(la/(la - mu) * K2) < S + missnumspec)) { loglik = -Inf } else
     {
        if(ddep == 1) { lx = min(ceiling(la/(la - mu) * max(K,K2)),round(pars2[1])) } else { lx = round(pars2[1]) }
        probs = rep(0,lx)
        probs[1] = 1 # change if other species at crown age   
       
-       loglik = lgamma(S)
+       loglik = (btorph == 0) * lgamma(S)
 
        if(kshift > 2) {
        for(k in 2:(kshift-1))
@@ -103,7 +105,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
 
        if(probs[1+missnumspec]<=0) { loglik = -Inf } else
        {
-          loglik = loglik + log(probs[1 + missnumspec]) - log(S - 1) + log(S + missnumspec - 1) - lgamma(S + missnumspec + 2) + lgamma(S + 2) + lgamma(missnumspec + 1)
+          loglik = loglik + log(probs[1 + missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
           
           if(cond == TRUE)
           { 

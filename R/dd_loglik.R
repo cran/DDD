@@ -4,15 +4,18 @@ dd_loglik = function(pars1,pars2,brts,missnumspec)
 # - max(brts) = crown age
 # - min(brts) = most recent branching time
 # - pars1[1] = la = (initial) speciation rate
-# - pars1[1] = mu = extinction rate
-# - pars1[1] = K = carrying capacity
+# - pars1[2] = mu = extinction rate
+# - pars1[3] = K = carrying capacity
+# - pars1[4] = r = ratio of diversity-dependence in extinction rate over speciation rate
 # - pars2[1] = lx = length of ODE variable x
 # - pars2[2] = ddep = diversity-dependent model,mode of diversity-dependence
 #  . ddep==1 : linear dependence in speciation rate
 #  . ddep==2 : exponential dependence in speciation rate
 #  . ddep==3 : linear dependence in extinction rate
 #  . ddep==4 : exponential dependence in extinction rate
+#  . ddep==5 : linear dependence in speciation and extinction rate
 # - pars2[3] = cond = conditioning on non-extinction of the phylogeny
+# - pars2[4] = btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
 # missnumspec = number of missing species    
 
 abstol = 1e-16
@@ -26,21 +29,23 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2]) { loglik = -Inf } else
     mu = pars1[2]
     K = pars1[3]
     ddep = pars2[2]
+    if(ddep == 5) {r = pars1[4]} else {r = 0}
     cond = pars2[3]
+    btorph = pars2[4]
 
-    if(ddep == 1 && ceiling(la/(la - mu) * K) < S) { loglik = -Inf } else
+    if((ddep == 1 || ddep == 5) && ceiling(la/(la - mu) * (r + 1) * K) < S + missnumspec) { loglik = -Inf } else
     {
-       if(ddep == 1) { lx = min(ceiling(la/(la - mu) * K),round(pars2[1])) } else { lx = round(pars2[1]) }
+       if(ddep == 1 || ddep == 5) { lx = min(ceiling(la/(la - mu) * (r + 1) * K),round(pars2[1])) } else { lx = round(pars2[1]) }
        probs = rep(0,lx)
        probs[1] = 1 # change if other species at crown age  
-       loglik = lgamma(S)
+       loglik = (btorph == 0) * lgamma(S)
        for(k in 2:S)
        {
           y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1,k,ddep),rtol = reltol,atol = abstol)
           probs = y[2,2:(lx+1)]
           if(k<S)
           {
-              if(ddep == 1) { lavec = pmax(rep(0,lx),la - (la-mu)/K * ((0:(lx-1))+k)) } 
+              if(ddep == 1 || ddep == 5) { lavec = pmax(rep(0,lx),la - 1/(r + 1) * (la-mu)/K * ((0:(lx-1))+k)) } 
               if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+k) + 1)^(-log(la/mu)/log(K+1))) }
               if(ddep == 3 || ddep == 4) { lavec = la }    
               probs = lavec * probs # speciation event
@@ -53,7 +58,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2]) { loglik = -Inf } else
        }    
        if(probs[1+missnumspec]<=0) { loglik = -Inf } else
        {        
-          loglik = loglik + log(probs[1 + missnumspec]) - log(S - 1) + log(S + missnumspec - 1) - lgamma(S + missnumspec + 2) + lgamma(S + 2) + lgamma(missnumspec + 1)
+          loglik = loglik + log(probs[1 + missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
   
           if(cond == TRUE)
           {
@@ -71,8 +76,9 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2]) { loglik = -Inf } else
        }
     }
 }
-s1 = sprintf('Parameters: %f %f %f, ',pars1[1],pars1[2],pars1[3])
-s2 = sprintf('Loglikelihood: %f',loglik)
+s1 = sprintf('Parameters: %f %f %f',pars1[1],pars1[2],pars1[3])
+if(ddep == 5) {s1 = sprintf('%s %f',s1,pars1[4])}
+s2 = sprintf(', Loglikelihood: %f',loglik)
 cat(s1,s2,"\n")
 
 return(loglik)
