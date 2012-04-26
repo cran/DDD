@@ -1,4 +1,4 @@
-dd_ML = function(brts,initparsopt=c(0.2,0.1,2*length(brts)),idparsopt = 1:3,idparsfix = (1:3)[-idparsopt],parsfix = c(0.2,0.1,2*length(brts))[-idparsopt],res=10*(1+length(brts)),ddmodel=1,missnumspec=0,cond=TRUE)
+dd_ML = function(brts,initparsopt=(ddmodel < 5) * c(0.5,0.1,2*length(brts)) + (ddmodel == 5) * c(0.5,0.1,2*length(brts),0.01),idparsopt = 1:length(initparsopt),idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt],parsfix = (ddmodel < 5) * c(0.2,0.1,2*length(brts))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*length(brts),0)[-idparsopt],res=10*(1+length(brts)),ddmodel=1,missnumspec=0,cond=TRUE, btorph = 1)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -12,14 +12,17 @@ dd_ML = function(brts,initparsopt=c(0.2,0.1,2*length(brts)),idparsopt = 1:3,idpa
 #  . ddmodel == 2 : exponential dependence in speciation rate
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
+#  . ddmodel == 5 : linear dependence in speciation rate and in extinction rate
 # - missnumspec = number of missing species    
 # - cond = conditioning on non-extinction of the phylogeny
+# - btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
 
 options(warn=-1)
 if(is.numeric(brts) == FALSE) { cat("The branching times should be numeric") } else {
 idpars = sort(c(idparsopt,idparsfix))
 if(sum(idpars == (1:3)) != 3) {cat("The parameters to be optimized and fixed are incoherent.") } else {
-namepars = c("la","mu","K")
+namepars = c("lambda","mu","K")
+if(ddmodel == 5) {namepars = namepars = c("lambda","mu","K","r")}
 if(length(namepars[idparsopt]) == 0) { optstr = "nothing" } else { optstr = namepars[idparsopt] }
 cat("You are optimizing",optstr,"\n")
 if(length(namepars[idparsfix]) == 0) { fixstr = "nothing" } else { fixstr = namepars[idparsfix] }
@@ -28,14 +31,16 @@ trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[parsfix == Inf] = 1
 cat("Optimizing the likelihood - this may take a while.","\n")
-out = optimx(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond),missnumspec = missnumspec)
+out = optimx(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
 MLtrpars = unlist(out$par)
 MLpars = MLtrpars/(1-MLtrpars)
 out$par = list(MLpars)
 MLpars1 = rep(0,3)
+if(ddmodel == 5) {MLpars1 = rep(0,4)}
 MLpars1[idparsopt] = MLpars
 if(length(idparsfix) != 0) { MLpars1[idparsfix] = parsfix }
-s1 = sprintf('Maximum likelihood parameter estimates: %f %f %f',MLpars[1],MLpars[2],MLpars[3])
+s1 = sprintf('Maximum likelihood parameter estimates: lambda: %f, mu: %f, K: %f',MLpars1[1],MLpars1[2],MLpars1[3])
+if(ddmodel == 5) {s1 = sprintf('%s, r: %f',s1,MLpars1[4])}
 s2 = sprintf('Maxmimum loglikelihood: %f',out$fvalues)
 cat("\n",s1,"\n",s2,"\n")
 return(out)

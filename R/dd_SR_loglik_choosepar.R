@@ -1,4 +1,4 @@
-dd_SR_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,idparsnoshift,pars2,brts,missnumspec,cond)
+dd_SR_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,idparsnoshift,pars2,brts,missnumspec)
 {
 trpars1 = rep(0,7)
 trpars1[idparsopt] = trparsopt

@@ -8,12 +8,14 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_ML(brts, initparsopt = c(0.2, 0.1, 2 * length(brts)), idparsopt = 1:3,
-   idparsfix = (1:3)[-idparsopt], parsfix = c(0.2, 0.1, 2 * length(brts))[-idparsopt],
-   res = 10 * (1 + length(brts)), ddmodel = 1, missnumspec = 0, cond = TRUE)
+dd_ML(brts,initparsopt=(ddmodel < 5) * c(0.5,0.1,2*length(brts)) + (ddmodel == 5) * 
+   c(0.5,0.1,2*length(brts),0.01),idparsopt = 1:length(initparsopt), idparsfix =
+   (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*length(brts))[-idparsopt]
+   + (ddmodel == 5) * c(0.2,0.1,2*length(brts),0)[-idparsopt],res=10*(1+length(brts)),
+   ddmodel=1, missnumspec=0,cond=TRUE, btorph = 1)
 }
 \arguments{
-  \item{brts}{A set of branching times of a phylogeny, all positive, from present to past }
+  \item{brts}{A set of branching times of a phylogeny, all positive }
   \item{initparsopt}{The initial values of the parameters that must be optimized}
   \item{idparsopt}{
    The ids of the parameters that must be optimized, e.g. 1:3 for all parameters.
@@ -37,14 +39,15 @@ not specified in idparsopt.
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
+  \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
 }
 \details{
 The output is a dataframe where $par and $fvalues are the first elements.
 There are more elements that are all from the optimization algorithm, optimx.
 The computed loglikelihood contains the factor
-N_q,m = (q - 1)/(q + m - 1) (q + m + 1)!/((q + 1)! m!)
+q! m! / (q + m)!
 where q is the number of species in the phylogeny and m is the number of missing species,
-as explained in the supplementary material to Etienne et al. 2011.
+as explained in the supplementary material to Etienne et al. 2012.
 }
 \value{
  \item{pars}{ gives the list of parameter estimates}
@@ -55,6 +58,8 @@ as explained in the supplementary material to Etienne et al. 2011.
 
 \seealso{
  \code{\link{dd_loglik}},
+ \code{\link{dd_SR_ML}},
+ \code{\link{dd_KI_ML}},
  \code{\link{optimx}}
 }
 \examples{

@@ -25,25 +25,21 @@
     - \code{pars2[2] == 2} exponential dependence in speciation rate \cr
     - \code{pars2[2] == 3} linear dependence in extinction rate \cr
     - \code{pars2[2] == 4} exponential dependence in extinction rate \cr \cr
-    \code{pars2[3]} sets the conditioning on non-extinction of the phylogeny (TRUE or FALSE)
+    \code{pars2[3]} sets the conditioning on non-extinction of the phylogeny (TRUE or FALSE) \cr
+    \code{pars2[4]} sets whether the likelihood is for the branching times (0) or the phylogeny (1)
 }
-  \item{brts}{A set of branching times of a phylogeny, all positive, from present to past }
+  \item{brts}{A set of branching times of a phylogeny, all positive }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
 }
 \value{The loglikelihood}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \references{
-- Etienne & Haegeman 2012. In review. \cr
-- Etienne et al. 2011, Proc. Roy. Soc. B, doi: 10.1098/rspb.2011.1439 }
+- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439
+- Etienne & Haegeman 2012. Am. Nat. In press. \cr}
 \author{Rampal S. Etienne & Bart Haegeman }
-\note{
-%%  ~~further notes~~
-}
 \seealso{
  \code{\link{dd_SR_ML}},
- \code{\link{dd_loglik}}
+ \code{\link{dd_loglik}},
+ \code{\link{dd_KI_loglik}}
 }
-\examples{dd_SR_loglik(pars1 = c(0.2,0.1,50,0.2,0.1,70,5), pars2 = c(100,1,TRUE), brts = 1:10, missnumspec = 0) }
+\examples{dd_SR_loglik(pars1 = c(0.2,0.1,50,0.2,0.1,70,5), pars2 = c(100,1,TRUE,1), brts = 1:10, missnumspec = 0) }
 \keyword{models}
