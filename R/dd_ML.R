@@ -31,7 +31,7 @@ trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[parsfix == Inf] = 1
 cat("Optimizing the likelihood - this may take a while.","\n")
-out = optimx(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
+out = optimx2(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
 MLtrpars = unlist(out$par)
 MLpars = MLtrpars/(1-MLtrpars)
 out$par = list(MLpars)
@@ -43,7 +43,7 @@ s1 = sprintf('Maximum likelihood parameter estimates: lambda: %f, mu: %f, K: %f'
 if(ddmodel == 5) {s1 = sprintf('%s, r: %f',s1,MLpars1[4])}
 s2 = sprintf('Maxmimum loglikelihood: %f',out$fvalues)
 cat("\n",s1,"\n",s2,"\n")
-return(out)
+invisible(out)
 }
 }
 }

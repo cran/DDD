@@ -11,7 +11,7 @@
 }
 \usage{
 dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM)), 2 * (1 + length(brtsS)),
-    max(c(brtsM, brtsS))/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
+    (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
     idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
     res = 10 * (1 + length(c(brtsM, brtsS))), ddmodel = 1, missnumspec = 0, cond = TRUE)
 }
@@ -79,7 +79,7 @@ as explained in the supplementary material to Etienne et al. 2012.
 cat("Estimating parameters for two sets of branching times brtsM, brtsS with the default settings:")
 brtsM = 1:20
 brtsS = seq(0.1,3.9,0.5)
-tsplit = 5;
+t_split = 5;
 dd_KI_ML(brtsM,brtsS,tsplit)
 }
 }

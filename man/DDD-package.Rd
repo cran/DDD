@@ -23,14 +23,19 @@ under diversity-dependent diversification models.\cr \cr
    New in version 1.1\cr
    - A model with diversity-dependence in speciation and extinction rate, currently only
    available for the likelihood without shifts or decoupling.
+   New in version 1.2\cr
+   - POssibility of automatically exploring multiple initial conditons for the SR models
+   - Suppressing unnecessary output
+   - Flushing computed likelihood values immediately (even with buffer on)
+   - Bug fix in default value of the initial time of decoupling 
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2012-04-10\cr
+Version: \tab 1.2\cr
+Date: \tab 2012-06-08\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

@@ -1,4 +1,4 @@
-dd_SR_ML = function(brts,initparsopt=c(0.5,0.1,2*(1+length(brts)),2*(1+length(brts)),max(brts)/2),parsfix = NULL,idparsopt=c(1:3,6:7),idparsfix=NULL,idparsnoshift=(1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)],res=10*(1 + length(brts)),ddmodel=1,missnumspec=0,cond = TRUE,btorph = 1)
+dd_SR_ML = function(brts,initparsopt=c(0.5,0.1,2*(1+length(brts)),2*(1+length(brts)),max(brts)/2),parsfix = NULL,idparsopt=c(1:3,6:7),idparsfix=NULL,idparsnoshift=(1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)],res=10*(1 + length(brts)),ddmodel=1,missnumspec=0,cond = TRUE,btorph = 1,allbp = FALSE)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -24,8 +24,9 @@ dd_SR_ML = function(brts,initparsopt=c(0.5,0.1,2*(1+length(brts)),2*(1+length(br
 # - missnumspec = number of missing species    
 # - cond = conditioning on non-extinction of the phylogeny
 # - btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
+# - allbp = optimize likelihood for fixed tshift at all bp (TRUE) or by letting tshift vary freely (FALSE)
 
-
+brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
 options(warn=-1)
 if(is.numeric(brts) == FALSE) { cat("The branching times should be numeric") } else {
 idparsnoshift = sort(idparsnoshift)
@@ -41,18 +42,42 @@ cat("You are not shifting",noshiftstr,"\n")
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 cat("Optimizing the likelihood - this may take a while.","\n")
-out = optimx(trparsopt,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
+out = optimx2(trparsopt,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
 MLtrpars = unlist(out$par)
 MLpars = MLtrpars/(1-MLtrpars)
 out$par = list(MLpars)
 MLpars1 = rep(0,7)
 MLpars1[idparsopt] = MLpars
+ML = out$fvalues
+if(sum(idparsfix == 7) == 0 && allbp == TRUE)
+{ 
+   idparsopt1 = idparsopt[1:(length(idparsopt) - 1)]
+   idparsfix1 = c(idparsfix,7)
+   for(bp in 2:length(brts))
+   {
+      for(ba in seq(-1,1,2))
+      {
+         initparsopt1 = initparsopt[1:length(idparsopt1)]
+         parsfix1 = c(idparsfix,brts[bp] + ba * 1E-8)
+         trparsopt1 = initparsopt1/(1 + initparsopt1)
+         trparsfix1 = parsfix1/(1 + parsfix1)
+         out = optimx2(trparsopt1,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix1,idparsopt = idparsopt1,idparsfix = idparsfix1,idparsnoshift = idparsnoshift,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
+         if(as.numeric(out$fvalues) > ML)
+         {
+            MLtrpars = unlist(out$par)
+            MLpars = MLtrpars/(1-MLtrpars)
+            out$par = list(MLpars)
+            ML = out$fvalues
+         }
+      }
+   }
+}
 if(length(idparsfix) != 0) {MLpars1[idparsfix] = parsfix }
 if(length(idparsnoshift) != 0) { MLpars1[idparsnoshift] = MLpars1[idparsnoshift - 3] }
 s1 = sprintf('Maximum likelihood parameter estimates: %f %f %f %f %f %f %f',MLpars1[1],MLpars1[2],MLpars1[3],MLpars1[4],MLpars1[5],MLpars1[6],MLpars1[7])
-s2 = sprintf('Maxmimum loglikelihood: %f',out$fvalues)
+s2 = sprintf('Maxmimum loglikelihood: %f',ML)
 cat("\n",s1,"\n",s2,"\n")
-return(out)
+invisible(out)
 }
 }
 }
