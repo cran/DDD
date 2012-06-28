@@ -11,7 +11,8 @@
 dd_SR_ML(brts, initparsopt = c(0.5, 0.1, 2 * (1 + length(brts)), 2 * (1 + length(brts)),
    max(brts)/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
    idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
-   res = 10 * (1 + length(brts)), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1)
+   res = 10 * (1 + length(brts)), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1,
+   allbp = FALSE)
 }
 \arguments{
   \item{brts}{A set of branching times of a phylogeny, all positive }
@@ -45,6 +46,7 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
+  \item{allbp}{Sets whether a search should be done with various initial conditions, with tshift at each of the branching points (TRUE/FALSE)}
 }
 \details{
 The output is a dataframe where $par and $fvalues are the first elements.
