@@ -1,9 +1,11 @@
-e925cecf6d16fc7113ff0bcb18c89f32 *DESCRIPTION
+5b20fb106fce4c7cd412015eaa52deea *DDD-Ex.pdf
+44b5f75ea1c065b230c5ecd5eceb0050 *DDD-manual.pdf
+f56459099f30ce6dd227dc8c2b95ab64 *DESCRIPTION
 df390c53434517b304ac5db487184641 *NAMESPACE
 75a0f6ca266d621d88de9851a37f3e6c *R/dd_KI_ML.R
 8ae43c4163eef92f4b0f5664cba2254b *R/dd_KI_loglik.R
 742586c10ed8b5ecd88746aa84d9bd28 *R/dd_KI_loglik_choosepar.R
-cf0fbe34066c702c6ef231a87e8ef03d *R/dd_ML.R
+c2c07902090d48e9621b68ad795abf05 *R/dd_ML.R
 b609a7f15bcd3ec7e3df6a169042a097 *R/dd_SR_ML.R
 660d86fcdb1c3722921012176a24f863 *R/dd_SR_loglik.R
 51e628beb774d16178961e6675fd5006 *R/dd_SR_loglik_choosepar.R
@@ -14,10 +16,10 @@ a5cc17840c29a39ad6cdcadda6fdbe19 *R/dd_logliknorm_rhs1.R
 96c82fb6b59a2ea0c2b63a85016e21d1 *R/dd_logliknorm_rhs2.R
 8355f2c17fe59acd599747940dd13195 *R/optimx2.R
 40c2cd97aa321d6bb8de6584c625f5ab *man/DDD-internal.Rd
-d8b294259f4776eec37af49cc864047c *man/DDD-package.Rd
+fa614a53ffd0b0dca9f786b9e569f8bd *man/DDD-package.Rd
 b6d3ca30e02ad7cee58a930e36e4de5f *man/dd_KI_ML.Rd
-f03e8fb9a15ddce40b1e576c2249dcc1 *man/dd_KI_loglik.Rd
-4c464a806b16fe777b073145b288a465 *man/dd_ML.Rd
+3b90d93cb53373caffe40c8c7765a9c1 *man/dd_KI_loglik.Rd
+c8cf268cc0d978451ff7f2ca6de07ea7 *man/dd_ML.Rd
 88a9a048aad9ac33a0951e1cec2e2be8 *man/dd_SR_ML.Rd
 42d6b59a547ddbd708c83d93ae92a3d1 *man/dd_SR_loglik.Rd
 0a6698c0f678ca0b06a628de3193aa5f *man/dd_loglik.Rd

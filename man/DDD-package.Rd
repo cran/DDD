@@ -27,15 +27,19 @@ under diversity-dependent diversification models.\cr \cr
    - POssibility of automatically exploring multiple initial conditons for the SR models
    - Suppressing unnecessary output
    - Flushing computed likelihood values immediately (even with buffer on)
-   - Bug fix in default value of the initial time of decoupling 
+   - Bug fix in default value of the initial time of decoupling
+   New in version 1.3\cr
+   - Fix of default length of idparsopt
+   - Fix of conversion problems for small branching times
+   - Default initial parameter values based on birth-death model
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2012-06-08\cr
+Version: \tab 1.3\cr
+Date: \tab 2012-09-14\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
@@ -59,7 +63,7 @@ Rampal S. Etienne & Bart Haegeman
 Maintainer: Rampal S. Etienne (r.s.etienne@rug.nl)
 }
 \references{Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439\cr
-Etienne & Haegeman 2012, Am. Nat. In press.}
+Etienne & Haegeman 2012, Am. Nat. In press, doi: 10.1086/667574}
 \keyword{ models }
 \seealso{
 \code{laser}

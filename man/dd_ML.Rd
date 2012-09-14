@@ -8,11 +8,12 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_ML(brts,initparsopt=(ddmodel < 5) * c(0.5,0.1,2*length(brts)) + (ddmodel == 5) * 
-   c(0.5,0.1,2*length(brts),0.01),idparsopt = 1:length(initparsopt), idparsfix =
-   (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*length(brts))[-idparsopt]
-   + (ddmodel == 5) * c(0.2,0.1,2*length(brts),0)[-idparsopt],res=10*(1+length(brts)),
-   ddmodel=1, missnumspec=0,cond=TRUE, btorph = 1)
+dd_ML(brts, initparsopt = if (ddmodel < 5) { c(0.1 + bd(as.numeric(brts))$r1/(1 - bd(as.numeric(brts))$a),
+   0.1, 2 * length(brts))} else { c(0.1 + bd(as.numeric(brts))$r1/(1 - bd(as.numeric(brts))$a),
+   0.1, 2 * length(brts), 0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel ==
+   5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1, 2 * length(brts))[-idparsopt] + (ddmodel == 5) *
+   c(0.2, 0.1, 2 * length(brts), 0)[-idparsopt], res = 10 * (1 + length(brts)), ddmodel = 1, missnumspec = 0,
+   cond = TRUE, btorph = 1)
 }
 \arguments{
   \item{brts}{A set of branching times of a phylogeny, all positive }
