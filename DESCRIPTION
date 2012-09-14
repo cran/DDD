@@ -1,9 +1,9 @@
 Package: DDD
 Type: Package
 Title: Diversity-dependent diversification
-Version: 1.2
-Date: 2012-06-08
-Depends: R (>= 2.14.2), optimx, deSolve
+Version: 1.3
+Date: 2012-09-14
+Depends: R (>= 2.14.2), optimx, deSolve, laser
 Suggests: BB, Rcgmin, Rvmmin, minqa, numDeriv, ucminf
 Author: Rampal S. Etienne & Bart Haegeman
 Maintainer: Rampal S. Etienne <r.s.etienne@rug.nl>
@@ -15,7 +15,7 @@ Description: DDD implements maximum likelihood methods based on the
         10.1098/rspb.2011.1439.  DDD also implements a maximum
         likelihood method to detect key innovations defined as
         decoupling of diversity-dependence.  See Etienne & Haegeman
-        2012, Am. Nat. In press.
-Packaged: 2012-06-08 07:20:10 UTC; Rampal S. Etienne
+        2012, Am. Nat. In press, doi: 10.1086/667574.
+Packaged: 2012-09-14 13:11:09 UTC; Rampal S. Etienne
 Repository: CRAN
-Date/Publication: 2012-06-28 08:58:09
+Date/Publication: 2012-09-14 14:48:51
