@@ -19,27 +19,29 @@ under diversity-dependent diversification models.\cr \cr
    - Another bug fix of prefactor in likelihood - bug did not affect parameter estimates.\cr
    - Models with key innovations defined as decoupling of diversity-dependent dynamics.\cr
    - Option to compute the likelihood of a set of branching times or of the phylogeny;
-   these differ by a constant factor.
+   these differ by a constant factor.\cr
    New in version 1.1\cr
    - A model with diversity-dependence in speciation and extinction rate, currently only
-   available for the likelihood without shifts or decoupling.
+   available for the likelihood without shifts or decoupling.\cr
    New in version 1.2\cr
-   - POssibility of automatically exploring multiple initial conditons for the SR models
-   - Suppressing unnecessary output
-   - Flushing computed likelihood values immediately (even with buffer on)
-   - Bug fix in default value of the initial time of decoupling
+   - POssibility of automatically exploring multiple initial conditons for the SR models\cr
+   - Suppressing unnecessary output\cr
+   - Flushing computed likelihood values immediately (even with buffer on)\cr
+   - Bug fix in default value of the initial time of decoupling\cr
    New in version 1.3\cr
-   - Fix of default length of idparsopt
-   - Fix of conversion problems for small branching times
-   - Default initial parameter values based on birth-death model
+   - Fix of default length of idparsopt\cr
+   - Fix of conversion problems for small branching times\cr
+   - Default initial parameter values in dd_ML based on birth-death model\cr
+   New in version 1.4\cr
+   - Bug fix for when there is a large number of missing species\cr
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 2012-09-14\cr
+Version: \tab 1.4\cr
+Date: \tab 2012-09-24\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

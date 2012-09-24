@@ -125,7 +125,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
 }
 s1 = sprintf('Parameters: %f %f %f %f %f %f %f, ',pars1[1],pars1[2],pars1[3],pars1[4],pars1[5],pars1[6],pars1[7])
 s2 = sprintf('Loglikelihood: %f',loglik)
-cat(s1,s2,"\n")
+cat(s1,s2,"\n",sep = "")
 flush.console()
 return(loglik)
 }
