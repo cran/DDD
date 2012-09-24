@@ -13,7 +13,7 @@
 dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM)), 2 * (1 + length(brtsS)),
     (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
     idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
-    res = 10 * (1 + length(c(brtsM, brtsS))), ddmodel = 1, missnumspec = 0, cond = TRUE)
+    res = 10 * (1 + length(c(brtsM, brtsS)) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE)
 }
 \arguments{
   \item{brtsM}{A set of branching times of the main clade in a phylogeny, all positive }
