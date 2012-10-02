@@ -31,22 +31,26 @@ trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[parsfix == Inf] = 1
 cat("Optimizing the likelihood - this may take a while.","\n")
-#out = optimx2(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
-out = optimx2(trparsopt,dd_loglik_choosepar,hess=NULL,method = "nlm",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
+out = optimx2(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-4,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
 if(out$conv > 0) {cat("Optimization has not converged. Try again with different starting values.\n")} else {
 MLtrpars = unlist(out$par)
 MLpars = MLtrpars/(1-MLtrpars)
-out$par = list(MLpars)
 MLpars1 = rep(0,3)
 if(ddmodel == 5) {MLpars1 = rep(0,4)}
+if(MLpars1[3] > 10^7){MLpars1[3] = Inf}
 MLpars1[idparsopt] = MLpars
 if(length(idparsfix) != 0) { MLpars1[idparsfix] = parsfix }
+out2 = data.frame(row.names = "results",lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], loglik = unlist(out$fvalues), df = length(initparsopt), conv = unlist(out$conv))
 s1 = sprintf('Maximum likelihood parameter estimates: lambda: %f, mu: %f, K: %f',MLpars1[1],MLpars1[2],MLpars1[3])
-if(ddmodel == 5) {s1 = sprintf('%s, r: %f',s1,MLpars1[4])}
+if(ddmodel == 5)
+{
+   s1 = sprintf('%s, r: %f',s1,MLpars1[4])
+   out2 = data.frame(row.names = "results",lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], r = MLpars1[4], loglik = unlist(out$fvalues), df = length(initparsopt), conv = unlist(out$conv))
+}
 s2 = sprintf('Maximum loglikelihood: %f',out$fvalues)
 cat("\n",s1,"\n",s2,"\n")
-invisible(out)
 }
+invisible(out2)
 }
 }
 }

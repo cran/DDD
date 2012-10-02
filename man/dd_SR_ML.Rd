@@ -9,9 +9,10 @@
 }
 \usage{
 dd_SR_ML(brts, initparsopt = c(0.5, 0.1, 2 * (1 + length(brts) + missnumspec),
-   2 * (1 + length(brts) + missnumspec), max(brts)/2), parsfix = NULL, idparsopt = c(1:3, 6:7),
-   idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
-   res = 10 * (1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1,
+   2 * (1 + length(brts) + missnumspec), max(brts)/2), parsfix = NULL, idparsopt
+   = c(1:3, 6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,
+   (-1)^(length(idparsfix) != 0) * idparsfix)], res = 10 * (1 + length(brts) +
+   missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1,
    allbp = FALSE)
 }
 \arguments{
@@ -49,19 +50,25 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   \item{allbp}{Sets whether a search should be done with various initial conditions, with tshift at each of the branching points (TRUE/FALSE)}
 }
 \details{
-The output is a dataframe where $par and $fvalues are the first elements.
-There are more elements that are all from the optimization algorithm, optimx.
+The output is a dataframe containing estimated parameters and maximum loglikelihood.
 The computed loglikelihood contains the factor
 q! m!/(q + m)!
 where q is the number of species in the phylogeny and m is the number of missing species,
 as explained in the supplementary material to Etienne et al. 2012.
 }
 \value{
- \item{pars}{gives the list of parameter estimates}
- \item{fvalues}{gives the maximum loglikelihood}
-}
+ \item{lambda_1}{ gives the maximum likelihood estimate of lambda before the shift}
+ \item{mu_1}{ gives the maximum likelihood estimate of mu before the shift}
+ \item{K_1}{ gives the maximum likelihood estimate of K before the shift}
+ \item{lambda_2}{ gives the maximum likelihood estimate of lambda after the shift}
+ \item{mu_2}{ gives the maximum likelihood estimate of mu after the shift}
+ \item{K_2}{ gives the maximum likelihood estimate of K after the shift}
+ \item{t_shift}{ gives the time of the shift}
+ \item{loglik}{ gives the maximum loglikelihood}
+ \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
+ \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}}
 \references{
-- Etienne & Haegeman 2012. In review. \cr
+- Etienne & Haegeman 2012. Am. Nat. In press, doi: 10.1086/667574. \cr
 - Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 }
 \author{Rampal S. Etienne & Bart Haegeman }
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.

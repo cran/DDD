@@ -34,7 +34,7 @@
 \value{The loglikelihood}
 \references{
 - Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439
-- Etienne & Haegeman 2012. Am. Nat. In press. \cr}
+- Etienne & Haegeman 2012. Am. Nat. In press, doi: 10.1086/667574. \cr}
 \author{Rampal S. Etienne & Bart Haegeman }
 \seealso{
  \code{\link{dd_SR_ML}},

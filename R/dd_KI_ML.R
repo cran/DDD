@@ -40,18 +40,21 @@ cat("You are not shifting",noshiftstr,"\n")
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 cat("Optimizing the likelihood - this may take a while.","\n")
-out = optimx2(trparsopt,dd_KI_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brtsM = brtsM, brtsS = brtsS, pars2 = c(res,ddmodel,cond,tsplit),missnumspec = missnumspec)
+out = optimx2(trparsopt,dd_KI_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-4,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brtsM = brtsM, brtsS = brtsS, pars2 = c(res,ddmodel,cond,tsplit),missnumspec = missnumspec)
 MLtrpars = unlist(out$par)
 MLpars = MLtrpars/(1-MLtrpars)
-out$par = list(MLpars)
 MLpars1 = rep(0,7)
 MLpars1[idparsopt] = MLpars
+if(MLpars1[3] > 10^7){MLpars1[3] = Inf}
+if(MLpars1[6] > 10^7){MLpars1[6] = Inf}
 if(length(idparsfix) != 0) {MLpars1[idparsfix] = parsfix }
 if(length(idparsnoshift) != 0) { MLpars1[idparsnoshift] = MLpars1[idparsnoshift - 3] }
+out2 = data.frame(row.names = "results",lambda_M = MLpars1[1],mu_M = MLpars1[2],K_M = MLpars1[3], lambda_S = MLpars1[4], mu_S = MLpars1[5], K_S = MLpars1[6], t_d = MLpars1[7], loglik = unlist(out$fvalues), df = length(initparsopt), conv = unlist(out$conv))
 s1 = sprintf('Maximum likelihood parameter estimates: %f %f %f %f %f %f %f',MLpars1[1],MLpars1[2],MLpars1[3],MLpars1[4],MLpars1[5],MLpars1[6],MLpars1[7])
 s2 = sprintf('Maxmimum loglikelihood: %f',out$fvalues)
 cat("\n",s1,"\n",s2,"\n")
-invisible(out)
+out$par = list(MLpars1)
 }
+invisible(out2)
 }
 }
