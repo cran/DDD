@@ -61,7 +61,7 @@ if(sum(idparsfix == 7) == 0 && allbp == TRUE)
          parsfix1 = c(idparsfix,brts[bp] + ba * 1E-8)
          trparsopt1 = initparsopt1/(1 + initparsopt1)
          trparsfix1 = parsfix1/(1 + parsfix1)
-         out = optimx2(trparsopt1,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-6,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix1,idparsopt = idparsopt1,idparsfix = idparsfix1,idparsnoshift = idparsnoshift,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
+         out = optimx2(trparsopt1,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-4,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix1,idparsopt = idparsopt1,idparsfix = idparsfix1,idparsnoshift = idparsnoshift,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
          if(as.numeric(out$fvalues) > ML)
          {
             MLtrpars = unlist(out$par)
@@ -72,12 +72,17 @@ if(sum(idparsfix == 7) == 0 && allbp == TRUE)
       }
    }
 }
+if(MLpars1[3] > 10^7){MLpars1[3] = Inf}
+if(MLpars1[6] > 10^7){MLpars1[6] = Inf}
 if(length(idparsfix) != 0) {MLpars1[idparsfix] = parsfix }
 if(length(idparsnoshift) != 0) { MLpars1[idparsnoshift] = MLpars1[idparsnoshift - 3] }
 s1 = sprintf('Maximum likelihood parameter estimates: %f %f %f %f %f %f %f',MLpars1[1],MLpars1[2],MLpars1[3],MLpars1[4],MLpars1[5],MLpars1[6],MLpars1[7])
 s2 = sprintf('Maxmimum loglikelihood: %f',ML)
 cat("\n",s1,"\n",s2,"\n")
-invisible(out)
+out$par = list(MLpars1)
+out$fvalues = list(ML)
+out2 = data.frame(row.names = "results",lambda_1 = MLpars1[1],mu_1 = MLpars1[2],K_1 = MLpars1[3],lambda_2 = MLpars1[4],mu_2 = MLpars1[5],K_2 = MLpars1[6],t_shift = MLpars1[7],loglik = unlist(out$fvalues),df = length(initparsopt),conv = unlist(out$conv))
 }
+invisible(out2)
 }
 }

@@ -34,14 +34,19 @@ under diversity-dependent diversification models.\cr \cr
    - Default initial parameter values in dd_ML based on birth-death model\cr
    New in version 1.4\cr
    - Bug fix for when there is a large number of missing species\cr
+   New in version 1.5\cr
+   - Bug fix for returned output of functions when there are fixed parameters.
+   Textual output of DDD was correct.\cr
+   - Return to Nelder-Mead optimization for dd_ML (was set to "nlm" in versions 1.3 & 1.4)
+   - New format for output off all ML-functions (dd_ML, dd_SR_ML, dd_KI_ML)
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.4\cr
-Date: \tab 2012-09-24\cr
+Version: \tab 1.5\cr
+Date: \tab 2012-10-02\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
@@ -61,7 +66,7 @@ dd_KI_ML finds the parameters that maximizes the likelihood computed by dd_KI_lo
 
 }
 \author{
-Rampal S. Etienne & Bart Haegeman
+Rampal S. Etienne & Bart Haegeman\cr
 Maintainer: Rampal S. Etienne (r.s.etienne@rug.nl)
 }
 \references{Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439\cr

@@ -10,10 +10,11 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM)), 2 * (1 + length(brtsS)),
-    (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
-    idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
-    res = 10 * (1 + length(c(brtsM, brtsS)) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE)
+dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM)),
+    2 * (1 + length(brtsS)), (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt =
+    c(1:3, 6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length
+    (idparsfix) != 0) * idparsfix)], res = 10 * (1 + length(c(brtsM, brtsS)) + 
+    missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE)
 }
 \arguments{
   \item{brtsM}{A set of branching times of the main clade in a phylogeny, all positive }
@@ -50,20 +51,26 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
 }
 \details{
-The output is a dataframe where $par and $fvalues are the first elements.
-There are more elements that are all from the optimization algorithm, optimx.
+The output is a dataframe containing estimated parameters and maximum loglikelihood.
 The computed loglikelihood contains the factor
 q! m!/(q + m)!
 where q is the number of species in the phylogeny and m is the number of missing species,
 as explained in the supplementary material to Etienne et al. 2012.
 }
 \value{
- \item{pars}{gives the list of parameter estimates}
- \item{fvalues}{gives the maximum loglikelihood}
-}
+ \item{lambda_M}{ gives the maximum likelihood estimate of lambda of the main clade}
+ \item{mu_M}{ gives the maximum likelihood estimate of mu of the main clade}
+ \item{K_M}{ gives the maximum likelihood estimate of K of the main clade}
+ \item{lambda_2}{ gives the maximum likelihood estimate of lambda of the subclade}
+ \item{mu_S}{ gives the maximum likelihood estimate of mu of the subclade}
+ \item{K_S}{ gives the maximum likelihood estimate of K of the subclade}
+ \item{t_d}{ gives the time of the decoupling event}
+ \item{loglik}{ gives the maximum loglikelihood}
+ \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
+ \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}}
 \references{
 - Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
-- Etienne & Haegeman 2012. Am. Nat. In press.
+- Etienne & Haegeman 2012. Am. Nat. In press, doi: 10.1086/667574.
 }
 \author{Rampal S. Etienne & Bart Haegeman }
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.

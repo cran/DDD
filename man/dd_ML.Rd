@@ -8,12 +8,14 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_ML(brts, initparsopt = if (ddmodel < 5) { c(0.1 + bd(as.numeric(brts))$r1/(1 - bd(as.numeric(brts))$a),
-   0.1, 2 * (length(brts) + missnumspec))} else { c(0.1 + bd(as.numeric(brts))$r1/(1 - bd(as.numeric(brts))$a),
-   0.1, 2 * (length(brts) + missnumspec), 0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel ==
-   5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1, 2 * (length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) *
-   c(0.2, 0.1, 2 * (length(brts) + missnumspec), 0)[-idparsopt], res = 10 * (1 + length(brts) + missnumspec), ddmodel = 1,
-   missnumspec = 0, cond = TRUE, btorph = 1)
+dd_ML(brts, initparsopt = if (ddmodel < 5) { c(0.1 + bd(as.numeric(brts))$r1/(1 -
+   bd(as.numeric(brts))$a),0.1, 2 * (length(brts) + missnumspec))} else { c(0.1 +
+   bd(as.numeric(brts))$r1/(1 - bd(as.numeric(brts))$a), 0.1, 2 * (length(brts) +
+   missnumspec), 0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 +
+   (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1, 2 * (length
+   (brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2, 0.1, 2 * (length
+   (brts) + missnumspec), 0)[-idparsopt], res = 10 * (1 + length(brts) + 
+   missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1)
 }
 \arguments{
   \item{brts}{A set of branching times of a phylogeny, all positive }
@@ -24,6 +26,7 @@ dd_ML(brts, initparsopt = if (ddmodel < 5) { c(0.1 + bd(as.numeric(brts))$r1/(1 
    id == 1 corresponds to lambda (speciation rate) \cr
    id == 2 corresponds to mu (extinction rate) \cr
    id == 3 corresponds to K (clade-level carrying capacity)
+   id == 4 corresponds to r (r = b/a where mu = mu_0 + b * N and lambda = lambda_0 - a * N)
    }
   \item{idparsfix}{
 The ids of the parameters that should not be optimized, e.g. c(1,3) if lambda and K
@@ -37,22 +40,27 @@ not specified in idparsopt.
    ddmodel == 2 : exponential dependence in speciation rate \cr
    ddmodel == 3 : linear dependence in extinction rate \cr
    ddmodel == 4 : exponential dependence in extinction rate \cr
+   ddmodel == 5 : linear dependence in speciation and extinction rate\cr
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
 }
 \details{
-The output is a dataframe where $par and $fvalues are the first elements.
-There are more elements that are all from the optimization algorithm, optimx.
+The output is a dataframe containing estimated parameters and maximum loglikelihood.
 The computed loglikelihood contains the factor
 q! m! / (q + m)!
 where q is the number of species in the phylogeny and m is the number of missing species,
 as explained in the supplementary material to Etienne et al. 2012.
 }
 \value{
- \item{pars}{ gives the list of parameter estimates}
- \item{fvalues}{ gives the maximum loglikelihood}
+ \item{lambda}{ gives the maximum likelihood estimate of lambda}
+ \item{mu}{ gives the maximum likelihood estimate of mu}
+ \item{K}{ gives the maximum likelihood estimate of K}
+ \item{r}{ (only if ddmodel == 5) gives the ratio of linear dependencies in speciation and extinction rates}
+ \item{loglik}{ gives the maximum loglikelihood}
+ \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
+ \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}
 }
 \references{ Etienne et al. 2011, Proc. Roy. Soc. B, doi: 10.1098/rspb.2011.1439}
 \author{ Rampal S. Etienne & Bart Haegeman }
