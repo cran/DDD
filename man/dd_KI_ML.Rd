@@ -14,7 +14,8 @@ dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM))
     2 * (1 + length(brtsS)), (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt =
     c(1:3, 6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length
     (idparsfix) != 0) * idparsfix)], res = 10 * (1 + length(c(brtsM, brtsS)) + 
-    missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE)
+    missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, tol = c(1E-3,1E-4,1E-6),
+    maxiter = 1000 * round((1.25)^length(idparsopt)))
 }
 \arguments{
   \item{brtsM}{A set of branching times of the main clade in a phylogeny, all positive }
@@ -48,7 +49,13 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
    ddmodel == 4 : exponential dependence in extinction rate
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
-  \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
+  \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE)}
+  \item{tol}{Sets the tolerances in the optimization. Consists of: \cr
+   reltolx = relative tolerance of parameter values in optimization \cr
+   reltolf = relative tolerance of function value in optimization \cr
+   abstolx = absolute tolerance of parameter values in optimization
+  }
+  \item{maxiter}{Sets the maximum number of iterations in the optimization}
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.
@@ -70,7 +77,7 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}}
 \references{
 - Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
-- Etienne & Haegeman 2012. Am. Nat. In press, doi: 10.1086/667574.
+- Etienne & Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
 }
 \author{Rampal S. Etienne & Bart Haegeman }
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.
@@ -79,7 +86,6 @@ as explained in the supplementary material to Etienne et al. 2012.
  \code{\link{dd_KI_loglik}},
  \code{\link{dd_ML}},
  \code{\link{dd_SR_ML}},
- \code{\link{optimx}}
 }
 \examples{
 \donttest{

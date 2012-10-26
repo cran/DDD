@@ -1,4 +1,4 @@
-dd_ML = function(brts,initparsopt=if(ddmodel < 5) {c(0.1+bd(as.numeric(brts))$r1/(1-bd(as.numeric(brts))$a),0.1,2*(length(brts) + missnumspec))} else {c(0.1+bd(as.numeric(brts))$r1/(1-bd(as.numeric(brts))$a),0.1,2*(length(brts) + missnumspec),0.01)},idparsopt = 1:length(initparsopt),idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt],parsfix = (ddmodel < 5) * c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt],res=10*(1+length(brts)+missnumspec),ddmodel=1,missnumspec=0,cond=TRUE, btorph = 1)
+dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.1+bd(sort(as.numeric(brts),decreasing = TRUE))$r1/(1-bd(sort(as.numeric(brts),decreasing = TRUE))$a),0.1,2*(length(brts) + missnumspec))} else {c(0.1+bd(sort(as.numeric(brts),decreasing = TRUE))$r1/(1-bd(sort(as.numeric(brts),decreasing = TRUE))$a),0.1,2*(length(brts) + missnumspec),0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt], res = 10*(1+length(brts)+missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -16,11 +16,27 @@ dd_ML = function(brts,initparsopt=if(ddmodel < 5) {c(0.1+bd(as.numeric(brts))$r1
 # - missnumspec = number of missing species    
 # - cond = conditioning on non-extinction of the phylogeny
 # - btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
+# - tol = tolerance in optimization
+#  . reltolx = relative tolerance of parameter values in optimization
+#  . reltolf = relative tolerance of function value in optimization
+#  . abstolx = absolute tolerance of parameter values in optimization
+# - maxiter = the maximum number of iterations in the optimization
 
 options(warn=-1)
-if(is.numeric(brts) == FALSE) { cat("The branching times should be numeric") } else {
+brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
+if(is.numeric(brts) == FALSE)
+{
+   cat("The branching times should be numeric")
+   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
+   if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
+} else {
 idpars = sort(c(idparsopt,idparsfix))
-if(sum(idpars == (1:3)) != 3) {cat("The parameters to be optimized and fixed are incoherent.") } else {
+if(sum(idpars == (1:3)) != 3)
+{
+   cat("The parameters to be optimized and fixed are incoherent.")
+   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
+   if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
+} else {
 namepars = c("lambda","mu","K")
 if(ddmodel == 5) {namepars = namepars = c("lambda","mu","K","r")}
 if(length(namepars[idparsopt]) == 0) { optstr = "nothing" } else { optstr = namepars[idparsopt] }
@@ -30,27 +46,46 @@ cat("You are fixing",fixstr,"\n")
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[parsfix == Inf] = 1
+pars2 = c(res,ddmodel,cond,btorph,0,tol,maxiter)
+flush.console()
+initloglik = dd_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,pars2 = pars2,brts = brts,missnumspec = missnumspec)
+cat("The likelihood for the inital parameter values is",initloglik,"\n")
+if(initloglik == -Inf)
+{
+   cat("The initial parameter values have too low likelihood. Try again with different initial values.")
+   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
+   if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
+} else {
 cat("Optimizing the likelihood - this may take a while.","\n")
-out = optimx2(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-4,reltol = 1E-6,trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts,pars2 = c(res,ddmodel,cond,btorph),missnumspec = missnumspec)
-if(out$conv > 0) {cat("Optimization has not converged. Try again with different starting values.\n")} else {
-MLtrpars = unlist(out$par)
+flush.console()
+#code up to DDD v1.6: out = optimx2(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = pars2[8],reltol = pars2[7],trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts, pars2 = pars2,missnumspec = missnumspec)
+out = dd_simplex(trparsopt,idparsopt,trparsfix,idparsfix,pars2,brts,missnumspec)
+if(out$conv > 0)
+{
+   cat("Optimization has not converged. Try again with different initial values.\n")
+   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = unlist(out$conv))
+   if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = unlist(out$conv))}
+} else {
+MLtrpars = as.numeric(unlist(out$par))
 MLpars = MLtrpars/(1-MLtrpars)
 MLpars1 = rep(0,3)
 if(ddmodel == 5) {MLpars1 = rep(0,4)}
-if(MLpars1[3] > 10^7){MLpars1[3] = Inf}
 MLpars1[idparsopt] = MLpars
 if(length(idparsfix) != 0) { MLpars1[idparsfix] = parsfix }
-out2 = data.frame(row.names = "results",lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], loglik = unlist(out$fvalues), df = length(initparsopt), conv = unlist(out$conv))
+if(MLpars1[3] > 10^7){MLpars1[3] = Inf}
+ML = as.numeric(unlist(out$fvalues))
+out2 = data.frame(lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], loglik = ML, df = length(initparsopt), conv = unlist(out$conv))
 s1 = sprintf('Maximum likelihood parameter estimates: lambda: %f, mu: %f, K: %f',MLpars1[1],MLpars1[2],MLpars1[3])
 if(ddmodel == 5)
 {
    s1 = sprintf('%s, r: %f',s1,MLpars1[4])
-   out2 = data.frame(row.names = "results",lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], r = MLpars1[4], loglik = unlist(out$fvalues), df = length(initparsopt), conv = unlist(out$conv))
+   out2 = data.frame(lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], r = MLpars1[4], loglik = ML, df = length(initparsopt), conv = unlist(out$conv))
 }
-s2 = sprintf('Maximum loglikelihood: %f',out$fvalues)
+s2 = sprintf('Maximum loglikelihood: %f',ML)
 cat("\n",s1,"\n",s2,"\n")
 }
+}
+}
+}
 invisible(out2)
-}
-}
 }

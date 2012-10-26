@@ -39,14 +39,20 @@ under diversity-dependent diversification models.\cr \cr
    Textual output of DDD was correct.\cr
    - Return to Nelder-Mead optimization for dd_ML (was set to "nlm" in versions 1.3 & 1.4)
    - New format for output off all ML-functions (dd_ML, dd_SR_ML, dd_KI_ML)
+   New in version 1.6 (not on CRAN)\cr
+   - Bug fix in returned result when optimization does not converge.
+   - Works also when only branching times are entered in ascending order (error reported before)
+   New in version 1.7\cr
+   - Cleaning up code, fixing various small bugs
+   - New optimization algorithm because of strange results with optim package
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.5\cr
-Date: \tab 2012-10-02\cr
+Version: \tab 1.7\cr
+Date: \tab 2012-10-26\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
