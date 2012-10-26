@@ -13,7 +13,8 @@ dd_SR_ML(brts, initparsopt = c(0.5, 0.1, 2 * (1 + length(brts) + missnumspec),
    = c(1:3, 6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,
    (-1)^(length(idparsfix) != 0) * idparsfix)], res = 10 * (1 + length(brts) +
    missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1,
-   allbp = FALSE)
+   allbp = FALSE, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * round((1.25)^
+   length(idparsopt)))
 }
 \arguments{
   \item{brts}{A set of branching times of a phylogeny, all positive }
@@ -48,6 +49,12 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{allbp}{Sets whether a search should be done with various initial conditions, with tshift at each of the branching points (TRUE/FALSE)}
+  \item{tol}{Sets the tolerances in the optimization. Consists of: \cr
+   reltolx = relative tolerance of parameter values in optimization \cr
+   reltolf = relative tolerance of function value in optimization \cr
+   abstolx = absolute tolerance of parameter values in optimization
+  }
+  \item{maxiter}{Sets the maximum number of iterations in the optimization}
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.
@@ -68,8 +75,9 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
  \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}}
 \references{
-- Etienne & Haegeman 2012. Am. Nat. In press, doi: 10.1086/667574. \cr
-- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 }
+- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne & Haegeman 2012. Am. Nat. Am. Nat. 180: E75-E89, doi: 10.1086/667574
+}
 \author{Rampal S. Etienne & Bart Haegeman }
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.
 }
@@ -77,7 +85,6 @@ as explained in the supplementary material to Etienne et al. 2012.
  \code{\link{dd_SR_loglik}},
  \code{\link{dd_ML}},
  \code{\link{dd_KI_ML}},
- \code{\link{optimx}}
 }
 \examples{
 \donttest{
@@ -86,7 +93,7 @@ brts = 1:20
 dd_SR_ML(brts)
 }
 \dontshow{
-dd_SR_ML(1:3,c(11.676626,0.001088,2.183581,3.221303,1.006468),idparsopt = c(1:3,6,7))
+dd_SR_ML(1:4,initparsopt = c(2.23,0.0002,1.58,4.41,3.01),idparsopt = c(1:3,6,7),tol = c(0.01,0.01,0.01))
 }
 }
 \keyword{ models }

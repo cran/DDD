@@ -16,6 +16,7 @@ dd_loglik = function(pars1,pars2,brts,missnumspec)
 #  . ddep==5 : linear dependence in speciation and extinction rate
 # - pars2[3] = cond = conditioning on non-extinction of the phylogeny
 # - pars2[4] = btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
+# - pars2[5] = parameters and likelihood should be printed (1) or not (0)
 # missnumspec = number of missing species    
 
 abstol = 1e-16
@@ -76,11 +77,17 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2]) { loglik = -Inf } else
        }
     }
 }
-s1 = sprintf('Parameters: %f %f %f',pars1[1],pars1[2],pars1[3])
-if(ddep == 5) {s1 = sprintf('%s %f',s1,pars1[4])}
-s2 = sprintf(', Loglikelihood: %f',loglik)
-cat(s1,s2,"\n",sep = "")
-flush.console()
-
+if(length(pars2) == 4)
+{
+    pars2[5] = 0
+}
+if(pars2[5] == 1)
+{
+    s1 = sprintf('Parameters: %f %f %f',pars1[1],pars1[2],pars1[3])
+    if(ddep == 5) {s1 = sprintf('%s %f',s1,pars1[4])}
+    s2 = sprintf(', Loglikelihood: %f',loglik)
+    cat(s1,s2,"\n",sep = "")
+    flush.console()
+}
 return(loglik)
 }
