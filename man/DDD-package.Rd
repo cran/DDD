@@ -35,24 +35,30 @@ under diversity-dependent diversification models.\cr \cr
    New in version 1.4\cr
    - Bug fix for when there is a large number of missing species\cr
    New in version 1.5\cr
-   - Bug fix for returned output of functions when there are fixed parameters.
+   - Bug fix for returned output of functions when there are fixed parameters.\cr
    Textual output of DDD was correct.\cr
-   - Return to Nelder-Mead optimization for dd_ML (was set to "nlm" in versions 1.3 & 1.4)
-   - New format for output off all ML-functions (dd_ML, dd_SR_ML, dd_KI_ML)
+   - Return to Nelder-Mead optimization for dd_ML (was set to "nlm" in versions 1.3 & 1.4)\cr
+   - New format for output off all ML-functions (dd_ML, dd_SR_ML, dd_KI_ML)\cr
    New in version 1.6 (not on CRAN)\cr
-   - Bug fix in returned result when optimization does not converge.
-   - Works also when only branching times are entered in ascending order (error reported before)
+   - Bug fix in returned result when optimization does not converge.\cr
+   - Works also when only branching times are entered in ascending order
+   (previously error was reported)\cr
    New in version 1.7\cr
-   - Cleaning up code, fixing various small bugs
-   - New optimization algorithm because of strange results with optim package
+   - Cleaning up code, fixing various small bugs\cr
+   - New optimization algorithm because of strange results with optim package\cr
+   New in version 1.8\cr
+   - Bug fix for missing number of species in KI model\cr
+   - Bug fix for optimization of one parameter (due to R's inconsistent handling of matrices)\cr
+   - Model 5 (dd_ML and dd_loglik) now also allows values of -1 < r < 0;
+   i.e. when extinction also decreases with diversity but less so than speciation.\cr
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.7\cr
-Date: \tab 2012-10-26\cr
+Version: \tab 1.8\cr
+Date: \tab 2012-11-15\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

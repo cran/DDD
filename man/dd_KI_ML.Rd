@@ -10,12 +10,13 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM)),
-    2 * (1 + length(brtsS)), (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt =
-    c(1:3, 6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length
-    (idparsfix) != 0) * idparsfix)], res = 10 * (1 + length(c(brtsM, brtsS)) + 
-    missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, tol = c(1E-3,1E-4,1E-6),
-    maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + 
+    missnumspec), 2 * (1 + length(brtsS) + missnumspec), (tsplit + max(brtsS))/2),
+    parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL, idparsnoshift =
+    (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)], res = 10 * 
+    (1 + length(c(brtsM, brtsS)) + missnumspec), ddmodel = 1, missnumspec = 0,
+    cond = TRUE, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * round((1.25)^
+    length(idparsopt)))
 }
 \arguments{
   \item{brtsM}{A set of branching times of the main clade in a phylogeny, all positive }

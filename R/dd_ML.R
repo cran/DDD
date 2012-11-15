@@ -26,14 +26,14 @@ options(warn=-1)
 brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(is.numeric(brts) == FALSE)
 {
-   cat("The branching times should be numeric")
+   cat("The branching times should be numeric.\n")
    out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {
 idpars = sort(c(idparsopt,idparsfix))
-if(sum(idpars == (1:3)) != 3)
+if((sum(idpars == (1:3)) != 3) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
 {
-   cat("The parameters to be optimized and fixed are incoherent.")
+   cat("The parameters to be optimized and/or fixed are incoherent.\n")
    out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {
@@ -52,7 +52,7 @@ initloglik = dd_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idp
 cat("The likelihood for the inital parameter values is",initloglik,"\n")
 if(initloglik == -Inf)
 {
-   cat("The initial parameter values have too low likelihood. Try again with different initial values.")
+   cat("The initial parameter values have a likelihood that is equal 0 or below machine precision. Try again with different initial values.\n")
    out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {

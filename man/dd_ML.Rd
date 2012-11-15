@@ -101,7 +101,7 @@ brts = 1:20
 dd_ML(brts, missnumspec = 2)
 }
 \dontshow{
-dd_ML(1:3,c(1.151160,0.000001,3.997702))
+dd_ML(1:3,c(1.14285,0.000001,4))
 }
 }
 \keyword{ models }

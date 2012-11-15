@@ -25,7 +25,7 @@ reltol = 1e-10
 brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
 S = length(brts)
-if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <= min(brts)) { loglik = -Inf } else
+if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <= min(brts) || pars1[6] <= (S + missnumspec)) { loglik = -Inf } else
 {
     la = pars1[1]
     mu = pars1[2]
@@ -40,7 +40,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     cond = pars2[3]
     btorph = pars2[4]
 
-    if(ddep == 1 && (ceiling(la/(la - mu) * K) < kshift || ceiling(la/(la - mu) * K2) < S + missnumspec)) { loglik = -Inf } else
+    if(ddep == 1 && (ceiling(la/(la - mu) * K) < kshift || ceiling(la/(la - mu) * K2) < (S + missnumspec))) { loglik = -Inf } else
     {
        if(ddep == 1) { lx = min(ceiling(la/(la - mu) * max(K,K2)),round(pars2[1])) } else { lx = round(pars2[1]) }
        probs = rep(0,lx)

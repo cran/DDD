@@ -36,7 +36,12 @@ cat(string)
 flush.console()
 
 tmp = order(fv)
-v = v[,tmp]
+if(numpar == 1)
+{
+   v = matrix(v[tmp],nrow = 1,ncol = 2)
+} else {
+   v = v[,tmp]
+}
 fv = fv[tmp]
 
 ## Iterate until stopping criterion is reached
@@ -55,7 +60,12 @@ while(itercount <= maxiter & ( is.nan(max(abs(fv - fv[1]))) | ((max(abs(fv - fv[
 { 
    ## Calculate reflection point
 
-   xbar = rowSums(v[,1:numpar])/numpar;
+   if(numpar == 1)
+   {
+       xbar = v[1]
+   } else {
+       xbar = rowSums(v[,1:numpar])/numpar
+   }
    xr = (1 + rh) * xbar - rh * v[,numpar + 1]
    fxr = -dd_SR_loglik_choosepar(xr,trparsfix,idparsopt,idparsfix,idparsnoshift,pars2,brts,missnumspec)
  
@@ -119,7 +129,12 @@ while(itercount <= maxiter & ( is.nan(max(abs(fv - fv[1]))) | ((max(abs(fv - fv[
        }
    }
    tmp = order(fv)
-   v = v[,tmp]
+   if(numpar == 1)
+   {
+      v = matrix(v[tmp],nrow = 1,ncol = 2)
+   } else {
+      v = v[,tmp]
+   }
    fv = fv[tmp]
    itercount = itercount + 1
    string = itercount;
