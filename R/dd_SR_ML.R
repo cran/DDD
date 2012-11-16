@@ -35,14 +35,14 @@ brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
 options(warn=-1)
 if(is.numeric(brts) == FALSE)
 {
-   cat("The branching times should be numeric")
+   cat("The branching times should be numeric.\n")
    out2 = data.frame(row.names = "results",lambda_1 = -1, mu_1 = -1, K_1 = -1, lambda_2 = -1, mu_2 = -1, K_2 = -1, t_shift = -1, loglik = -1, df = -1, conv = -1)
 } else {
 idparsnoshift = sort(idparsnoshift)
 idpars = sort(c(idparsopt,idparsfix,idparsnoshift))
-if(sum(idpars == (1:7)) != 7)
+if((sum(idpars == (1:7)) != 7) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
 {
-   cat("The parameters to be optimized, fixed and not shifted are incoherent.")
+   cat("The parameters to be optimized, fixed and not shifted are incoherent.\n")
    out2 = data.frame(row.names = "results",lambda_1 = -1, mu_1 = -1, K_1 = -1, lambda_2 = -1, mu_2 = -1, K_2 = -1, t_shift = -1, loglik = -1, df = -1, conv = -1)
 } else {
 namepars = c("la","mu","K","la2","mu2","K2","tshift")
@@ -60,7 +60,7 @@ initloglik = dd_SR_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,
 cat("The likelihood for the initial parameter values is",initloglik,"\n")
 if(initloglik == -Inf)
 {
-   cat("The initial parameter values have too low likelihood. Try again with different initial values.")
+   cat("The initial parameter values have a likelihood that is equal 0 or below machine precision. Try again with different initial values.\n")
    out2 = data.frame(row.names = "results",lambda_1 = -1, mu_1 = -1, K_1 = -1, lambda_2 = -1, mu_2 = -1, K_2 = -1, t_shift = -1, loglik = -1, df = -1, conv = -1)
 } else {
 cat("Optimizing the likelihood - this may take a while.","\n")

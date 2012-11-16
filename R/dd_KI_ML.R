@@ -1,4 +1,4 @@
-dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1+length(brtsM)),2*(1+length(brtsS)),(tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift=(1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(c(brtsM,brtsS)) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(brtsM) + missnumspec),2*(1 + length(brtsS) + missnumspec),(tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(c(brtsM,brtsS)) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 {
 # brtsM, brtsS = branching times of main clade and subclade (positive, from present to past)
 # - max(brtsM) = crown age
@@ -35,14 +35,14 @@ brtsM = sort(abs(as.numeric(brtsM)),decreasing = TRUE)
 brtsS = sort(abs(as.numeric(brtsS)),decreasing = TRUE)
 if(is.numeric(brtsM) == FALSE || is.numeric(brtsS) == FALSE)
 { 
-   cat("The branching times should be numeric")
+   cat("The branching times should be numeric.\n")
    out2 = data.frame(row.names = "results",lambda_M = -1, mu_M = -1, K_M = -1, lambda_S = -1, mu_S = -1, K_S = -1, t_d = -1, loglik = -1, df = -1, conv = -1)
 } else {
 idparsnoshift = sort(idparsnoshift)
 idpars = sort(c(idparsopt,idparsfix,idparsnoshift))
-if(sum(idpars == (1:7)) != 7)
+if((sum(idpars == (1:7)) != 7) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
 {
-   cat("The parameters to be optimized, fixed and not shifted are incoherent.")
+   cat("The parameters to be optimized, fixed and not shifted are incoherent.\n")
    out2 = data.frame(row.names = "results",lambda_M = -1, mu_M = -1, K_M = -1, lambda_S = -1, mu_S = -1, K_S = -1, t_d = -1, loglik = -1, df = -1, conv = -1)
 } else {
 namepars = c("la_M","mu_M","K_M","la_S","mu_S","K_S","t_d")
@@ -60,7 +60,7 @@ initloglik = dd_KI_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,
 cat("The likelihood for the initial parameter values is",initloglik,"\n")
 if(initloglik == -Inf)
 {
-   cat("The initial parameter values have too low likelihood. Try again with different initial values.")
+   cat("The initial parameter values have a likelihood that is equal 0 or below machine precision. Try again with different initial values.\n")
    out2 = data.frame(row.names = "results",lambda_M = -1, mu_M = -1, K_M = -1, lambda_S = -1, mu_S = -1, K_S = -1, t_d = -1, loglik = -1, df = -1, conv = -1)
 } else {
 cat("Optimizing the likelihood - this may take a while.","\n")
