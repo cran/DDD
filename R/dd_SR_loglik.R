@@ -42,7 +42,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
 
     if(ddep == 1 && (ceiling(la/(la - mu) * K) < kshift || ceiling(la/(la - mu) * K2) < (S + missnumspec))) { loglik = -Inf } else
     {
-       if(ddep == 1) { lx = min(ceiling(la/(la - mu) * max(K,K2)),round(pars2[1])) } else { lx = round(pars2[1]) }
+       if(ddep == 1) { lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * max(K,K2))),round(pars2[1])) } else { lx = round(pars2[1]) }
        probs = rep(0,lx)
        probs[1] = 1 # change if other species at crown age   
       
@@ -134,5 +134,5 @@ if(pars2[5] == 1)
     cat(s1,s2,"\n",sep = "")
     flush.console()
 }
-return(loglik)
+return(as.numeric(loglik))
 }

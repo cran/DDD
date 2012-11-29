@@ -55,8 +55,8 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     if(sum(abs(brtsM - tinn) < 1E-14) == 1) { tinn = tinn - 1E-8 }
 
     # compute likelihood of clade M
-    loglikM = 0;
-    if(ddep == 1) { lx = min(1 + ceiling(laM/(laM - muM) * KM),round(lmax)) } else { lx = round(lmax) }
+    loglikM = 0
+    if(ddep == 1) { lx = min(max(1 + m[1],1 + ceiling(laM/(laM - muM) * KM)),round(lmax)) } else { lx = round(lmax) }
     probs = rep(0,lx)
     probs[1] = 1 # change if other species at crown age
 
@@ -97,10 +97,15 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
            probs = probs/sum(probs)
        }
     }
-    loglikM = loglikM + log(probs[1 + (0:m)])   
+    if(length(m) == 1)
+    { 
+       loglikM = loglikM + log(probs[1 + (0:m)])   
+    } else {
+       loglikM = loglikM + log(probs[1 + m[1]])   
+    }
     # compute likelihood of clade S
     loglikS = 0
-    if(ddep == 1) { lx = min(1 + ceiling(laS/(laS - muS) * KS),round(lmax)) } else { lx = round(lmax) }
+    if(ddep == 1) { lx = min(max(1 + m[length(m)],1 + ceiling(laS/(laS - muS) * KS)),round(lmax)) } else { lx = round(lmax) }
     probs = rep(0,lx)
     probs[1] = 1
     for(k in 1:S2)
@@ -121,9 +126,19 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
            probs = probs/sum(probs)
        }
     }
-    loglikS = loglikS + log(probs[1 + (0:m)])
+    if(length(m) == 1)
+    {
+       loglikS = loglikS + log(probs[1 + (0:m)])
+    } else {
+       loglikS = loglikS + log(probs[1 + m[2]])
+    }
     # total likelihood = likelihood clade M x likelihood clade S
-    loglik = log(sum(exp(loglikM + loglikS[length(loglikS):1])))
+    if(length(m) == 1)
+    {
+       loglik = log(sum(exp(loglikM + loglikS[length(loglikS):1])))
+    } else {
+       loglik = loglikM + loglikS
+    }
    
     if(cond == 0){logliknorm = 0} else {   
        # COMPUTE NORMALIZATION
@@ -235,5 +250,5 @@ if(pars2[5] == 1)
     cat(s1,s2,"\n",sep = "")
     flush.console()
 }
-return(loglik)
+return(as.numeric(loglik))
 }   

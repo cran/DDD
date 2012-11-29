@@ -32,7 +32,7 @@
 }
   \item{brtsM}{A set of branching times of the main clade in the phylogeny, all positive }
   \item{brtsS}{A set of branching times of the subclade in the phylogeny, all positive }
-  \item{missnumspec}{The number of species that are missing in the phylogeny } 
+  \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny. One can specify the sum of the missing species in main clade and subclade or a vector c(missnumspec_M,missnumspec_S) with missing species in main clade and subclade respectively.}
 }
 \value{The loglikelihood}
 \references{
