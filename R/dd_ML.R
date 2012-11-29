@@ -27,14 +27,14 @@ brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(is.numeric(brts) == FALSE)
 {
    cat("The branching times should be numeric.\n")
-   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
+   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = -1)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {
 idpars = sort(c(idparsopt,idparsfix))
 if((sum(idpars == (1:3)) != 3) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
 {
    cat("The parameters to be optimized and/or fixed are incoherent.\n")
-   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
+   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = -1)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {
 namepars = c("lambda","mu","K")
@@ -43,21 +43,20 @@ if(length(namepars[idparsopt]) == 0) { optstr = "nothing" } else { optstr = name
 cat("You are optimizing",optstr,"\n")
 if(length(namepars[idparsfix]) == 0) { fixstr = "nothing" } else { fixstr = namepars[idparsfix] }
 cat("You are fixing",fixstr,"\n")
+cat("Optimizing the likelihood - this may take a while.","\n")
+flush.console()
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
-trparsfix[parsfix == Inf] = 1
+trparsfix[which(parsfix == Inf)] = 1
 pars2 = c(res,ddmodel,cond,btorph,0,tol,maxiter)
-flush.console()
 initloglik = dd_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,pars2 = pars2,brts = brts,missnumspec = missnumspec)
 cat("The likelihood for the inital parameter values is",initloglik,"\n")
 if(initloglik == -Inf)
 {
-   cat("The initial parameter values have a likelihood that is equal 0 or below machine precision. Try again with different initial values.\n")
-   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = 0)
+   cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")
+   out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = -1)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {
-cat("Optimizing the likelihood - this may take a while.","\n")
-flush.console()
 #code up to DDD v1.6: out = optimx2(trparsopt,dd_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = pars2[8],reltol = pars2[7],trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,brts = brts, pars2 = pars2,missnumspec = missnumspec)
 out = dd_simplex(trparsopt,idparsopt,trparsfix,idparsfix,pars2,brts,missnumspec)
 if(out$conv > 0)

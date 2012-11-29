@@ -1,4 +1,4 @@
-dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(brtsM) + missnumspec),2*(1 + length(brtsS) + missnumspec),(tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(c(brtsM,brtsS)) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(brtsM) + missnumspec[1]),2*(1 + length(brtsS) + missnumspec[length(missnumspec)]),(tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(c(brtsM,brtsS)) + sum(missnumspec)), ddmodel = 1, missnumspec = 0, cond = TRUE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 {
 # brtsM, brtsS = branching times of main clade and subclade (positive, from present to past)
 # - max(brtsM) = crown age
@@ -52,19 +52,20 @@ if(length(namepars[idparsfix]) == 0) { fixstr = "nothing" } else { fixstr = name
 cat("You are fixing",fixstr,"\n")
 if(length(namepars[idparsnoshift]) == 0) { noshiftstr = "anything" } else { noshiftstr = namepars[idparsnoshift] }
 cat("You are not shifting",noshiftstr,"\n")
+cat("Optimizing the likelihood - this may take a while.","\n")
+flush.console()
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
+trparsfix[which(parsfix == Inf)] = 1
 pars2 = c(res,ddmodel,cond,tsplit,0,tol,maxiter)
-flush.console()
 initloglik = dd_KI_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,pars2 = pars2,brtsM = brtsM,brtsS = brtsS,missnumspec = missnumspec)
 cat("The likelihood for the initial parameter values is",initloglik,"\n")
 if(initloglik == -Inf)
 {
-   cat("The initial parameter values have a likelihood that is equal 0 or below machine precision. Try again with different initial values.\n")
+   cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")
    out2 = data.frame(row.names = "results",lambda_M = -1, mu_M = -1, K_M = -1, lambda_S = -1, mu_S = -1, K_S = -1, t_d = -1, loglik = -1, df = -1, conv = -1)
 } else {
-cat("Optimizing the likelihood - this may take a while.","\n")
-flush.console()
+
 #code up to DDD v1.6: out = optimx2(trparsopt,dd_KI_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = pars2[8],reltol = pars2[7],trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brtsM = brtsM, brtsS = brtsS, pars2 = pars2, missnumspec = missnumspec)
 out = dd_KI_simplex(trparsopt,trparsfix,idparsopt,idparsfix,idparsnoshift,pars2,brtsM,brtsS,missnumspec)
 if(out$conv > 0)

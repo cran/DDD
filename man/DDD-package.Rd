@@ -45,20 +45,29 @@ under diversity-dependent diversification models.\cr \cr
    (previously error was reported)\cr
    New in version 1.7\cr
    - Cleaning up code, fixing various small bugs\cr
-   - New optimization algorithm because of strange results with optim package\cr
+   - New optimization algorithm because of occasional strange results with optim package\cr
    New in version 1.8\cr
    - Bug fix for missing number of species in KI model\cr
    - Bug fix for optimization of one parameter (due to R's inconsistent handling of matrices)\cr
    - Model 5 (dd_ML and dd_loglik) now also allows values of -1 < r < 0;
-   i.e. when extinction also decreases with diversity but less so than speciation.\cr
+   i.e. when extinction also decreases with diversity but less so than speciation\cr
+   New in version 1.9\cr
+   - Bug fix in optimizer (did not stop when likelihood was positive)\cr
+   - Bug fix for large numbers of missing species\cr
+   - Conv = -1 is now always reported when optimization is not started or does not converge\cr
+   - An error is reported when parameter values cause numerical problems (NA or NaN) in likelihood computation,
+   e.g. when parameter values are very high; loglik is then set to -Inf\cr
+   - For dd_KI_loglik and dd_KI_ML: if the number of missing species in main clade and subclade
+   is known, this can now be specified\cr
+   - Fixing K at Inf is now possible in SR and KI models\cr
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.8\cr
-Date: \tab 2012-11-15\cr
+Version: \tab 1.9\cr
+Date: \tab 2012-11-29\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

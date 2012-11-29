@@ -24,19 +24,19 @@ reltol = 1e-10
 brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
 S = length(brts)
+ddep = pars2[2]
 if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[3] <= (S + missnumspec)) { loglik = -Inf } else
 {
     la = pars1[1]
     mu = pars1[2]
     K = pars1[3]
-    ddep = pars2[2]
     if(ddep == 5) {r = pars1[4]} else {r = 0}
     cond = pars2[3]
     btorph = pars2[4]
 
     if((ddep == 1 || ddep == 5) && ceiling(la/(la - mu) * (r + 1) * K) < (S + missnumspec)) { loglik = -Inf } else
     {
-       if(ddep == 1 || ddep == 5) { lx = min(ceiling(la/(la - mu) * (r + 1) * K),round(pars2[1])) } else { lx = round(pars2[1]) }
+       if(ddep == 1 || ddep == 5) { lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * (r + 1) * K)),round(pars2[1])) } else { lx = round(pars2[1]) }
        probs = rep(0,lx)
        probs[1] = 1 # change if other species at crown age  
        loglik = (btorph == 0) * lgamma(S)
@@ -89,5 +89,5 @@ if(pars2[5] == 1)
     cat(s1,s2,"\n",sep = "")
     flush.console()
 }
-return(loglik)
+return(as.numeric(loglik))
 }

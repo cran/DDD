@@ -54,7 +54,7 @@ si = 0.5
 
 v2 = t(matrix(rep(v[,1],each = numpar + 1),nrow = numpar + 1))
 
-while(itercount <= maxiter & ( is.nan(max(abs(fv - fv[1]))) | ((max(abs(fv - fv[1]) - reltolf * fv[1]) >= 0) ) + ((max(abs(v - v2) - reltolx * abs(v2)) >= 0) | (max(abs(v - v2) - abstolx) >= 0)) ))
+while(itercount <= maxiter & ( ( is.nan(max(abs(fv - fv[1]))) | (max(abs(fv - fv[1])) - reltolf * abs(fv[1]) >= 0) ) + ( (max(abs(v - v2) - reltolx * abs(v2)) >= 0) | (max(abs(v - v2)) - abstolx >= 0) ) ) )
 { 
    ## Calculate reflection point
 
