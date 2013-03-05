@@ -1,4 +1,4 @@
-dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec),2*(1+length(brts)+missnumspec),max(brts)/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1, allbp = FALSE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec),2*(1+length(brts)+missnumspec),max(brts)/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1, soc = 2, allbp = FALSE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -57,7 +57,7 @@ flush.console()
 trparsopt = initparsopt/(1 + initparsopt)
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[which(parsfix == Inf)] = 1
-pars2 = c(res,ddmodel,cond,btorph,0,tol,maxiter)
+pars2 = c(res,ddmodel,cond,btorph,0,soc,tol,maxiter)
 initloglik = dd_SR_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,pars2 = pars2,brts = brts,missnumspec = missnumspec)
 cat("The likelihood for the initial parameter values is",initloglik,"\n")
 if(initloglik == -Inf)

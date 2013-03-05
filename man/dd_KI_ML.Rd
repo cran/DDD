@@ -15,7 +15,7 @@ dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) 
     (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
     idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
     res = 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec)), ddmodel = 1, 
-    missnumspec = 0, cond = TRUE, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * 
+    missnumspec = 0, cond = TRUE, soc = 2, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * 
     round((1.25)^length(idparsopt)))
 }
 \arguments{
@@ -51,6 +51,7 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny. One can specify the sum of the missing species in main clade and subclade or a vector c(missnumspec_M,missnumspec_S) with missing species in main clade and subclade respectively.} 
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE)}
+  \item{soc}{Sets whether stem or crown age should be used (1 or 2); stem age only works when cond = 0 }
   \item{tol}{Sets the tolerances in the optimization. Consists of: \cr
    reltolx = relative tolerance of parameter values in optimization \cr
    reltolf = relative tolerance of function value in optimization \cr

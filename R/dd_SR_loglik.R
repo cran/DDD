@@ -18,13 +18,21 @@ dd_SR_loglik = function(pars1,pars2,brts,missnumspec)
 #  . ddep==4 : exponential dependence in extinction rate
 # - pars2[3] = cond = conditioning on non-extinction of the phylogeny
 # - pars2[4] = btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
+# - pars2[5] = parameters and likelihood should be printed (1) or not (0)
+# - pars2[6] = likelihood is for a tree with crown age (2) or stem age (1)
 # missnumspec = number of missing species    
 
+if(length(pars2) == 4)
+{
+    pars2[5] = 0
+    pars2[6] = 2
+}
 abstol = 1e-16
 reltol = 1e-10 
 brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
-S = length(brts)
+soc = pars2[6]
+S = length(brts) + (soc - 2)
 if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <= min(brts) || pars1[6] <= (S + missnumspec)) { loglik = -Inf } else
 {
     la = pars1[1]
@@ -44,38 +52,41 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     {
        if(ddep == 1) { lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * max(K,K2))),round(pars2[1])) } else { lx = round(pars2[1]) }
        probs = rep(0,lx)
-       probs[1] = 1 # change if other species at crown age   
+       probs[1] = 1 # change if other species at stem/crown age   
       
        loglik = (btorph == 0) * lgamma(S)
 
-       if(kshift > 2) {
-       for(k in 2:(kshift-1))
+       if(kshift > 2)
        {
-          y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol)
-          probs = y[2,2:(lx+1)]
-          if(k<S)
+          for(k in 2:(kshift-1))
           {
-              if(ddep == 1) { lavec = pmax(rep(0,lx),la - (la-mu)/K * ((0:(lx-1))+k)) } 
-              if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+k) + 1)^(-log(la/mu)/log(K+1))) }
-              if(ddep == 3 || ddep == 4) { lavec = la }    
-              probs = lavec * probs # speciation event
-              if(sum(probs) <= 0) { loglik = -Inf } else
-              {
-                 loglik = loglik + log(sum(probs))
-              }
-              probs = probs/sum(probs)
+             k1 = k + (soc - 2)
+             y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
+             probs = y[2,2:(lx+1)]
+             if(k<(S + 2 - soc))
+             {
+                 if(ddep == 1) { lavec = pmax(rep(0,lx),la - (la-mu)/K * ((0:(lx-1))+k1)) } 
+                 if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+k1) + 1)^(-log(la/mu)/log(K+1))) }
+                 if(ddep == 3 || ddep == 4) { lavec = la }    
+                 probs = lavec * probs # speciation event
+                 if(sum(probs) <= 0) { loglik = -Inf } else
+                 {
+                    loglik = loglik + log(sum(probs))
+                 }
+                 probs = probs/sum(probs)
+             }
           }
-       }
        }   
        k = kshift
-       y = lsoda(probs,c(brts[k-1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol)
+       k1 = k + (soc - 2)
+       y = lsoda(probs,c(brts[k-1],tshift),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx+1)]
-       y = lsoda(probs,c(tshift,brts[k]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol)
+       y = lsoda(probs,c(tshift,brts[k]),dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx+1)] 
-       if(k<length(brts))
+       if(k<(S + 2 - soc))
        {
-           if(ddep == 1) { lavec = pmax(rep(0,lx),la2 - (la2-mu2)/K2 * ((0:(lx-1))+k)) } 
-           if(ddep == 2) { lavec = pmax(rep(0,lx),la2 * (((0:(lx-1))+k) + 1)^(-log(la2/mu2)/log(K2+1))) }
+           if(ddep == 1) { lavec = pmax(rep(0,lx),la2 - (la2-mu2)/K2 * ((0:(lx-1))+k1)) } 
+           if(ddep == 2) { lavec = pmax(rep(0,lx),la2 * (((0:(lx-1))+k1) + 1)^(-log(la2/mu2)/log(K2+1))) }
            if(ddep == 3 || ddep == 4) { lavec = la2 }    
            probs = lavec * probs # speciation event
            if(sum(probs) <= 0) { loglik = -Inf } else
@@ -84,24 +95,27 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
            }
            probs = probs/sum(probs)
        }
-       if((kshift + 1) <= S) {
-       for(k in (kshift + 1):length(brts))
+       if((kshift + 1) <= (S + 2 - soc))
        {
-          y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol)
-          probs = y[2,2:(lx+1)]
-          if(k<S)
+          for(k in (kshift + 1):(S + 2 - soc))
           {
-              if(ddep == 1) { lavec = pmax(rep(0,lx),la2 - (la2-mu2)/K2 * ((0:(lx-1))+k)) } 
-              if(ddep == 2) { lavec = pmax(rep(0,lx),la2 * (((0:(lx-1))+k) + 1)^(-log(la2/mu2)/log(K2+1))) }
-              if(ddep == 3 || ddep == 4) { lavec = la2 }    
-              probs = lavec * probs # speciation event
-              if(sum(probs) <= 0) { loglik = -Inf } else
-              {
-                 loglik = loglik + log(sum(probs))
-              }
-              probs = probs/sum(probs)
+             k1 = k + (soc - 2)
+             y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
+             probs = y[2,2:(lx+1)]
+             if(k<(S + 2 - soc))
+             {
+                 if(ddep == 1) { lavec = pmax(rep(0,lx),la2 - (la2-mu2)/K2 * ((0:(lx-1))+k1)) } 
+                 if(ddep == 2) { lavec = pmax(rep(0,lx),la2 * (((0:(lx-1))+k1) + 1)^(-log(la2/mu2)/log(K2+1))) }
+                 if(ddep == 3 || ddep == 4) { lavec = la2 }    
+                 probs = lavec * probs # speciation event
+                 if(sum(probs) <= 0) { loglik = -Inf } else
+                 {
+                    loglik = loglik + log(sum(probs))
+                 }
+                 probs = probs/sum(probs)
+             }
           }
-       }}    
+       }    
 
        if(probs[1+missnumspec]<=0) { loglik = -Inf } else
        {
@@ -111,21 +125,18 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
           { 
              probs = rep(0,lx)
              probs[1] = 1 # change if other species at crown age
-             k = 2
+             k = soc
              y = lsoda(probs,c(brts[1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol);
              probs = y[2,2:(lx+1)]
              y = lsoda(probs,c(tshift,brts[length(brts)]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol);
              probs = y[2,2:(lx+1)]
-             aux = (2:(lx+1)) * (3:(lx+2))/6
+             if(soc == 1) { aux = 1:lx }
+             if(soc == 2) { aux = (2:(lx+1)) * (3:(lx+2))/6 }
              logliknorm = log(sum(probs/aux))
           } else { logliknorm = 0 }
        loglik = loglik - logliknorm
        }
     }
-}
-if(length(pars2) == 4)
-{
-    pars2[5] = 0
 }
 if(pars2[5] == 1)
 {

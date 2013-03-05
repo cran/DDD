@@ -43,10 +43,10 @@ if(numpar == 1)
 fv = fv[tmp]
 
 ## Iterate until stopping criterion is reached
-reltolx = pars2[6]
-reltolf = pars2[7]
-abstolx = pars2[8]
-maxiter = pars2[9]
+reltolx = pars2[7]
+reltolf = pars2[8]
+abstolx = pars2[9]
+maxiter = pars2[10]
 rh = 1
 ch = 2
 ps = 0.5
@@ -54,7 +54,7 @@ si = 0.5
 
 v2 = t(matrix(rep(v[,1],each = numpar + 1),nrow = numpar + 1))
 
-while(itercount <= maxiter & ( ( is.nan(max(abs(fv - fv[1]))) | (max(abs(fv - fv[1])) - reltolf * abs(fv[1]) >= 0) ) + ( (max(abs(v - v2) - reltolx * abs(v2)) >= 0) | (max(abs(v - v2)) - abstolx >= 0) ) ) )
+while(itercount <= maxiter & ( ( is.nan(max(abs(fv - fv[1]))) | (max(abs(fv - fv[1])) - reltolf * abs(fv[1]) > 0) ) + ( (max(abs(v - v2) - reltolx * abs(v2)) > 0) | (max(abs(v - v2)) - abstolx > 0) ) ) )
 { 
    ## Calculate reflection point
 
@@ -151,6 +151,6 @@ if(itercount < maxiter)
 } else {
    cat("Maximum number of iterations has been exceeded.","\n")
 }
-out = list(par = v[,1], fvalues = -fv[1], conv = as.numeric(itercount > maxiter))
+out = list(par = v[,1], fvalues = -fv[1], conv = -as.numeric(itercount > maxiter))
 invisible(out)
 }
