@@ -17,7 +17,7 @@ dd_ML(brts, initparsopt = if (ddmodel < 5) { c(0.1 + bd(sort(as.numeric(brts),
    c(0.2,0.1, 2 * (length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * 
    c(0.2, 0.1, 2 * (length(brts) + missnumspec), 0)[-idparsopt], res = 10 * (1 +
    length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1,
-   tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+   soc = 2, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 }
 \arguments{
   \item{brts}{A set of branching times of a phylogeny, all positive }
@@ -48,6 +48,7 @@ not specified in idparsopt.
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
+  \item{soc}{Sets whether stem or crown age should be used (1 or 2) }
   \item{tol}{Sets the tolerances in the optimization. Consists of: \cr
    reltolx = relative tolerance of parameter values in optimization \cr
    reltolf = relative tolerance of function value in optimization \cr

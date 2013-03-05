@@ -27,8 +27,10 @@
     - \code{pars2[2] == 2} exponential dependence in speciation rate \cr
     - \code{pars2[2] == 3} linear dependence in extinction rate \cr
     - \code{pars2[2] == 4} exponential dependence in extinction rate \cr \cr
-    \code{pars2[3]} sets the conditioning on non-extinction of the phylogeny (TRUE or FALSE) \cr
-    \code{pars2[4]} sets the time of splitting of the branch that will decouple
+    \code{pars2[3]} sets the conditioning on non-extinction of the phylogeny (TRUE or FALSE) \cr \cr
+    \code{pars2[4]} sets the time of splitting of the branch that will decouple \cr \cr
+    \code{pars2[5]} sets whether the parameters and likelihood should be shown on screen (1) or not (0) \cr \cr
+    \code{pars2[6]} sets whether the first data point is stem age (1) or crown age (2)
 }
   \item{brtsM}{A set of branching times of the main clade in the phylogeny, all positive }
   \item{brtsS}{A set of branching times of the subclade in the phylogeny, all positive }

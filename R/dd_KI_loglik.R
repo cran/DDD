@@ -21,12 +21,18 @@ dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
 # - pars2[4] = tsplit = time of split of innovative branch
 # missnumspec = number of missing species in main clade M and subclade S
 
+if(length(pars2) == 4)
+{
+    pars2[5] = 0
+    pars2[6] = 2
+}
 abstol = 1e-16
 reltol = 1e-14
 # order branching times
 brts=-sort(abs(c(brtsM,brtsS)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
-S = length(brts);
+soc = pars2[6]
+S = length(brts) + (soc - 2)
 brtsM =-sort(abs(brtsM),decreasing = TRUE)
 if(sum(brtsM == 0) == 0) { brtsM[length(brtsM) + 1] = 0 }
 brtsS =-sort(abs(brtsS),decreasing = TRUE)
@@ -46,7 +52,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     cond = pars2[3]
     tsplit = -pars2[4]
     m = missnumspec
-    S1 = length(brtsM)-1
+    S1 = length(brtsM)-1 + (soc - 2)
     if(sum(brtsS == tinn) == 0) { brtsS = c(tinn,brtsS) }
     S2 = length(brtsS)-1
     if(ddep == 1 && (ceiling(laM/(laM - muM) * KM) < S1 || (ceiling(laS/(laS - muS) * KS) < S2 ))) { loglik = -Inf } else {
@@ -63,13 +69,14 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     ka = sum(brtsM<tinn);
     for(k in 2:(ka+1))
     {
+       k1 = k + (soc - 2)
        t1 = brtsM[k-1]; t2 = min(c(tinn,brtsM[k]))
-       y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol)
+       y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx+1)]
        if(t2<tinn)
        {
-           if(ddep == 1) { lavec = pmax(rep(0,lx),laM - (laM-muM)/KM * ((0:(lx-1))+k)) } 
-           if(ddep == 2) { lavec = pmax(rep(0,lx),laM * (((0:(lx-1))+k) + 1)^(-log(laM/muM)/log(KM+1))) }
+           if(ddep == 1) { lavec = pmax(rep(0,lx),laM - (laM-muM)/KM * ((0:(lx-1))+k1)) } 
+           if(ddep == 2) { lavec = pmax(rep(0,lx),laM * (((0:(lx-1))+k1) + 1)^(-log(laM/muM)/log(KM+1))) }
            if(ddep == 3 || ddep == 4) { lavec = laM }
            probs = lavec * probs # speciation event
            if(sum(probs) <= 0) { loglik = -Inf } else
@@ -81,13 +88,14 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     }
     for(k in (ka+1):(S1+1))
     {
+       k1 = k + (soc - 2)
        t1 = max(tinn,brtsM[k-1]); t2 = brtsM[k];
-       y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k-1,ddep),rtol = reltol,atol = abstol)
+       y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx+1)]
        if(k<(S1+1))
        {
-           if(ddep == 1) { lavec = pmax(rep(0,lx),laM - (laM-muM)/KM * ((0:(lx-1))+k-1)) } 
-           if(ddep == 2) { lavec = pmax(rep(0,lx),laM * (((0:(lx-1))+k-1) + 1)^(-log(laM/muM)/log(KM+1))) }
+           if(ddep == 1) { lavec = pmax(rep(0,lx),laM - (laM-muM)/KM * ((0:(lx-1))+k1-1)) } 
+           if(ddep == 2) { lavec = pmax(rep(0,lx),laM * (((0:(lx-1))+k1	-1) + 1)^(-log(laM/muM)/log(KM+1))) }
            if(ddep == 3 || ddep == 4) { lavec = laM }    
            probs = lavec * probs # speciation event
            if(sum(probs) <= 0) { loglik = -Inf } else
@@ -238,10 +246,6 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     }
     loglik = loglik - logliknorm - lgamma(S + m + 1) + lgamma(S + 1) + lgamma(m + 1)
 }
-}
-if(length(pars2) == 4)
-{
-    pars2[5] = 0
 }
 if(pars2[5] == 1)
 {

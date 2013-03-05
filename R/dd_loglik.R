@@ -17,13 +17,20 @@ dd_loglik = function(pars1,pars2,brts,missnumspec)
 # - pars2[3] = cond = conditioning on non-extinction of the phylogeny
 # - pars2[4] = btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
 # - pars2[5] = parameters and likelihood should be printed (1) or not (0)
+# - pars2[6] = likelihood is for a tree with crown age (2) or stem age (1)
 # missnumspec = number of missing species    
 
+if(length(pars2) == 4)
+{
+    pars2[5] = 0
+    pars2[6] = 2
+}
 abstol = 1e-16
 reltol = 1e-10 
 brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
-S = length(brts)
+soc = pars2[6]
+S = length(brts) + (soc - 2)
 ddep = pars2[2]
 if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[3] <= (S + missnumspec)) { loglik = -Inf } else
 {
@@ -34,20 +41,22 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[3] <= (S + missnumspec)) { lo
     cond = pars2[3]
     btorph = pars2[4]
 
+
     if((ddep == 1 || ddep == 5) && ceiling(la/(la - mu) * (r + 1) * K) < (S + missnumspec)) { loglik = -Inf } else
     {
        if(ddep == 1 || ddep == 5) { lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * (r + 1) * K)),round(pars2[1])) } else { lx = round(pars2[1]) }
        probs = rep(0,lx)
-       probs[1] = 1 # change if other species at crown age  
+       probs[1] = 1 # change if other species at stem/crown age  
        loglik = (btorph == 0) * lgamma(S)
-       for(k in 2:S)
+       for(k in 2:(S + 2 - soc))
        {
-          y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1,k,ddep),rtol = reltol,atol = abstol)
+          k1 = k + (soc - 2)
+          y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol)
           probs = y[2,2:(lx+1)]
-          if(k<S)
+          if(k<(S + 2 - soc))
           {
-              if(ddep == 1 || ddep == 5) { lavec = pmax(rep(0,lx),la - 1/(r + 1) * (la-mu)/K * ((0:(lx-1))+k)) } 
-              if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+k) + 1)^(-log(la/mu)/log(K+1))) }
+              if(ddep == 1 || ddep == 5) { lavec = pmax(rep(0,lx),la - 1/(r + 1) * (la-mu)/K * ((0:(lx-1))+k1)) } 
+              if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+k1) + 1)^(-log(la/mu)/log(K+1))) }
               if(ddep == 3 || ddep == 4) { lavec = la }    
               probs = lavec * probs # speciation event
               if(sum(probs) <= 0) { loglik = -Inf } else
@@ -64,22 +73,19 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[3] <= (S + missnumspec)) { lo
           if(cond == TRUE)
           {
              probs = rep(0,lx)
-             probs[1] = 1 # change if other species at crown age
-             k = 2
+             probs[1] = 1 # change if other species at stem or crown age
+             k = soc
              t1 = brts[1] 
-             t2 = brts[S]
+             t2 = brts[S + 2 - soc]
              y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1,k,ddep),rtol = reltol,atol = abstol);
              probs = y[2,2:(lx+1)]
-             aux = (2:(lx+1)) * (3:(lx+2))/6
+             if(soc == 1) { aux = 1:lx }
+             if(soc == 2) { aux = (2:(lx+1)) * (3:(lx+2))/6 }
              logliknorm = log(sum(probs/aux))
           } else { logliknorm = 0 }
           loglik = loglik - logliknorm
        }
     }
-}
-if(length(pars2) == 4)
-{
-    pars2[5] = 0
 }
 if(pars2[5] == 1)
 {

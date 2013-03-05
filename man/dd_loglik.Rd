@@ -22,7 +22,8 @@
     - \code{pars2[2] == 4} exponential dependence in extinction rate \cr \cr
     \code{pars2[3]} sets the conditioning on non-extinction of the phylogeny (TRUE or FALSE) \cr \cr
     \code{pars2[4]} sets whether the likelihood is for the branching times (0) or the phylogeny (1) \cr \cr
-    \code{pars2[5]} sets whether the parameters and likelihood should be shown on screen
+    \code{pars2[5]} sets whether the parameters and likelihood should be shown on screen (1) or not (0)\cr \cr
+    \code{pars2[6]} sets whether the first data point is stem age (1) or crown age (2)
 }
   \item{brts}{A set of branching times of a phylogeny, all positive }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 

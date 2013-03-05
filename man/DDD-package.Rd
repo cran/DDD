@@ -60,14 +60,18 @@ under diversity-dependent diversification models.\cr \cr
    - For dd_KI_loglik and dd_KI_ML: if the number of missing species in main clade and subclade
    is known, this can now be specified\cr
    - Fixing K at Inf is now possible in SR and KI models\cr
+   New in version 1.10\cr
+   - All non-convergences now get conv = -1 (this was conv = 1 for true nonconvergence and conv = -1 for optimization
+   that did not start because of low likelihood values)\cr
+   - Likelihoods can also be computed for a tree with a stem age rather than only a crown age
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.9\cr
-Date: \tab 2012-11-29\cr
+Version: \tab 1.10\cr
+Date: \tab 2012-03-05\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
