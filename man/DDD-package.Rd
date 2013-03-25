@@ -63,15 +63,17 @@ under diversity-dependent diversification models.\cr \cr
    New in version 1.10\cr
    - All non-convergences now get conv = -1 (this was conv = 1 for true nonconvergence and conv = -1 for optimization
    that did not start because of low likelihood values)\cr
-   - Likelihoods can also be computed for a tree with a stem age rather than only a crown age
+   - Likelihoods can also be computed for a tree with a stem age rather than only a crown age\cr
+   New in version 1.11\cr
+   - Various small tweaks to make the code run faster and some bug fixes
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.10\cr
-Date: \tab 2012-03-05\cr
+Version: \tab 1.11\cr
+Date: \tab 2012-03-25\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
