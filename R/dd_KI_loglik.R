@@ -38,8 +38,15 @@ if(sum(brtsM == 0) == 0) { brtsM[length(brtsM) + 1] = 0 }
 brtsS =-sort(abs(brtsS),decreasing = TRUE)
 if(sum(brtsS == 0) == 0) { brtsS[length(brtsS) + 1] = 0 }
 
-if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <= min(brtsM) || -pars1[7] >= min(brtsS) || -pars1[7] < -pars2[4]) { loglik = -Inf } else
+if(min(pars1) < 0 || -pars1[7] <= min(brtsM) || -pars1[7] >= min(brtsS))
 {
+    loglik = -Inf
+} else {
+if(((pars1[2] == 0 || pars1[4] == 0) && ddep == 2) || ((pars1[1] == 0 || pars1[3] == 0) && ddep == 4) || pars1[1] <= pars1[2] || pars1[4] <= pars1[5])
+{ 
+    cat("These parameter values cannot satisfy lambda(N) = mu(N) for some finite N.\n")
+    loglik = -Inf
+} else {
     laM = pars1[1]
     muM = pars1[2]
     KM = pars1[3]
@@ -79,8 +86,11 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
            if(ddep == 2) { lavec = pmax(rep(0,lx),laM * (((0:(lx-1))+k1) + 1)^(-log(laM/muM)/log(KM+1))) }
            if(ddep == 3 || ddep == 4) { lavec = laM }
            probs = lavec * probs # speciation event
-           if(sum(probs) <= 0) { loglik = -Inf } else
-           {
+           if(sum(probs) <= 0)
+           { 
+              loglik = -Inf
+              break
+           } else {
               loglikM = loglikM + log(sum(probs))
            }
            probs = probs/sum(probs)
@@ -148,7 +158,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
        loglik = loglikM + loglikS
     }
    
-    if(cond == 0){logliknorm = 0} else {   
+    if(cond == 0 || loglik == -Inf){logliknorm = 0} else {   
        # COMPUTE NORMALIZATION
        tcrown = brts[1]
        tpres = 0
@@ -246,7 +256,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
     }
     loglik = loglik - logliknorm - lgamma(S + m + 1) + lgamma(S + 1) + lgamma(m + 1)
 }
-}
+}}
 if(pars2[5] == 1)
 {
     s1 = sprintf('Parameters: %f %f %f %f %f %f %f, ',pars1[1],pars1[2],pars1[3],pars1[4],pars1[5],pars1[6],pars1[7])

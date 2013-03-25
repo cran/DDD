@@ -21,27 +21,27 @@ if(ddep == 1)
 {
     lavec = pmax(rep(0,lnn),la - (la-mu)/K * nn)
     muvec = mu * rep(1,lnn)
-}
+} else {
 if(ddep == 2)
 {
     lavec = pmax(rep(0,lnn),la * (nn + 1)^(-log(la/mu)/log(K+1)))
     muvec = mu * rep(1,lnn)
-}
+} else {
 if(ddep == 3)
 {
     lavec = la * rep(1,lnn)
     muvec = mu + (la - mu) * nn/K
-}
+} else {
 if(ddep == 4)
 {
     lavec = la * rep(1,lnn)
     muvec = mu * (nn + 1)^(log(la/mu)/log(K+1))
-}
+} else {
 if(ddep == 5)
 { 
     lavec = pmax(rep(0,lnn),la - 1/(r+1)*(la-mu)/K * nn)
     muvec = muvec = mu + r/(r+1)*(la-mu)/K * nn
-}
+}}}}}
 xx = c(0,x,0)
 
 dx = lavec[(2:(lx+1))+kk-1] * nn[(2:(lx+1))+2*kk-1] * xx[(2:(lx+1))-1] + muvec[(2:(lx+1))+kk+1] * nn[(2:(lx+1))+1] * xx[(2:(lx+1))+1] - (lavec[(2:(lx+1))+kk] + muvec[(2:(lx+1))+kk]) * nn[(2:(lx+1))+kk] * xx[2:(lx+1)]

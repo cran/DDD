@@ -33,8 +33,15 @@ brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
 soc = pars2[6]
 S = length(brts) + (soc - 2)
-if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <= min(brts) || pars1[6] <= (S + missnumspec)) { loglik = -Inf } else
+if(min(pars1) < 0 || -pars1[7] <= min(brts))
 {
+    loglik = -Inf
+} else {
+if(((pars1[2] == 0 || pars1[4] == 0) && ddep == 2) || ((pars1[1] == 0 || pars1[3] == 0) && ddep == 4) || pars1[1] <= pars1[2] || pars1[4] <= pars1[5])
+{ 
+    cat("These parameter values cannot satisfy lambda(N) = mu(N) for some finite N.\n")
+    loglik = -Inf
+} else {
     la = pars1[1]
     mu = pars1[2]
     K = pars1[3]
@@ -69,8 +76,11 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
                  if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+k1) + 1)^(-log(la/mu)/log(K+1))) }
                  if(ddep == 3 || ddep == 4) { lavec = la }    
                  probs = lavec * probs # speciation event
-                 if(sum(probs) <= 0) { loglik = -Inf } else
-                 {
+                 if(sum(probs) <= 0)
+                 { 
+                    loglik = -Inf
+                    break
+                 } else {
                     loglik = loglik + log(sum(probs))
                  }
                  probs = probs/sum(probs)
@@ -117,7 +127,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
           }
        }    
 
-       if(probs[1+missnumspec]<=0) { loglik = -Inf } else
+       if(probs[1+missnumspec]<=0 || loglik == -Inf) { loglik = -Inf } else
        {
           loglik = loglik + log(probs[1 + missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
           
@@ -137,7 +147,7 @@ if(min(pars1) < 0 || pars1[1] <= pars1[2] || pars1[4] <= pars1[5] || -pars1[7] <
        loglik = loglik - logliknorm
        }
     }
-}
+}}
 if(pars2[5] == 1)
 {
     s1 = sprintf('Parameters: %f %f %f %f %f %f %f, ',pars1[1],pars1[2],pars1[3],pars1[4],pars1[5],pars1[6],pars1[7])
