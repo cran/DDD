@@ -65,15 +65,26 @@ under diversity-dependent diversification models.\cr \cr
    that did not start because of low likelihood values)\cr
    - Likelihoods can also be computed for a tree with a stem age rather than only a crown age\cr
    New in version 1.11\cr
-   - Various small tweaks to make the code run faster and some bug fixes
+   - Various small tweaks to make the code run faster and some bug fixes\cr
+   New in version 1.12\cr
+   - Allows conditioning on survival of crown linages AND on the number of extant species by setting cond = 2
+   New in version 1.13\cr
+   - Fast computation of dd_loglik for the case K = Inf
+   New in version 1.14\cr
+   - Fast computation of dd_loglik for the case mu = 0\cr
+   - Allows time-dependence instead of diversity-dependence; exponential decline in speciation rate and/or extinction\cr
+   - Start of time-dependence can be specified to allow synchronisation across multiple clades\cr
+   - Removed link to LASER\cr
+   New in version 2.0\cr
+   - Includes function to simulate trees under diversity-dependence
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 1.11\cr
-Date: \tab 2012-03-25\cr
+Version: \tab 2.0\cr
+Date: \tab 2012-05-01\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
@@ -91,6 +102,9 @@ from the main clade's dynamics potentially accompanied by a shift in parameters 
 
 dd_KI_ML finds the parameters that maximizes the likelihood computed by dd_KI_loglik.
 
+bd_ML finds the parameters that maximizes the likelihood computed by bd_loglik.
+
+dd_sim simulates the diversity-dependent process
 }
 \author{
 Rampal S. Etienne & Bart Haegeman\cr
@@ -100,7 +114,7 @@ Maintainer: Rampal S. Etienne (r.s.etienne@rug.nl)
 Etienne & Haegeman 2012, Am. Nat. In press, doi: 10.1086/667574}
 \keyword{ models }
 \seealso{
-\code{laser}
+\code{TESS}
 }
 \examples{
 \donttest{

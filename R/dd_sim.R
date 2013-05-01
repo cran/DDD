@@ -1,0 +1,134 @@
+dd_sim = function(pars,age,ddmodel = 1)
+{
+# Rampal's simulation of diversity-dependent process
+#  . start from crown age
+#  . no additional species at crown node
+#  . no missing species in present
+# pars = [la mu K]
+#  . la = speciation rate per species
+#  . mu = extinction rate per species
+#  . K = diversification carrying capacity
+#  . r = ratio of diversity-dependence in extinction rate over speciation rate
+# age = crown age
+# ddmodel = mode of diversity-dependence
+#  . ddmodel == 1  linear dependence in speciation rate
+#  . ddmodel == 2  exponential dependence in speciation rate
+#  . ddmodel == 3  linear dependence in extinction rate
+#  . ddmodel == 4  exponential dependence in extinction rate
+#  . ddmodel == 5  linear dependence in speciation and extinction rate
+
+lamuN = function(ddmodel,pars,N)
+{
+    la = pars[1]
+    mu = pars[2]
+    K = pars[3]
+    if(length(pars) == 4)
+    {
+        r = pars[4]
+    }
+    if(ddmodel == 1)
+    {
+        # linear dependence in speciation rate
+        laN = max(0,la - (la - mu) * N/K)
+        muN = mu
+    }
+    if(ddmodel == 2)
+    {
+        # exponential dependence in speciation rate
+        al = log(la/mu)/log(K+1)
+        laN = la * (N + 1)^(-al)
+        muN = mu
+    }
+    if(ddmodel == 3)
+    {
+        # linear dependence in extinction rate
+        laN = la
+        muN = mu + (la - mu) * N/K
+    }
+    if(ddmodel == 4)
+    {
+        # exponential dependence in extinction rate
+        al = log(la/mu)/log(K+1)
+        laN = la
+        muN = mu * (N + 1)^al
+    }
+    if(ddmodel == 5)
+    {
+        # linear dependence in speciation rate and extinction rate
+        laN = max(0,la - 1/(r+1)*(la-mu) * N/K)
+        muN = mu + r/(r+1)*(la-mu)/K * N
+    }
+    return(c(laN,muN))
+}
+
+done = 0
+while(done == 0)
+{
+    # number of species N at time t
+    # i = index running through t and N
+    t = rep(0,1)
+    L = matrix(0,2,4)
+    i = 1
+    t[1] = 0
+    N = 2
+    # L = data structure for lineages,
+    # . L[,1] = branching times
+    # . L[,2] = index of parent species
+    # . L[,3] = index of daughter species
+    # j = index running through L
+    L[1,1:4] = c(0,0,-1,-1)
+    L[2,1:4] = c(0,-1,2,-1)
+    linlist = c(-1,2)
+    newL = 2
+    ff = lamuN(ddmodel,pars,N[i])
+    laN = ff[1]
+    muN = ff[2]
+    denom = (laN + muN) * N[i]
+    t[i + 1] = t[i] - log(runif(1)) / denom
+    while(t[i + 1] <= age)
+    {
+        i = i + 1
+        ranL = sample(linlist,1)
+        if((laN * N[i - 1] / denom) >= runif(1))
+        {
+            # speciation event
+            N[i] = N[i - 1] + 1
+            newL = newL + 1
+            L = rbind(L,c(t[i],ranL,sign(ranL) * newL,-1))
+            linlist = c(linlist,sign(ranL) * newL)
+        } else {
+            # extinction event
+            N[i] = N[i - 1] - 1
+            L[abs(ranL),4] = t[i]
+            w = which(linlist == ranL)
+            linlist = linlist[-w]
+            linlist = sort(linlist)
+        }
+        if(sum(linlist < 0) == 0 | sum(linlist > 0) == 0)
+        {
+            t[i + 1] = Inf
+        } else {
+            ff = lamuN(ddmodel,pars,N[i])
+            laN = ff[1]
+            muN = ff[2]
+            denom = (laN + muN) * N[i]
+            t[i + 1] = t[i] - log(runif(1)) / denom
+        } 
+    }
+    if(sum(linlist < 0) == 0 | sum(linlist > 0) == 0)
+    {
+       done = 0
+    } else {
+       done = 1
+    }
+}
+
+L2 = L
+times = age - c(L[,1])
+L2[,1] = times
+tes = L2phylo(L2,dropextinct = T)
+tas = L2phylo(L2,dropextinct = F)
+out = list(tes,tas,L)
+return(out)
+
+}

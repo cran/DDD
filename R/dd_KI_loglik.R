@@ -13,11 +13,13 @@ dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
 # - pars1[7] = tinn = time of key innovation
 # - pars2[1] = lx = length of ODE variable x
 # - pars2[2] = ddep = diversity-dependent model, mode of diversity-dependence
-#  . ddep==1 : linear dependence in speciation rate
-#  . ddep==2 : exponential dependence in speciation rate
-#  . ddep==3 : linear dependence in extinction rate
-#  . ddep==4 : exponential dependence in extinction rate
-# - pars2[3] = cond = conditioning on non-extinction of the phylogeny
+#  . ddep == 1 : linear dependence in speciation rate
+#  . ddep == 2 : exponential dependence in speciation rate
+#  . ddep == 3 : linear dependence in extinction rate
+#  . ddep == 4 : exponential dependence in extinction rate
+# - pars2[3] = cond = conditioning
+#  . cond == 0 : no conditioning
+#  . cond == 1 : conditioning on non-extinction of the phylogeny
 # - pars2[4] = tsplit = time of split of innovative branch
 # missnumspec = number of missing species in main clade M and subclade S
 

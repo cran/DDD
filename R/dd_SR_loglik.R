@@ -12,11 +12,14 @@ dd_SR_loglik = function(pars1,pars2,brts,missnumspec)
 # - pars1[7] = tshift = time of shift
 # - pars2[1] = lx = length of ODE variable x
 # - pars2[2] = ddep = diversity-dependent model, mode of diversity-dependence
-#  . ddep==1 : linear dependence in speciation rate
-#  . ddep==2 : exponential dependence in speciation rate
-#  . ddep==3 : linear dependence in extinction rate
-#  . ddep==4 : exponential dependence in extinction rate
-# - pars2[3] = cond = conditioning on non-extinction of the phylogeny
+#  . ddep == 1 : linear dependence in speciation rate
+#  . ddep == 2 : exponential dependence in speciation rate
+#  . ddep == 3 : linear dependence in extinction rate
+#  . ddep == 4 : exponential dependence in extinction rate
+# - pars2[3] = cond = conditioning
+#  . cond == 0 : no conditioning
+#  . cond == 1 : conditioning on non-extinction of the phylogeny
+#  . cond == 2 : conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species)
 # - pars2[4] = btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
 # - pars2[5] = parameters and likelihood should be printed (1) or not (0)
 # - pars2[6] = likelihood is for a tree with crown age (2) or stem age (1)
@@ -131,7 +134,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && ddep == 2) || ((pars1[1] == 0 || pars1[3
        {
           loglik = loglik + log(probs[1 + missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
           
-          if(cond == TRUE)
+          if(cond >= 1)
           { 
              probs = rep(0,lx)
              probs[1] = 1 # change if other species at crown age
@@ -142,7 +145,9 @@ if(((pars1[2] == 0 || pars1[4] == 0) && ddep == 2) || ((pars1[1] == 0 || pars1[3
              probs = y[2,2:(lx+1)]
              if(soc == 1) { aux = 1:lx }
              if(soc == 2) { aux = (2:(lx+1)) * (3:(lx+2))/6 }
-             logliknorm = log(sum(probs/aux))
+             probsc = probs/aux
+             if(cond == 1) { logliknorm = log(sum(probsc)) }
+             if(cond == 2) { logliknorm = log(probsc[S + missnumspec - 1])}             
           } else { logliknorm = 0 }
        loglik = loglik - logliknorm
        }
