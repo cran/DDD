@@ -1,4 +1,4 @@
-dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.1+bd(sort(as.numeric(brts),decreasing = TRUE))$r1/(1-bd(sort(as.numeric(brts),decreasing = TRUE))$a),0.1,2*(length(brts) + missnumspec))} else {c(0.1+bd(sort(as.numeric(brts),decreasing = TRUE))$r1/(1-bd(sort(as.numeric(brts),decreasing = TRUE))$a),0.1,2*(length(brts) + missnumspec),0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt], res = 10*(1+length(brts)+missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) + missnumspec))} else {c(0.2,0.1,2*(length(brts) + missnumspec),0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt], res = 10*(1+length(brts)+missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -14,7 +14,10 @@ dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.1+bd(sort(as.numeric(b
 #  . ddmodel == 4 : exponential dependence in extinction rate
 #  . ddmodel == 5 : linear dependence in speciation rate and in extinction rate
 # - missnumspec = number of missing species    
-# - cond = conditioning on non-extinction of the phylogeny
+# - cond = conditioning
+#  . cond == 0 : no conditioning
+#  . cond == 1 : conditioning on non-extinction of the phylogeny
+#  . cond == 2 : conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species)
 # - btorph = likelihood of branching times (0) or phylogeny (1), differ by a factor (S - 1)! where S is the number of extant species
 # - tol = tolerance in optimization
 #  . reltolx = relative tolerance of parameter values in optimization

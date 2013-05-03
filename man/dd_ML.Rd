@@ -8,15 +8,12 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_ML(brts, initparsopt = if (ddmodel < 5) { c(0.1 + bd(sort(as.numeric(brts),
-   decreasing = TRUE))$r1/(1 - bd(sort(as.numeric(brts),decreasing = TRUE))$a),0.1,
-   2 * (length(brts) + missnumspec))} else { c(0.1 + bd(sort(as.numeric(brts),
-   decreasing = TRUE))$r1/(1 - bd(sort(as.numeric(brts),decreasing = TRUE))$a), 0.1,
-   2 * (length(brts) + missnumspec), 0.01)}, idparsopt = 1:length(initparsopt),
+dd_ML(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) + missnumspec))}
+   else {c(0.2,0.1,2*(length(brts) + missnumspec),0.01)}, idparsopt = 1:length(initparsopt),
    idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * 
    c(0.2,0.1, 2 * (length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * 
    c(0.2, 0.1, 2 * (length(brts) + missnumspec), 0)[-idparsopt], res = 10 * (1 +
-   length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = TRUE, btorph = 1,
+   length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1,
    soc = 2, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 }
 \arguments{
@@ -46,7 +43,11 @@ not specified in idparsopt.
    ddmodel == 5 : linear dependence in speciation and extinction rate\cr
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
-  \item{cond}{Conditioning on non-extinction of the phylogeny (TRUE or FALSE) }
+  \item{cond}{ Conditioning: \cr
+    cond == 0 : no conditioning \cr
+    cond == 1 : conditioning on non-extinction of the phylogeny \cr
+    cond == 2 : conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species) \cr
+  }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{soc}{Sets whether stem or crown age should be used (1 or 2) }
   \item{tol}{Sets the tolerances in the optimization. Consists of: \cr
@@ -72,7 +73,9 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
  \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}
 }
-\references{ Etienne et al. 2011, Proc. Roy. Soc. B, doi: 10.1098/rspb.2011.1439}
+\references{
+- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne & Haegeman 2012. Am. Nat. Am. Nat. 180: E75-E89, doi: 10.1086/667574}
 \author{ Rampal S. Etienne & Bart Haegeman }
 
 \seealso{

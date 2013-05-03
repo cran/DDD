@@ -1,4 +1,4 @@
-dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(brtsM) + missnumspec[1]),2*(1 + length(brtsS) + missnumspec[length(missnumspec)]),(tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(c(brtsM,brtsS)) + sum(missnumspec)), ddmodel = 1, missnumspec = 0, cond = TRUE, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(brtsM) + missnumspec[1]),2*(1 + length(brtsS) + missnumspec[length(missnumspec)]),(tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(c(brtsM,brtsS)) + sum(missnumspec)), ddmodel = 1, missnumspec = 0, cond = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 {
 # brtsM, brtsS = branching times of main clade and subclade (positive, from present to past)
 # - max(brtsM) = crown age
@@ -23,7 +23,9 @@ dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
 # - missnumspec = number of missing species    
-# - cond = conditioning on non-extinction of the phylogeny
+# - cond = conditioning:
+#  . cond == 0 : no conditioning
+#  . cond == 1 : conditioning on non-extinction of the phylogeny
 # - tol = tolerance in optimization
 #  . reltolx = relative tolerance of parameter values in optimization
 #  . reltolf = relative tolerance of function value in optimization

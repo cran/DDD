@@ -19,13 +19,16 @@
 }
   \item{pars2}{Vector of model settings: \cr \cr
     \code{pars2[1]} sets the maximum number of species for which a probability must be computed.
-    This must be larger than 1 + length(brts). \cr \cr
+    This must be larger than 1 + missnumspec + length(brts). \cr \cr
     \code{pars2[2]} sets the model of diversity-dependence: \cr
     - \code{pars2[2] == 1} linear dependence in speciation rate \cr
     - \code{pars2[2] == 2} exponential dependence in speciation rate \cr
     - \code{pars2[2] == 3} linear dependence in extinction rate \cr
     - \code{pars2[2] == 4} exponential dependence in extinction rate \cr \cr
-    \code{pars2[3]} sets the conditioning on non-extinction of the phylogeny (TRUE or FALSE) \cr \cr
+    \code{pars2[3]} sets the conditioning: \cr
+    - \code{cond == 0} no conditioning \cr
+    - \code{cond == 1} conditioning on non-extinction of the phylogeny \cr
+    - \code{cond == 2} conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species) \cr \cr
     \code{pars2[4]} sets whether the likelihood is for the branching times (0) or the phylogeny (1) \cr \cr
     \code{pars2[5]} sets whether the parameters and likelihood should be shown on screen (1) or not (0) \cr \cr
     \code{pars2[6]} sets whether the first data point is stem age (1) or crown age (2)
@@ -44,5 +47,5 @@
  \code{\link{dd_loglik}},
  \code{\link{dd_KI_loglik}}
 }
-\examples{dd_SR_loglik(pars1 = c(0.2,0.1,50,0.2,0.1,70,5), pars2 = c(100,1,TRUE,1), brts = 1:10, missnumspec = 0) }
+\examples{dd_SR_loglik(pars1 = c(0.2,0.1,50,0.2,0.1,70,5), pars2 = c(100,1,1,1,0,2), brts = 1:10, missnumspec = 0) }
 \keyword{models}
