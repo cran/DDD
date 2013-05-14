@@ -1,7 +1,7 @@
 \name{dd_sim}
 \alias{dd_sim}
-\title{ Function to simulate the diversity-dependent process }
-\description{ Simulating the diversity-dependence process }
+\title{ Function to simulate the diversity-dependent diversification process }
+\description{ Simulating the diversity-dependent diversification process }
 \usage{ dd_sim(pars, age, ddmodel = 1) }
 \arguments{
   \item{pars}{Vector of parameters: \cr \cr
@@ -19,7 +19,7 @@
   }
 }
 \value{
-  \item{ out }{ Contains three elements:
+  \item{ out }{ A list with the following three elements:
    The first element is the tree of extant species in phylo format \cr
    The second element is the tree of all species, including extinct species, in phylo format \cr
    The third element is a matrix of all species where \cr
@@ -27,7 +27,7 @@
    - the second column is the parent of the species \cr
    - the third column is the daughter species \cr
    - the fourth column is the time of extinction of the species \cr
-   If the fourth element == 1, then the species is still extant.
+   If the fourth element equals -1, then the species is still extant.
   }
 }
 \references{

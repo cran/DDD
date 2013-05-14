@@ -44,7 +44,7 @@ if(min(pars1) < 0 || -pars1[7] <= min(brtsM) || -pars1[7] >= min(brtsS))
 {
     loglik = -Inf
 } else {
-if(((pars1[2] == 0 || pars1[4] == 0) && ddep == 2) || ((pars1[1] == 0 || pars1[3] == 0) && ddep == 4) || pars1[1] <= pars1[2] || pars1[4] <= pars1[5])
+if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || pars1[3] == 0) && pars2[2] == 4) || pars1[1] <= pars1[2] || pars1[4] <= pars1[5])
 { 
     cat("These parameter values cannot satisfy lambda(N) = mu(N) for some finite N.\n")
     loglik = -Inf
