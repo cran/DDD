@@ -67,24 +67,28 @@ under diversity-dependent diversification models.\cr \cr
    New in version 1.11\cr
    - Various small tweaks to make the code run faster and some bug fixes\cr
    New in version 1.12\cr
-   - Allows conditioning on survival of crown linages AND on the number of extant species by setting cond = 2
+   - Allows conditioning on survival of crown linages AND on the number of extant species by setting cond = 2\cr
    New in version 1.13\cr
-   - Fast computation of dd_loglik for the case K = Inf
+   - Fast computation of dd_loglik for the case K = Inf\cr
    New in version 1.14\cr
    - Fast computation of dd_loglik for the case mu = 0\cr
    - Allows time-dependence instead of diversity-dependence; exponential decline in speciation rate and/or extinction\cr
    - Start of time-dependence can be specified to allow synchronisation across multiple clades\cr
    - Removed link to LASER\cr
    New in version 2.0\cr
-   - Includes function to simulate trees under diversity-dependence
+   - Includes function to simulate trees under diversity-dependence\cr
+   New in version 2.1\cr
+   - Fixes numerical problems with the convolve-function (used to deal with missing species)\cr
+   - Fixes a bug in dd_KI_loglik (ddep unknown) \cr
+   - Changed third element of the output of dd_sim so that all speciation and extinction times are in Mya\cr
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 2.0\cr
-Date: \tab 2012-05-01\cr
+Version: \tab 2.1\cr
+Date: \tab 2013-05-14\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

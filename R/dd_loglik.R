@@ -39,7 +39,7 @@ if(ddep == 5) {r = pars1[4]} else {r = 0}
 
 if((ddep == 1) & ((mu == 0 & missnumspec == 0 & floor(K) != ceiling(K)) | K == Inf))
 {
-    loglik = bd_loglik(pars1[1:(2 + (K < Inf))],c((mu == 0 & K < Inf) + 1,pars2[3:6]),brts,missnumspec)
+    loglik = bd_loglik(pars1[1:(2 + (K < Inf))],c(2*(mu == 0 & K < Inf),pars2[3:6]),brts,missnumspec)
 } else {
 abstol = 1e-16
 reltol = 1e-10 

@@ -39,7 +39,7 @@ cond = pars2[2]
 btorph = pars2[3]
 m = missnumspec
 
-brts = sort(abs(brts),decreasing = T)
+brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
 brts = c(brts[1],brts)
 T = brts[1]
 t = T - brts
@@ -145,12 +145,12 @@ if(m > 0)
    x[1] = 1
    for(j in 1:S)
    {
-       x = convolve(x,rev((1:(m + 1)) * ux[j]^(0:m)),type = 'open')[1:(m + 1)]
+       #x = convolve(x,rev((1:(m + 1)) * ux[j]^(0:m)),type = 'open')[1:(m + 1)]
+       x = conv(x,(1:(m + 1)) * ux[j]^(0:m))[1:(m+1)]
    }
    loglik = loglik + lgamma(S + 1) + lgamma(m + 1) - lgamma(S + m + 1) + log(x[m + 1])
    #loglik = loglik - log(S + m + 1) + log(S + 1) + log(S + m - 1) - log(S - 1)
 }
-
 if(pars2[4] == 1)
 {
     if(la1 == 0 & mu1 == 0)

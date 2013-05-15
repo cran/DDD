@@ -1,6 +1,6 @@
 dd_sim = function(pars,age,ddmodel = 1)
 {
-# Rampal's simulation of diversity-dependent process
+# Simulation of diversity-dependent process
 #  . start from crown age
 #  . no additional species at crown node
 #  . no missing species in present
@@ -75,6 +75,7 @@ while(done == 0)
     # . L[,1] = branching times
     # . L[,2] = index of parent species
     # . L[,3] = index of daughter species
+    # . L[,4] = time of extinction
     # j = index running through L
     L[1,1:4] = c(0,0,-1,-1)
     L[2,1:4] = c(0,-1,2,-1)
@@ -123,11 +124,12 @@ while(done == 0)
     }
 }
 
-L2 = L
-times = age - c(L[,1])
-L2[,1] = times
-tes = L2phylo(L2,dropextinct = T)
-tas = L2phylo(L2,dropextinct = F)
+L[,1] = age - c(L[,1])
+notmin1 = which(L[,4] != -1)
+L[notmin1,4] = age - c(L[notmin1,4])
+L[which(L[,4] == age + 1),4] = -1
+tes = L2phylo(L,dropextinct = T)
+tas = L2phylo(L,dropextinct = F)
 out = list(tes,tas,L)
 return(out)
 
