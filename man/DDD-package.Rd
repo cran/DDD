@@ -81,14 +81,19 @@ under diversity-dependent diversification models.\cr \cr
    - Fixes numerical problems with the convolve-function (used to deal with missing species)\cr
    - Fixes a bug in dd_KI_loglik (ddep unknown) \cr
    - Changed third element of the output of dd_sim so that all speciation and extinction times are in Mya\cr
+   New in version 2.2\cr
+   - Allows conditioning on the number of taxa only, asssuming a uniform prior on stem age; this has become the default
+   - An additional model of time-dependence, following deterministic logistic equation
+   Forthcoming:\cr
+   - High-precision arithmetic in numerically unstable regions of bd_loglik
 }
 
 \details{
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 2.1\cr
-Date: \tab 2013-05-14\cr
+Version: \tab 2.2\cr
+Date: \tab 2013-08-23\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

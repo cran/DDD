@@ -33,12 +33,14 @@ not specified in idparsopt.
   \item{tdmodel}{ Sets the model of time-dependence: \cr
    tdmodel == 0 : constant speciation and extinction rates \cr
    tdmodel == 1 : speciation and/or extinction rate is exponentially declining with time \cr
-   tdmodel == 2 : stepwise decline in speciation rate as in diversity-dependence without extinction
+   tdmodel == 2 : stepwise decline in speciation rate as in diversity-dependence without extinction \cr
+   tdmodel == 3 : decline in speciation rate following deterministic logistic equation for ddmodel = 1
   }
   \item{cond}{ Conditioning: \cr
-    cond == 0 : no conditioning \cr
-    cond == 1 : conditioning on non-extinction of the phylogeny \cr
-    cond == 2 : conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species) \cr
+    cond == 0 : conditioning on stem or crown age \cr
+    cond == 1 : conditioning on stem or crown age and non-extinction of the phylogeny \cr
+    cond == 2 : conditioning on stem or crown age and on the total number of extant taxa (including missing species) \cr
+    cond == 3 : conditioning on the total number of extant taxa (including missing species)
   }
   \item{btorph}{ Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{soc}{ Sets whether stem or crown age should be used (1 or 2) }

@@ -11,7 +11,7 @@ bd_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,pars2,brt
       loglik = -Inf
    } else {
       pars1 = trpars1/(1 - trpars1)
-      loglik = bd_loglik(pars1,pars2,brts,missnumspec)
+      loglik = bd_loglik(pars1,pars2[1:6],brts,missnumspec)
       if(is.nan(loglik) || is.na(loglik))
       {
          cat("There are parameter values used which cause numerical problems.\n")

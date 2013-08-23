@@ -4,8 +4,11 @@
 \alias{dd_SR_loglik_choosepar}
 \alias{dd_KI_loglik_choosepar}
 \alias{dd_loglik_rhs}
+\alias{dd_loglik_bw_rhs}
 \alias{dd_logliknorm_rhs1}
 \alias{dd_logliknorm_rhs2}
+\alias{td_loglik_rhs}
+\alias{td_loglik_bw_rhs}
 \alias{dd_simplex}
 \alias{bd_simplex}
 \alias{dd_SR_simplex}
