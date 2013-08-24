@@ -21,9 +21,10 @@
     - \code{pars2[2] == 3} linear dependence in extinction rate \cr
     - \code{pars2[2] == 4} exponential dependence in extinction rate \cr \cr
     \code{pars2[3]} sets the conditioning: \cr
-    - \code{cond == 0} no conditioning \cr
-    - \code{cond == 1} conditioning on non-extinction of the phylogeny \cr
-    - \code{cond == 2} conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species) \cr \cr
+    - \code{pars[2] == 0} conditioning on stem or crown age \cr
+    - \code{pars[2] == 1} conditioning on stem or crown age and non-extinction of the phylogeny \cr
+    - \code{pars[2] == 2} conditioning on stem or crown age and on the total number of extant taxa (including missing species) \cr
+    - \code{pars[2] == 3} conditioning on the total number of extant taxa (including missing species) \cr \cr
     \code{pars2[4]} sets whether the likelihood is for the branching times (0) or the phylogeny (1) \cr \cr
     \code{pars2[5]} sets whether the parameters and likelihood should be shown on screen (1) or not (0)\cr \cr
     \code{pars2[6]} sets whether the first data point is stem age (1) or crown age (2)

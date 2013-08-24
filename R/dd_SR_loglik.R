@@ -30,6 +30,7 @@ if(length(pars2) == 4)
     pars2[5] = 0
     pars2[6] = 2
 }
+ddep = pars2[2]
 abstol = 1e-16
 reltol = 1e-10 
 brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)

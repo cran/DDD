@@ -14,7 +14,7 @@ dd_ML(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) + missnumsp
    parsfix = (ddmodel < 5) * c(0.2,0.1, 2 * (length(brts) + missnumspec))[-idparsopt]
    + (ddmodel == 5) * c(0.2, 0.1, 2 * (length(brts) + missnumspec), 0)[-idparsopt],
    res = 10 * (1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0,
-   cond = 1, btorph = 1, soc = 2, tol = c(1E-3,1E-4,1E-6),
+   cond = 3, btorph = 1, soc = 2, tol = c(1E-3,1E-4,1E-6),
    maxiter = 1000 * round((1.25)^length(idparsopt)))
 }
 \arguments{
@@ -45,9 +45,16 @@ not specified in idparsopt.
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{ Conditioning: \cr
-    cond == 0 : no conditioning \cr
-    cond == 1 : conditioning on non-extinction of the phylogeny \cr
-    cond == 2 : conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species) \cr
+    cond == 0 : conditioning on stem or crown age \cr
+    cond == 1 : conditioning on stem or crown age and non-extinction of the phylogeny \cr
+    cond == 2 : conditioning on stem or crown age and on the total number of extant taxa (including missing species) \cr
+    cond == 3 : conditioning on the total number of extant taxa (including missing species) \cr
+   Note: cond == 3 assumes a uniform prior on stem age, as is the standard in constant-rate birth-death models, see
+e.g. D. Aldous & L. Popovic 2004. Adv. Appl. Prob. 37: 1094-1115 and T. Stadler 2009. J. Theor. Biol. 261: 58-66.
+This conditioning turns out, for the diversity-dependent model, 
+to provide the least-biased parameter estimates and should therefore be preferred if there are no 
+specific reasons to choose any other conditioning. The default value has therefore been changed from 1 to 3 
+starting with DDD version 2.2.
   }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{soc}{Sets whether stem or crown age should be used (1 or 2) }

@@ -58,6 +58,7 @@ cat("You are not shifting",noshiftstr,"\n")
 cat("Optimizing the likelihood - this may take a while.","\n")
 flush.console()
 trparsopt = initparsopt/(1 + initparsopt)
+trparsopt[which(initparsopt == Inf)] = 1
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[which(parsfix == Inf)] = 1
 pars2 = c(res,ddmodel,cond,btorph,0,soc,tol,maxiter)
