@@ -1,4 +1,4 @@
-bd_ML = function(brts, initparsopt = c(0.1,0.05), idparsopt = 1:length(initparsopt), idparsfix = (1:4)[-idparsopt], parsfix = c(0,0), missnumspec = 0, tdmodel = 0, cond = 1, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+bd_ML = function(brts, initparsopt = c(0.1,0.05 * (tdmodel <= 1) + 10 * (length(brts) + missnumspec) * (tdmodel > 1)), idparsopt = c(1,2 + (tdmodel > 1)), idparsfix = (1:4)[-idparsopt], parsfix = rep(0,4)[idparsfix], missnumspec = 0, tdmodel = 0, cond = 1, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -39,7 +39,7 @@ if((sum(idpars == (1:4)) != 4) || (length(initparsopt) != length(idparsopt)) || 
    out2 = data.frame(lambda0 = -1,mu0 = -1,lambda1 = -1, mu1 = -1, loglik = -1, df = -1, conv = -1)
 } else {
 namepars1 = c("lambda0","mu0","lambda1","mu1")
-namepars2 = c("lambda0","mu0","K","-")
+namepars2 = c("lambda0","mu0","K","")
 if(tdmodel == 2 | tdmodel == 3) { namepars = namepars2 } else  { namepars = namepars1 }
 if(length(namepars[idparsopt]) == 0) { optstr = "nothing" } else { optstr = namepars[idparsopt] }
 cat("You are optimizing",optstr,"\n")

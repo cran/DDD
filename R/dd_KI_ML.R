@@ -20,8 +20,14 @@ dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(
 # - ddmodel = diversity-dependent model,mode of diversity-dependence
 #  . ddmodel == 1 : linear dependence in speciation rate
 #  . ddmodel == 2 : exponential dependence in speciation rate
+#  . ddmodel == 1 : linear dependence in speciation rate
+#  . ddmodel == 2 : exponential dependence in speciation rate
+#  . ddmodel == 2.1: variant with offset at infinity
+#  . ddmodel == 2.2: 1/n dependence in speciation rate
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
+#  . ddmodel == 4.1: variant with offset at infinity
+#  . ddmodel == 4.2: 1/n dependence in speciation rate
 # - missnumspec = number of missing species    
 # - cond = conditioning:
 #  . cond == 0 : no conditioning

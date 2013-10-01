@@ -42,15 +42,24 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   \item{ddmodel}{ sets the model of diversity-dependence: \cr
    ddmodel == 1 : linear dependence in speciation rate \cr
    ddmodel == 2 : exponential dependence in speciation rate \cr
+   ddmodel == 2.1 : variant of exponential dependence in speciation rate with offset at infinity\cr
+   ddmodel == 2.2 : 1/n dependence in speciation rate\cr
    ddmodel == 3 : linear dependence in extinction rate \cr
-   ddmodel == 4 : exponential dependence in extinction rate
+   ddmodel == 4 : exponential dependence in extinction rate \cr
+   ddmodel == 4.1 : variant of exponential dependence in extinction rate with offset at infinity
+   ddmodel == 4.2 : 1/n dependence in extinction rate with offset at infinity
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{ Conditioning: \cr
     cond == 0 : no conditioning \cr
     cond == 1 : conditioning on non-extinction of the phylogeny \cr
     cond == 2 : conditioning on non-extinction of the phylogeny and on the total number of extant taxa (including missing species) \cr
-  }
+    cond == 3 : conditioning on the total number of extant taxa (including missing species) \cr
+(including missing species) \cr
+   Note: cond == 3 assumes a uniform prior on stem age, as is the standard in constant-rate birth-death models, see
+e.g. D. Aldous & L. Popovic 2004. Adv. Appl. Prob. 37: 1094-1115 and T. Stadler 2009. J. Theor. Biol. 261: 58-66.
+This conditioning turns out, for the diversity-dependent model, to provide the least-biased parameter estimates when extinction is low, but may still contain considerable bias if extinction is high. The default value has therefore been changed from 1 to 3 starting with DDD version 2.3. 
+}
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{soc}{Sets whether stem or crown age should be used (1 or 2) }
   \item{allbp}{Sets whether a search should be done with various initial conditions, with tshift at each of the branching points (TRUE/FALSE)}
@@ -98,7 +107,7 @@ brts = 1:20
 dd_SR_ML(brts)
 }
 \dontshow{
-dd_SR_ML(1:4,initparsopt = c(2.23,0.0002,1.58,4.41,3.01),idparsopt = c(1:3,6,7),tol = c(0.01,0.01,0.01))
+dd_SR_ML(1:4,initparsopt = c(2.23,0.0002,1.58,4.41,3.01),idparsopt = c(1:3,6,7),tol = c(0.01,0.01,0.01), cond = 1)
 }
 }
 \keyword{ models }

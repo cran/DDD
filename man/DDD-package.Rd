@@ -80,10 +80,15 @@ under diversity-dependent diversification models.\cr \cr
    New in version 2.1\cr
    - Fixes numerical problems with the convolve-function (used to deal with missing species)\cr
    - Fixes a bug in dd_KI_loglik (ddep unknown) \cr
-   - Changed third element of the output of dd_sim so that all speciation and extinction times are in Mya\cr
+   - Changed third element of the output of dd_sim, such that all speciation and extinction times are in Mya\cr
    New in version 2.2\cr
-   - Allows conditioning on the number of taxa only, asssuming a uniform prior on stem age; this has become the default
-   - An additional model of time-dependence, following deterministic logistic equation
+   - Allows conditioning on the number of taxa only for dd_loglik, asssuming a uniform prior on stem age; this is now the default\cr
+   - An additional model of time-dependence, following deterministic logistic equation\cr
+   New in version 2.3\cr
+   - Allows conditioning on the number of taxa only for dd_SR_loglik, assuming a uniform prior on stem age; this is now the default\cr
+   - Fix of bug for stem age (soc = 1), introduced in v2.2.
+   - Allows Rabosky's exponential model, with la(n) = la_0 * n^(-x(la_0,mu,K)) as ddmodel = 2.1, mu(n) = mu_0 * n^x(la, mu_0, K) as ddmodel = 4.1\cr
+   - Allows specific case of Rabosky's exponential model, with la(n) = la_0 * n^(-1), as ddmodel = 2.2, and mu(n) = mu_0 * n, as ddmodel = 4.2\cr
    Forthcoming:\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik
 }
@@ -92,8 +97,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 2.2\cr
-Date: \tab 2013-08-23\cr
+Version: \tab 2.3\cr
+Date: \tab 2013-10-01\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

@@ -39,9 +39,13 @@ not specified in idparsopt.
   \item{ddmodel}{ Sets the model of diversity-dependence: \cr
    ddmodel == 1 : linear dependence in speciation rate \cr
    ddmodel == 2 : exponential dependence in speciation rate \cr
+   ddmodel == 2.1 : variant of exponential dependence in speciation rate with offset at infinity\cr
+   ddmodel == 2.2 : 1/n dependence in speciation rate\cr
    ddmodel == 3 : linear dependence in extinction rate \cr
    ddmodel == 4 : exponential dependence in extinction rate \cr
-   ddmodel == 5 : linear dependence in speciation and extinction rate\cr
+   ddmodel == 4.1 : variant of exponential dependence in extinction rate with offset at infinity
+   ddmodel == 4.2 : 1/n dependence in extinction rate with offset at infinity
+   ddmodel == 5 : linear dependence in speciation and extinction rate
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{ Conditioning: \cr
@@ -52,9 +56,8 @@ not specified in idparsopt.
    Note: cond == 3 assumes a uniform prior on stem age, as is the standard in constant-rate birth-death models, see
 e.g. D. Aldous & L. Popovic 2004. Adv. Appl. Prob. 37: 1094-1115 and T. Stadler 2009. J. Theor. Biol. 261: 58-66.
 This conditioning turns out, for the diversity-dependent model, 
-to provide the least-biased parameter estimates and should therefore be preferred if there are no 
-specific reasons to choose any other conditioning. The default value has therefore been changed from 1 to 3 
-starting with DDD version 2.2.
+to provide the least-biased parameter estimates when extinction is low, but may still contain considerable bias if extinction is high.
+The default value has therefore been changed from 1 to 3 starting with DDD version 2.2.
   }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{soc}{Sets whether stem or crown age should be used (1 or 2) }
@@ -113,7 +116,7 @@ brts = 1:20
 dd_ML(brts, missnumspec = 2)
 }
 \dontshow{
-dd_ML(1:3,c(1.14285,1E-13,4))
+dd_ML(1:3,c(1.14285,1E-13,4), cond = 1)
 }
 }
 \keyword{ models }

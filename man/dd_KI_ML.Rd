@@ -46,8 +46,12 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   \item{ddmodel}{ sets the model of diversity-dependence: \cr
    ddmodel == 1 : linear dependence in speciation rate \cr
    ddmodel == 2 : exponential dependence in speciation rate \cr
+   ddmodel == 2.1 : variant of exponential dependence in speciation rate with offset at infinity\cr
+   ddmodel == 2.2 : 1/n dependence in speciation rate\cr
    ddmodel == 3 : linear dependence in extinction rate \cr
-   ddmodel == 4 : exponential dependence in extinction rate
+   ddmodel == 4 : exponential dependence in extinction rate \cr
+   ddmodel == 4.1 : variant of exponential dependence in extinction rate with offset at infinity
+   ddmodel == 4.2 : 1/n dependence in extinction rate with offset at infinity
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny. One can specify the sum of the missing species in main clade and subclade or a vector c(missnumspec_M,missnumspec_S) with missing species in main clade and subclade respectively.} 
  \item{cond}{ Conditioning: \cr
