@@ -8,6 +8,7 @@ mu = pars[2]
 K = pars[3]
 ddep = pars[length(pars) - 1]
 r = (ddep == 5) * pars[4]
+n0 = (ddep == 2 | ddep == 4)
 
 nn = 0:(lp + 1)
 lnn = length(nn)
@@ -25,10 +26,12 @@ if(ddep == 1)
     muvec = mu * rep(1,lnn)
     mutd = mu
 } else {
-if(ddep == 2)
+if(ddep == 2 | ddep == 2.1 | ddep == 2.2)
 {
-    lavec = pmax(rep(0,lnn),la * (nn + 1)^(-log(la/mu)/log(K+1)))
-    latd = max(0,la * (nntd + 1)^(-log(la/mu)/log(K+1)))
+    
+    y = -(log(la/mu)/log(K+n0))^(ddep != 2.2)
+    lavec = pmax(rep(0,lnn),la * (nn + n0)^y)
+    latd = max(0,la * (nntd + n0)^y)
     muvec = mu * rep(1,lnn)
     mutd = mu
 } else {
@@ -39,12 +42,13 @@ if(ddep == 3)
     latd = la
     mutd = mu + (la - mu) * nntd/K
 } else {
-if(ddep == 4)
+if(ddep == 4 | ddep == 4.1 | ddep == 4.2)
 {
+    y = (log(la/mu)/log(K+n0))^(ddep != 4.2)
     lavec = la * rep(1,lnn)
-    muvec = mu * (nn + 1)^(log(la/mu)/log(K+1))
+    muvec = mu * (nn + n0)^y
     latd = la
-    mutd = mu * (nntd + 1)^(log(la/mu)/log(K+1))
+    mutd = mu * (nntd + n0)^y
 } else {
 if(ddep == 5)
 { 

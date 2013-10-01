@@ -11,17 +11,24 @@ dd_sim = function(pars,age,ddmodel = 1)
 #  . r = ratio of diversity-dependence in extinction rate over speciation rate
 # age = crown age
 # ddmodel = mode of diversity-dependence
-#  . ddmodel == 1  linear dependence in speciation rate
-#  . ddmodel == 2  exponential dependence in speciation rate
-#  . ddmodel == 3  linear dependence in extinction rate
-#  . ddmodel == 4  exponential dependence in extinction rate
-#  . ddmodel == 5  linear dependence in speciation and extinction rate
+#  . ddmodel == 1 : linear dependence in speciation rate
+#  . ddmodel == 2 : exponential dependence in speciation rate
+#  . ddmodel == 1 : linear dependence in speciation rate
+#  . ddmodel == 2 : exponential dependence in speciation rate
+#  . ddmodel == 2.1: variant with offset at infinity
+#  . ddmodel == 2.2: 1/n dependence in speciation rate
+#  . ddmodel == 3 : linear dependence in extinction rate
+#  . ddmodel == 4 : exponential dependence in extinction rate
+#  . ddmodel == 4.1: variant with offset at infinity
+#  . ddmodel == 4.2: 1/n dependence in speciation rate
+#  . ddmodel == 5 : linear dependence in speciation rate and in extinction rate
 
 lamuN = function(ddmodel,pars,N)
 {
     la = pars[1]
     mu = pars[2]
     K = pars[3]
+    n0 = (ddmodel == 2 | ddmodel == 4)
     if(length(pars) == 4)
     {
         r = pars[4]
@@ -32,11 +39,11 @@ lamuN = function(ddmodel,pars,N)
         laN = max(0,la - (la - mu) * N/K)
         muN = mu
     }
-    if(ddmodel == 2)
+    if(ddmodel == 2 | ddmodel == 2.1 | ddmodel == 2.2)
     {
         # exponential dependence in speciation rate
-        al = log(la/mu)/log(K+1)
-        laN = la * (N + 1)^(-al)
+        al = (log(la/mu)/log(K+n0))^(ddmodel != 2.2)
+        laN = la * (N + n0)^(-al)
         muN = mu
     }
     if(ddmodel == 3)
@@ -45,12 +52,12 @@ lamuN = function(ddmodel,pars,N)
         laN = la
         muN = mu + (la - mu) * N/K
     }
-    if(ddmodel == 4)
+    if(ddmodel == 4 | ddmodel == 4.1 | ddmodel == 4.2)
     {
         # exponential dependence in extinction rate
-        al = log(la/mu)/log(K+1)
+        al = (log(la/mu)/log(K+n0))^(ddmodel != 4.2)
         laN = la
-        muN = mu * (N + 1)^al
+        muN = mu * (N + n0)^al
     }
     if(ddmodel == 5)
     {

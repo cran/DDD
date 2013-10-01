@@ -11,8 +11,12 @@ dd_loglik = function(pars1,pars2,brts,missnumspec)
 # - pars2[2] = ddep = diversity-dependent model,mode of diversity-dependence
 #  . ddep == 1 : linear dependence in speciation rate
 #  . ddep == 2 : exponential dependence in speciation rate
+#  . ddep == 2.1: variant with offset at infinity
+#  . ddep == 2.2: 1/n dependence in speciation rate
 #  . ddep == 3 : linear dependence in extinction rate
 #  . ddep == 4 : exponential dependence in extinction rate
+#  . ddep == 4.1: variant with offset at infinity
+#  . ddep == 4.2: 1/n dependence in speciation rate
 #  . ddep == 5 : linear dependence in speciation and extinction rate
 # - pars2[3] = cond = conditioning
 #  . cond == 0 : conditioning on stem or crown age
@@ -38,7 +42,13 @@ la = pars1[1]
 mu = pars1[2]
 K = pars1[3]
 if(ddep == 5) {r = pars1[4]} else {r = 0}
-
+if(ddep == 1 | ddep == 5)
+{ 
+    lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * (r + 1) * K)),round(pars2[1]))
+} else {
+    lx = round(pars2[1])
+}
+n0 = (ddep == 2 | ddep == 4)
 if((ddep == 1) & ((mu == 0 & missnumspec == 0 & floor(K) != ceiling(K) & la > 0.05) | K == Inf))
 {
     loglik = bd_loglik(pars1[1:(2 + (K < Inf))],c(2*(mu == 0 & K < Inf),pars2[3:6]),brts,missnumspec)
@@ -53,14 +63,13 @@ if(min(pars1) < 0)
 {
     loglik = -Inf
 } else {
-if((mu == 0 & ddep == 2) | (la == 0 & ddep == 4) | (la <= mu))
+if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 | ddep == 4.1 | ddep == 4.2)) | (la <= mu))
 { 
     cat("These parameter values cannot satisfy lambda(N) = mu(N) for a positive and finite N.\n")
     loglik = -Inf
 } else {
     if((ddep == 1 | ddep == 5) & ceiling(la/(la - mu) * (r + 1) * K) < (S + missnumspec)) { loglik = -Inf } else
     {
-       if(ddep == 1 | ddep == 5) { lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * (r + 1) * K)),round(pars2[1])) } else { lx = round(pars2[1]) }
        loglik = (btorph == 0) * lgamma(S)
        if(cond != 3)
        {
@@ -73,10 +82,7 @@ if((mu == 0 & ddep == 2) | (la == 0 & ddep == 4) | (la <= mu))
              probs = y[2,2:(lx+1)]
              if(k < (S + 2 - soc))
              {
-                 if(ddep == 1 | ddep == 5) { lavec = pmax(rep(0,lx),la - 1/(r + 1) * (la-mu)/K * ((0:(lx-1))+k1)) } 
-                 if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+k1) + 1)^(-log(la/mu)/log(K+1))) }
-                 if(ddep == 3 | ddep == 4) { lavec = la }    
-                 probs = lavec * probs # speciation event
+                 probs = flavec(ddep,la,mu,K,r,lx,k1,n0) * probs # speciation event
                  if(sum(probs) <= 0)
                  {
                     loglik = -Inf
@@ -97,10 +103,7 @@ if((mu == 0 & ddep == 2) | (la == 0 & ddep == 4) | (la <= mu))
              probs = y[2,2:(lx+2)]
              if(k > soc)
              {
-                 if(ddep == 1 | ddep == 5) { lavec = pmax(rep(0,lx),la - 1/(r + 1) * (la-mu)/K * ((0:(lx-1))+(k1-1))) } 
-                 if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+(k1-1)) + 1)^(-log(la/mu)/log(K+1))) }
-                 if(ddep == 3 | ddep == 4) { lavec = la }    
-                 probs = c(lavec,1) * probs # speciation event
+                 probs = c(flavec(ddep,la,mu,K,r,lx,k1-1,n0),1) * probs # speciation event
                  if(sum(probs[1:lx]) <= 0)
                  {
                     loglik = -Inf
@@ -115,7 +118,7 @@ if((mu == 0 & ddep == 2) | (la == 0 & ddep == 4) | (la <= mu))
 
        if(probs[1 + missnumspec]<=0 | loglik == -Inf) { loglik = -Inf } else
        {        
-          loglik = loglik + (cond != 3 & soc == 2) * log(probs[1 + (cond != 3) * missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
+          loglik = loglik + (cond != 3 | soc == 1) * log(probs[1 + (cond != 3) * missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
   
           logliknorm = 0
           if(cond == 1 | cond == 2)
@@ -144,10 +147,7 @@ if((mu == 0 & ddep == 2) | (la == 0 & ddep == 4) | (la <= mu))
              {
                 probsn = rep(0,lx + 1)
                 probsn[1:lx] = probs[1:lx]
-                if(ddep == 1 | ddep == 5) { lavec = pmax(rep(0,lx),la - 1/(r + 1) * (la-mu)/K * ((0:(lx-1))+1)) } 
-                if(ddep == 2) { lavec = pmax(rep(0,lx),la * (((0:(lx-1))+1) + 1)^(-log(la/mu)/log(K+1))) }
-                if(ddep == 3 | ddep == 4) { lavec = la * rep(1,lx) }    
-                probsn = c(lavec,1) * probsn # speciation event
+                probsn = c(flavec(ddep,la,mu,K,r,lx,1,n0),1) * probsn # speciation event
                 y = lsoda(probsn,c(max(abs(brts)),T),dd_loglik_bw_rhs,c(pars1,1,ddep),rtol = reltol,atol = abstol)
                 logliknorm = logliknorm - log(y[2,lx + 2])
              }

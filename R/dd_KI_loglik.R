@@ -15,8 +15,12 @@ dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
 # - pars2[2] = ddep = diversity-dependent model, mode of diversity-dependence
 #  . ddep == 1 : linear dependence in speciation rate
 #  . ddep == 2 : exponential dependence in speciation rate
+#  . ddep == 2.1: variant with offset at infinity
+#  . ddep == 2.2: 1/n dependence in speciation rate
 #  . ddep == 3 : linear dependence in extinction rate
 #  . ddep == 4 : exponential dependence in extinction rate
+#  . ddep == 4.1: variant with offset at infinity
+#  . ddep == 4.2: 1/n dependence in speciation rate
 # - pars2[3] = cond = conditioning
 #  . cond == 0 : no conditioning
 #  . cond == 1 : conditioning on non-extinction of the phylogeny
@@ -58,6 +62,16 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
     tinn = -pars1[7]
     lmax = pars2[1]
     ddep = pars2[2]
+    if(ddep == 1)
+    {
+        lxM = min(max(1 + m[1],1 + ceiling(laM/(laM - muM) * KM)),round(lmax))
+        lxS = min(max(1 + m[1],1 + ceiling(laS/(laS - muS) * KS)),round(lmax))
+    } else {
+        lxM = round(lmax)
+        lxS = round(lmax)
+    }
+
+    n0 = (ddep == 2 | ddep == 4)
     cond = pars2[3]
     tsplit = -pars2[4]
     m = missnumspec
@@ -71,7 +85,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
 
     # compute likelihood of clade M
     loglikM = 0
-    if(ddep == 1) { lx = min(max(1 + m[1],1 + ceiling(laM/(laM - muM) * KM)),round(lmax)) } else { lx = round(lmax) }
+    lx = lxM
     probs = rep(0,lx)
     probs[1] = 1 # change if other species at crown age
 
@@ -84,10 +98,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        probs = y[2,2:(lx+1)]
        if(t2<tinn)
        {
-           if(ddep == 1) { lavec = pmax(rep(0,lx),laM - (laM-muM)/KM * ((0:(lx-1))+k1)) } 
-           if(ddep == 2) { lavec = pmax(rep(0,lx),laM * (((0:(lx-1))+k1) + 1)^(-log(laM/muM)/log(KM+1))) }
-           if(ddep == 3 || ddep == 4) { lavec = laM }
-           probs = lavec * probs # speciation event
+           probs = flavec(ddep,laM,muM,KM,0,lxM,k1,n0) * probs # speciation event
            if(sum(probs) <= 0)
            { 
               loglik = -Inf
@@ -106,10 +117,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        probs = y[2,2:(lx+1)]
        if(k<(S1+1))
        {
-           if(ddep == 1) { lavec = pmax(rep(0,lx),laM - (laM-muM)/KM * ((0:(lx-1))+k1-1)) } 
-           if(ddep == 2) { lavec = pmax(rep(0,lx),laM * (((0:(lx-1))+k1	-1) + 1)^(-log(laM/muM)/log(KM+1))) }
-           if(ddep == 3 || ddep == 4) { lavec = laM }    
-           probs = lavec * probs # speciation event
+           probs = flavec(ddep,laM,muM,KM,0,lxM,k1,n0) * probs # speciation event
            if(sum(probs) <= 0) { loglik = -Inf } else
            {
               loglikM = loglikM + log(sum(probs))
@@ -125,7 +133,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
     }
     # compute likelihood of clade S
     loglikS = 0
-    if(ddep == 1) { lx = min(max(1 + m[length(m)],1 + ceiling(laS/(laS - muS) * KS)),round(lmax)) } else { lx = round(lmax) }
+    lx = lxS
     probs = rep(0,lx)
     probs[1] = 1
     for(k in 1:S2)
@@ -135,12 +143,11 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        probs = y[2,2:(lx+1)]
        if(k<S2)
        {
-           if(ddep == 1) { lavec = pmax(rep(0,lx),laS - (laS-muS)/KS * ((0:(lx-1))+k)) } 
-           if(ddep == 2) { lavec = pmax(rep(0,lx),laS * (((0:(lx-1))+k) + 1)^(-log(laS/muS)/log(KS+1))) }
-           if(ddep == 3 || ddep == 4) { lavec = laS }    
-           probs = lavec * probs # speciation event
-           if(sum(probs) <= 0) { loglik = -Inf } else
+           probs = flavec(ddep,laS,muS,KS,0,lxS,k1,n0) * probs # speciation event
+           if(sum(probs) <= 0)
            {
+              loglik = -Inf
+           } else  {
               loglikS = loglikS + log(sum(probs))
            }
            probs = probs/sum(probs)
@@ -152,6 +159,39 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
     } else {
        loglikS = loglikS + log(probs[1 + m[2]])
     }
+
+    #if(cond == 3)
+    #{
+    #   loglikS = 0
+    #   lx = lxS
+    #   probs = rep(0,lx + 1)
+    #   if(length(m) == 1)
+    #   {
+    #      probs[1:(m+1)] = 1
+    #   } else {
+    #      probs[1 + m[2]] = 1
+    #   }
+    #   for(k in (S2 + 1):2)
+    #   {
+    #      k1 = k - 1
+    #      y = lsoda(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol)
+    #      probs = y[2,2:(lx+2)]
+    #      if(k1 > 1)
+    #      {
+    #         probs = c(flavec(ddep,la,mu,K,r,lx,k1-1,n0),1) * probs # speciation event
+    #      }
+    #      if(sum(probs[1:lx]) <= 0)
+    #      {
+    #         loglik = -Inf
+    #         break
+    #      } else {
+    #         loglikS = loglikS + log(sum(probs[1:lx]))
+    #      }
+    #      probs[1:lx] = probs[1:lx]/sum(probs[1:lx])
+    #   }    
+    #   loglikS = loglikS + log(probs[1])
+    #}
+
     # total likelihood = likelihood clade M x likelihood clade S
     if(length(m) == 1)
     {
@@ -165,16 +205,17 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        tcrown = brts[1]
        tpres = 0
        # compute survival probability of clade S
-       lx = min(lmax,ceiling(laS/(laS-muS)*KS)+1)
+       lx = lxS
        nx = -1:lx
        if(ddep == 1) 
        { 
            lavec = pmax(rep(0,lx + 2),laS - (laS-muS)/KS * nx)
            muvec = muS * rep(1,lx + 2)
        } 
-       if(ddep == 2)
-       { 
-           lavec = pmax(rep(0,lx),laS * (nx + 1)^(-log(laS/muS)/log(KS+1)))
+       if(ddep == 2 | ddep == 2.1 | ddep == 2.2)
+       {
+           x = -(log(laS/muS)/log(KS+n0))^(ddep != 2.2) 
+           lavec = pmax(rep(0,lx + 2),laS * (nx + n0)^x)
            muvec = muS * rep(1,lx + 2)
        }
        if(ddep == 3)
@@ -182,10 +223,11 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
            lavec = laS * rep(1,lx + 2)
            muvec = muS + (laS - muS)/KS * nx
        }    
-       if(ddep == 4)
+       if(ddep == 4 | ddep == 4.1 | ddep == 4.2)
        {
            lavec = laS * rep(1,lx + 2)
-           muvec = (nx + 1)^(log(laS/muS)/log(KS+1))
+           x = (log(laS/muS)/log(KS+n0))^(ddep != 4.2)
+           muvec = (nx + n0)^x
        }    
        m1 = lavec[1:lx] * nx[1:lx]
        m2 = muvec[3:(lx+2)] * nx[3:(lx+2)]
@@ -197,7 +239,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        PS = 1 - probs[1]
    
        # compute survival probability of clade M
-       lx = min(lmax,ceiling(laM/(laM-muM)*KM)+1)
+       lx = lxM
        nx1 = rep(-1:lx,lx + 2)
        dim(nx1) = c(lx + 2,lx + 2) # row index = number of species in first group 
        nx2 = t(nx1) # column index = number of species in second group
@@ -207,9 +249,10 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
            lavec = pmax(matrix(0,lx + 2,lx + 2),laM - (laM-muM)/KM * nxt)
            muvec = muM * matrix(1,lx + 2,lx + 2)
        } 
-       if(ddep == 2)
+       if(ddep == 2 | ddep == 2.1 | ddep == 2.2)
        { 
-           lavec = pmax(matrix(0,lx + 2,lx + 2),laM * (nxt + 1)^(-log(laM/muM)/log(KM+1)))
+           x = -(log(laM/muM)/log(KM+n0))^(ddep != 2.2)
+           lavec = pmax(matrix(0,lx + 2,lx + 2),laM * (nxt + n0)^x)
            muvec = muM * matrix(1,lx + 2,lx + 2)
        }
        if(ddep == 3)
@@ -217,10 +260,11 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
            lavec = laM * matrix(1,lx + 2,lx + 2)
            muvec = muM + (laM - muM)/KM * nxt
        }    
-       if(ddep == 4)
+       if(ddep == 4 | ddep == 4.1 | ddep == 4.2)
        {
            lavec = laM * matrix(1,lx + 2,lx + 2)
-           muvec = (nxt + 1)^(log(laM/muM)/log(KM+1))
+           x = (log(laM/muM)/log(KM+n0))^(ddep != 4.2)
+           muvec = (nxt + n0)^x
        }    
        m1 = lavec[1:lx,2:(lx+1)] * nx1[1:lx,2:(lx+1)]
        m2 = muvec[3:(lx+2),2:(lx+1)] * nx1[3:(lx+2),2:(lx+1)]

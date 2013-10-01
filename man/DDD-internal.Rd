@@ -15,6 +15,7 @@
 \alias{dd_KI_simplex}
 \alias{L2phylo}
 \alias{conv}
+\alias{flavec}
 \title{Internal DDD Functions}
 \description{Internal DDD functions}
 \details{These are not to be called by the user.}

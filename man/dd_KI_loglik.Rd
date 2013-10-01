@@ -25,8 +25,12 @@
     \code{pars2[2]} sets the model of diversity-dependence: \cr
     - \code{pars2[2] == 1} linear dependence in speciation rate \cr
     - \code{pars2[2] == 2} exponential dependence in speciation rate \cr
+    - \code{pars2[2] == 2.1} variant of exponential dependence in speciation rate with offset at infinity\cr
+    - \code{pars2[2] == 2.2} 1/n dependence in speciation rate\cr
     - \code{pars2[2] == 3} linear dependence in extinction rate \cr
-    - \code{pars2[2] == 4} exponential dependence in extinction rate \cr \cr
+    - \code{pars2[2] == 4} exponential dependence in extinction rate \cr
+    - \code{pars2[2] == 4.1} variant of exponential dependence in extinction rate with offset at infinity\cr
+    - \code{pars2[2] == 4.2} 1/n dependence in extinction rate\cr \cr
     \code{pars2[3]} sets the conditioning: \cr
     - \code{cond == 0} no conditioning \cr
     - \code{cond == 1} conditioning on non-extinction of the phylogeny \cr \cr

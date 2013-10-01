@@ -163,6 +163,7 @@ if(tdmodel == 3)
 }
 if(tdmodel >= 4 & tdmodel <= 8)
 {   
+    cat('4 <= tdmodel <= 8 is still in testing phase\n. Please do not use.')
     if(tdmodel == 4 || tdmodel == 8)
     { 
        lx = min(max(1 + missnumspec,1 + ceiling(la0/(la0 - mu0) * (r + 1) * K)),round(pars2[6]))

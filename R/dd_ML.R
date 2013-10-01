@@ -10,8 +10,12 @@ dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) 
 # - ddmodel = diversity-dependent model,mode of diversity-dependence
 #  . ddmodel == 1 : linear dependence in speciation rate
 #  . ddmodel == 2 : exponential dependence in speciation rate
+#  . ddmodel == 2.1: variant with offset at infinity
+#  . ddmodel == 2.2: 1/n dependence in speciation rate
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
+#  . ddmodel == 4.1: variant with offset at infinity
+#  . ddmodel == 4.2: 1/n dependence in speciation rate
 #  . ddmodel == 5 : linear dependence in speciation rate and in extinction rate
 # - missnumspec = number of missing species    
 # - cond = conditioning
