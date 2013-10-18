@@ -31,8 +31,9 @@
   }
 }
 \references{
-- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
-- Etienne & Haegeman 2012. Am. Nat. Am. Nat. 180: E75-E89, doi: 10.1086/667574}
+- Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne, R.S. & B. Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
+}
 \author{ Rampal S. Etienne }
 \examples{ dd_sim(c(0.2,0.1,20),10) }
 \keyword{models}

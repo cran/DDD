@@ -7,10 +7,21 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-bd_ML(brts, initparsopt = c(0.1,0.05 * (tdmodel <= 1) + 10 * (length(brts) + missnumspec)
-  * (tdmodel > 1)), idparsopt = c(1,2 + (tdmodel > 1)), idparsfix = (1:4)[-idparsopt],
-  parsfix = rep(0,4)[idparsfix], missnumspec = 0, tdmodel = 0, cond = 1, btorph = 1,
-  soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+bd_ML(
+   brts,
+   initparsopt = c(0.1,0.05 * (tdmodel <= 1)
++ 10 * (length(brts) + missnumspec) * (tdmodel > 1)),
+   idparsopt = c(1,2 + (tdmodel > 1)),
+   idparsfix = (1:4)[-idparsopt],
+   parsfix = rep(0,4)[idparsfix],
+   missnumspec = 0,
+   tdmodel = 0,
+   cond = 1,
+   btorph = 1,
+   soc = 2,
+   tol = c(1E-3, 1E-4, 1E-6), 
+   maxiter = 1000 * round((1.25)^length(idparsopt))
+   )
 }
 \arguments{
   \item{brts}{ A set of branching times of a phylogeny, all positive }
@@ -68,8 +79,8 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}
 }
 \references{
-- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
-- Etienne & Haegeman 2012. Am. Nat. Am. Nat. 180: E75-E89, doi: 10.1086/667574
+- Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne, R.S. & B. Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
 }
 \author{ Rampal S. Etienne & Bart Haegeman }
 
