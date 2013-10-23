@@ -8,13 +8,24 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_SR_ML(brts, initparsopt = c(0.5, 0.1, 2 * (1 + length(brts) + missnumspec),
-   2 * (1 + length(brts) + missnumspec), max(brts)/2), parsfix = NULL, idparsopt
-   = c(1:3, 6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,
-   (-1)^(length(idparsfix) != 0) * idparsfix)], res = 10 * (1 + length(brts) +
-   missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1, soc = 2,
-   allbp = FALSE, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * round((1.25)^
-   length(idparsopt)))
+dd_SR_ML(
+   brts,
+   initparsopt = c(0.5, 0.1, 2 * (1 + length(brts) + missnumspec),
+2 * (1 + length(brts) + missnumspec), max(brts)/2),
+   parsfix = NULL,
+   idparsopt = c(1:3, 6:7),
+   idparsfix = NULL,
+   idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)],
+   res = 10 * (1 + length(brts) + missnumspec),
+   ddmodel = 1,
+   missnumspec = 0,
+   cond = 1,
+   btorph = 1,
+   soc = 2,
+   allbp = FALSE,
+   tol = c(1E-3,1E-4,1E-6),
+   maxiter = 1000 * round((1.25)^length(idparsopt))
+   )
 }
 \arguments{
   \item{brts}{A set of branching times of a phylogeny, all positive }
@@ -89,8 +100,8 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
  \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}}
 \references{
-- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
-- Etienne & Haegeman 2012. Am. Nat. Am. Nat. 180: E75-E89, doi: 10.1086/667574
+- Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne, R.S. & B. Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
 }
 \author{Rampal S. Etienne & Bart Haegeman }
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.
@@ -107,7 +118,7 @@ brts = 1:20
 dd_SR_ML(brts)
 }
 \dontshow{
-dd_SR_ML(1:4,initparsopt = c(2.23,0.0002,1.58,4.41,3.01),idparsopt = c(1:3,6,7),tol = c(0.01,0.01,0.01), cond = 1)
+dd_SR_ML(1:4,initparsopt = c(2.23,0.0002,1.58,4.41,3.01),idparsopt = c(1:3,6,7),tol = c(0.01,0.01,0.01))
 }
 }
 \keyword{ models }

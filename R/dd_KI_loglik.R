@@ -34,6 +34,7 @@ if(length(pars2) == 4)
 }
 abstol = 1e-16
 reltol = 1e-14
+m = missnumspec
 # order branching times
 brts=-sort(abs(c(brtsM,brtsS)),decreasing = TRUE)
 if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
@@ -73,8 +74,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
 
     n0 = (ddep == 2 | ddep == 4)
     cond = pars2[3]
-    tsplit = -pars2[4]
-    m = missnumspec
+    tsplit = -pars2[4]    
     S1 = length(brtsM)-1 + (soc - 2)
     if(sum(brtsS == tinn) == 0) { brtsS = c(tinn,brtsS) }
     S2 = length(brtsS)-1

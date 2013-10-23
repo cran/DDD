@@ -89,6 +89,8 @@ under diversity-dependent diversification models.\cr \cr
    - Fix of bug for stem age (soc = 1), introduced in v2.2.
    - Allows Rabosky's exponential model, with la(n) = la_0 * n^(-x(la_0,mu,K)) as ddmodel = 2.1, mu(n) = mu_0 * n^x(la, mu_0, K) as ddmodel = 4.1\cr
    - Allows specific case of Rabosky's exponential model, with la(n) = la_0 * n^(-1), as ddmodel = 2.2, and mu(n) = mu_0 * n, as ddmodel = 4.2\cr
+   New in version 2.4\cr
+   - Fix of bug in dd_KI_loglik ('m' was not found)
    Forthcoming:\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik
 }
@@ -97,8 +99,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 2.3\cr
-Date: \tab 2013-10-01\cr
+Version: \tab 2.4\cr
+Date: \tab 2013-10-18\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
@@ -124,8 +126,10 @@ dd_sim simulates the diversity-dependent process
 Rampal S. Etienne & Bart Haegeman\cr
 Maintainer: Rampal S. Etienne (r.s.etienne@rug.nl)
 }
-\references{Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439\cr
-Etienne & Haegeman 2012, Am. Nat. In press, doi: 10.1086/667574}
+\references{
+- Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne, R.S. & B. Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
+}
 \keyword{ models }
 \seealso{
 \code{TESS}

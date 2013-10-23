@@ -10,13 +10,24 @@
    It also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_KI_ML(brtsM, brtsS, tsplit, initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + 
-    missnumspec[1]), 2 * (1 + length(brtsS) + missnumspec[length(missnumspec)]), 
-    (tsplit + max(brtsS))/2), parsfix = NULL, idparsopt = c(1:3, 6:7), idparsfix = NULL,
+dd_KI_ML(
+    brtsM,
+    brtsS,
+    tsplit,
+    initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + missnumspec[1]),
+2 * (1 + length(brtsS) + missnumspec[length(missnumspec)]),(tsplit + max(brtsS))/2),
+    parsfix = NULL,
+    idparsopt = c(1:3, 6:7),
+    idparsfix = NULL,
     idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
-    res = 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec)), ddmodel = 1, 
-    missnumspec = 0, cond = 1, soc = 2, tol = c(1E-3,1E-4,1E-6), maxiter = 1000 * 
-    round((1.25)^length(idparsopt)))
+    res = 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec)),
+    ddmodel = 1, 
+    missnumspec = 0,
+    cond = 1,
+    soc = 2,
+    tol = c(1E-3,1E-4,1E-6),
+    maxiter = 1000 * round((1.25)^length(idparsopt))
+    )
 }
 \arguments{
   \item{brtsM}{A set of branching times of the main clade in a phylogeny, all positive }
@@ -85,8 +96,8 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
  \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}}
 \references{
-- Etienne et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
-- Etienne & Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
+- Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
+- Etienne, R.S. & B. Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
 }
 \author{Rampal S. Etienne & Bart Haegeman }
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.
