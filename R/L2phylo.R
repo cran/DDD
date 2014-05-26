@@ -1,6 +1,7 @@
 L2phylo = function(L,dropextinct = T)
 # makes a phylogeny out of a matrix with branching times, parent and daughter species, and extinction times
 {
+   L = L[order(abs(L[,3])),1:4]  
    age = L[1,1]
    L[,1] = age - L[,1]
    L[1,1] = -1
@@ -10,7 +11,6 @@ L2phylo = function(L,dropextinct = T)
    {
       sall = which(L[,4] == -1)
       tend = age
-
    } else {
       sall = which(L[,4] >= -1)
       tend = (L[,4] == -1) * age + (L[,4] > -1) * L[,4]
@@ -32,15 +32,14 @@ L2phylo = function(L,dropextinct = T)
          linlist[parentj,4] = paste("(",spec1,",",spec2,")",sep = "")
          linlist[parentj,5] = linlist[j,1]
          linlist = linlist[-j,]
-      } else {
-         linlist[j,1:3] = L[abs(as.numeric(parent)),1:3]
+      } else {      
+         #linlist[j,1:3] = L[abs(as.numeric(parent)),1:3]
+         linlist[j,1:3] = L[which(L[,3] == as.numeric(parent)),1:3]
       }
       if(is.null(nrow(linlist))) { done = 1 }
    }
-   linlist[4] = paste("(",linlist[4],":100",",dummytip:200)",sep = "")
-   linlist[4] = paste(linlist[4],";",sep = "")
-   phy = newick2phylog(linlist[4])
+   linlist[4] = paste(linlist[4],":",linlist[5],";",sep = "")
+   phy = read.tree(text = linlist[4])
    tree = as.phylo(phy)
-   tree = drop.tip(tree,"dummytip")
    return(tree)
 }

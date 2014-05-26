@@ -2,7 +2,7 @@
 \alias{bd_loglik}
 \title{Loglikelihood for diversity-independent diversification model }
 \description{
-  This function computes loglikelihood of a diversity-dependent diversification model
+  This function computes loglikelihood of a diversity-independent diversification model
   for a given set of branching times and parameter values.
 }
 \usage{bd_loglik(pars1, pars2, brts, missnumspec)}

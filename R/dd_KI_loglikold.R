@@ -1,4 +1,4 @@
-dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
+dd_KI_loglikold = function(pars1,pars2,brtsM,brtsS,missnumspec)
 {
 # brtsM = branching times of main clade M (positive, from present to past)
 # brtsS = branching times of subclade S (positive, from present to past)
@@ -143,7 +143,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        probs = y[2,2:(lx+1)]
        if(k<S2)
        {
-           probs = flavec(ddep,laS,muS,KS,0,lxS,k,n0) * probs # speciation event
+           probs = flavec(ddep,laS,muS,KS,0,lxS,k1,n0) * probs # speciation event
            if(sum(probs) <= 0)
            {
               loglik = -Inf
@@ -288,8 +288,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        probs[2,2] = 1 # clade M starts with two species
        # STEP 1: integrate from tcrown to tinn
        dim(probs) = c(lx*lx,1)
-       ##y = lsoda(probs,c(tcrown,tinn),dd_logliknorm_rhs2,c(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol)
-       y = ode(probs,c(tcrown,tinn),dd_logliknorm_rhs2,list(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol, method = "lsoda")
+       y = lsoda(probs,c(tcrown,tinn),dd_logliknorm_rhs2,c(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx * lx + 1)]
        dim(probs) = c(lx,lx)
        probs[1,1:lx] = 0
@@ -302,16 +301,14 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        dim(probs) = c(lx,lx)
        # STEP 3: integrate from tinn to tpres
        dim(probs) = c(lx*lx,1);
-       ##y = lsoda(probs,c(tinn,tpres),dd_logliknorm_rhs2,c(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol)
-       y = ode(probs,c(tinn,tpres),dd_logliknorm_rhs2,list(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol, method = "lsoda")
+       y = lsoda(probs,c(tinn,tpres),dd_logliknorm_rhs2,c(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx * lx + 1)]
        dim(probs) = c(lx,lx)
        PM12 = sum(sum(probs[2:lx,2:lx]))
        PM2 = sum(probs[2:lx,1])
        logliknorm = log(2)+log(PM12+PS*PM2)
     }
-    if(length(m) > 1) { Sv = c(S1,S2) } else { Sv = S }
-    loglik = loglik - logliknorm - sum(lgamma(Sv + m + 1) - lgamma(Sv + 1) - lgamma(m + 1))
+    loglik = loglik - logliknorm - lgamma(S + m + 1) + lgamma(S + 1) + lgamma(m + 1)
 }
 }}
 if(pars2[5] == 1)
@@ -321,10 +318,5 @@ if(pars2[5] == 1)
     cat(s1,s2,"\n",sep = "")
     flush.console()
 }
-loglik = as.numeric(loglik)
-if(is.nan(loglik) | is.na(loglik))
-{
-    loglik = -Inf
-}
-return(loglik)
+return(as.numeric(loglik))
 }   

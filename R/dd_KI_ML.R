@@ -73,6 +73,7 @@ trparsfix[which(parsfix == Inf)] = 1
 pars2 = c(res,ddmodel,cond,tsplit,0,soc,tol,maxiter)
 initloglik = dd_KI_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,pars2 = pars2,brtsM = brtsM,brtsS = brtsS,missnumspec = missnumspec)
 cat("The loglikelihood for the initial parameter values is",initloglik,"\n")
+flush.console()
 if(initloglik == -Inf)
 {
    cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")

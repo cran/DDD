@@ -132,7 +132,7 @@ if(tdmodel == 1 & (la1 != 0 | mu1 != 0))
 {
    for(i in 1:S)
    {
-      PtT[i] = (1 + integrate(PtTint, lower = t[i], upper = T, t1 = t[i], pars = pars1)$value)^(-1)
+      PtT[i] = (1 + integrate(PtTint, lower = t[i], upper = T, t1 = t[i], pars = pars1, subdivisions = 10000L)$value)^(-1)
       ux[i] = 1 - PtT[i] * exp(rhotaut(T,t[i],pars1))
    }
 }
@@ -315,11 +315,17 @@ if(m > 0)
 }
 if(pars2[4] == 1)
 {
-    if(la1 == 0 & mu1 == 0)
+    if(tdmodel == 0)
     {
        s1 = sprintf('Parameters: %f %f',pars1[1],pars1[2])
-    } else {
+    }
+    if(tdmodel == 1)
+    {
        s1 = sprintf('Parameters: %f %f %f %f',pars1[1],pars1[2],pars1[3],pars1[4])
+    }
+    if(tdmodel >= 2)
+    {
+       s1 = sprintf('Parameters: %f %f %f',pars1[1],pars1[2],pars1[3])
     }
     s2 = sprintf(', Loglikelihood: %f',loglik)
     cat(s1,s2,"\n",sep = "")
@@ -327,6 +333,10 @@ if(pars2[4] == 1)
 }
 
 }
-
-return(as.numeric(loglik))
+loglik = as.numeric(loglik)
+if(is.nan(loglik) | is.na(loglik))
+{
+    loglik = -Inf
+}
+return(loglik)
 }

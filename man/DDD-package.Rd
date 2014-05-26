@@ -91,7 +91,12 @@ under diversity-dependent diversification models.\cr \cr
    - Allows specific case of Rabosky's exponential model, with la(n) = la_0 * n^(-1), as ddmodel = 2.2, and mu(n) = mu_0 * n, as ddmodel = 4.2\cr
    New in version 2.4\cr
    - Fix of bug in dd_KI_loglik ('m' was not found)
+   New in version 2.5\cr
+   - Fix of bug in bd_loglik where NA was output to screen for a nonexistent parameter under diversity-dependence without extinction
+   - Fix of bug in dd_KI_loglik when m is a two-element vector
+   - Fix of bug in dd_KI_loglik, introduced in v2.3
    Forthcoming:\cr
+   - Using Bigmemory package to resolve memory issues with dd_KI_loglik when cond = 1
    - High-precision arithmetic in numerically unstable regions of bd_loglik
 }
 
@@ -99,8 +104,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 2.4\cr
-Date: \tab 2013-10-18\cr
+Version: \tab 2.5\cr
+Date: \tab 2014-05-23\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent

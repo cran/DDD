@@ -107,26 +107,26 @@ as explained in the supplementary material to Etienne et al. 2012.
 \examples{
 \donttest{
 cat("Estimating parameters for a set of branching times brts with the default settings:")
-brts = 1:20
+brts = 1:10
 dd_ML(brts)
 
 cat("Estimating the intrinsic speciation rate lambda and the carrying capacity K")
 cat("for a fixed extinction rate of 0.1:")
-brts = 1:20
+brts = 1:10
 dd_ML(brts,initparsopt = c(0.2,100), idparsopt = c(1,3), parsfix = 0.1)
 
 cat("This will estimate all parameters under the linear diversity-dependent")
 cat("extinction model:")
-brts = 1:20
+brts = 1:10
 dd_ML(brts, ddmodel = 3)
 
 cat("This will estimate all parameters under the default model")
 cat("when there are 2 missing species:")
-brts = 1:20
+brts = 1:10
 dd_ML(brts, missnumspec = 2)
 }
 \dontshow{
-dd_ML(1:3,c(1.14285,1E-13,4))
+dd_ML(1:3,c(1.1,1E-13,4), cond = 1)
 }
 }
 \keyword{ models }

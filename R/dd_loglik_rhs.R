@@ -17,6 +17,7 @@ n0 = (ddep == 2 | ddep == 4)
 
 nn = -1:(lx+2*kk)
 lnn = length(nn)
+nn = pmax(rep(0,lnn),nn)
 
 if(ddep == 1)
 {

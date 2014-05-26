@@ -243,5 +243,10 @@ if(pars2[5] == 1)
     cat(s1,s2,"\n",sep = "")
     flush.console()
 }
-return(as.numeric(loglik))
+loglik = as.numeric(loglik)
+if(is.nan(loglik) | is.na(loglik))
+{
+    loglik = -Inf
+}
+return(loglik)
 }

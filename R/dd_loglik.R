@@ -165,5 +165,10 @@ if(pars2[5] == 1)
     flush.console()
 }
 }
-return(as.numeric(loglik))
+loglik = as.numeric(loglik)
+if(is.nan(loglik) | is.na(loglik))
+{
+    loglik = -Inf
+}
+return(loglik)
 }

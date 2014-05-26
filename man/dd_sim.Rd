@@ -24,8 +24,8 @@
    The second element is the tree of all species, including extinct species, in phylo format \cr
    The third element is a matrix of all species where \cr
    - the first column is the time at which a species is born \cr
-   - the second column is the parent of the species \cr
-   - the third column is the daughter species \cr
+   - the second column is the label of the parent of the species; positive and negative values only indicate whether the species belongs to the left or right crown lineage \cr
+   - the third column is the label of the daughter species itself; positive and negative values only indicate whether the species belongs to the left or right crown lineage \cr
    - the fourth column is the time of extinction of the species \cr
    If the fourth element equals -1, then the species is still extant.
   }
