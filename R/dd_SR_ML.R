@@ -17,12 +17,12 @@ dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec)
 # - pars[7] = tshift = time of shift
 # - res = resolution of the method; res should be larger than the total number of species
 # - ddmodel = diversity-dependent model,mode of diversity-dependence
-#  . ddmodel == 1 : linear dependence in speciation rate
-#  . ddmodel == 2 : exponential dependence in speciation rate
-#  . ddmodel == 1 : linear dependence in speciation rate
+#  . ddmodel == 1 : linear dependence in speciation rate with parameter K
+#  . ddmodel == 1.3: linear dependence in speciation rate with parameter K'
 #  . ddmodel == 2 : exponential dependence in speciation rate
 #  . ddmodel == 2.1: variant with offset at infinity
 #  . ddmodel == 2.2: 1/n dependence in speciation rate
+#  . ddmodel == 2.3: exponential dependence in speciation rate with parameter x
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
 #  . ddmodel == 4.1: variant with offset at infinity

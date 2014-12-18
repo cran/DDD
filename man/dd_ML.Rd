@@ -46,15 +46,17 @@ not specified in idparsopt.
   \item{parsfix}{ The values of the parameters that should not be optimized }
   \item{res}{ Sets the maximum number of species for which a probability must be computed, must be larger than 1 + length(brts) }
   \item{ddmodel}{ Sets the model of diversity-dependence: \cr
-   ddmodel == 1 : linear dependence in speciation rate \cr
-   ddmodel == 2 : exponential dependence in speciation rate \cr
-   ddmodel == 2.1 : variant of exponential dependence in speciation rate with offset at infinity\cr
-   ddmodel == 2.2 : 1/n dependence in speciation rate\cr
-   ddmodel == 3 : linear dependence in extinction rate \cr
-   ddmodel == 4 : exponential dependence in extinction rate \cr
-   ddmodel == 4.1 : variant of exponential dependence in extinction rate with offset at infinity
-   ddmodel == 4.2 : 1/n dependence in extinction rate with offset at infinity
-   ddmodel == 5 : linear dependence in speciation and extinction rate
+   \code{ddmodel == 1} : linear dependence in speciation rate with parameter K (= diversity where speciation = extinction)\cr
+   \code{ddmodel == 1.3} : linear dependence in speciation rate with parameter K' (= diversity where speciation = 0)\cr
+   \code{ddmodel == 2} : exponential dependence in speciation rate with parameter K (= diversity where speciation = extinction)\cr
+   \code{ddmodel == 2.1} : variant of exponential dependence in speciation rate with offset at infinity\cr
+   \code{ddmodel == 2.2} : 1/n dependence in speciation rate\cr
+   \code{ddmodel == 2.3} : exponential dependence in speciation rate with parameter x (= exponent)\cr
+   \code{ddmodel == 3} : linear dependence in extinction rate \cr
+   \code{ddmodel == 4} : exponential dependence in extinction rate \cr
+   \code{ddmodel == 4.1} : variant of exponential dependence in extinction rate with offset at infinity \cr
+   \code{ddmodel == 4.2} : 1/n dependence in extinction rate with offset at infinity \cr
+   \code{ddmodel == 5} : linear dependence in speciation and extinction rate \cr
   }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
   \item{cond}{ Conditioning: \cr
@@ -106,24 +108,11 @@ as explained in the supplementary material to Etienne et al. 2012.
 }
 \examples{
 \donttest{
-cat("Estimating parameters for a set of branching times brts with the default settings:")
-brts = 1:10
-dd_ML(brts)
-
 cat("Estimating the intrinsic speciation rate lambda and the carrying capacity K")
-cat("for a fixed extinction rate of 0.1:")
+cat("for a fixed extinction rate of 0.1, conditioning on clade survival and two missing species:")
 brts = 1:10
-dd_ML(brts,initparsopt = c(0.2,100), idparsopt = c(1,3), parsfix = 0.1)
-
-cat("This will estimate all parameters under the linear diversity-dependent")
-cat("extinction model:")
-brts = 1:10
-dd_ML(brts, ddmodel = 3)
-
-cat("This will estimate all parameters under the default model")
-cat("when there are 2 missing species:")
-brts = 1:10
-dd_ML(brts, missnumspec = 2)
+dd_ML(brts = brts,initparsopt = c(0.2,100), idparsopt = c(1,3), parsfix = 0.1,
+      cond = 1, missnumspec = 2)
 }
 \dontshow{
 dd_ML(1:3,c(1.1,1E-13,4), cond = 1)

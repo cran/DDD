@@ -24,11 +24,22 @@ if(ddep == 1)
     lavec = pmax(rep(0,lnn),la - (la-mu)/K * nn)
     muvec = mu * rep(1,lnn)
 } else {
+if(ddep == 1.3)
+{
+    lavec = pmax(rep(0,lnn),la * (1 - nn/K))
+    muvec = mu * rep(1,lnn)
+} else {
 if(ddep == 2 | ddep == 2.1 | ddep == 2.2)
 {
     y = -(log(la/mu)/log(K+n0))^(ddep != 2.2)
     lavec = pmax(rep(0,lnn),la * (nn + n0)^y)
     lavec[which((nn + n0)^y == Inf)] = 0
+    muvec = mu * rep(1,lnn)
+} else {
+if(ddep == 2.3)
+{
+    y = K
+    lavec = pmax(rep(0,lnn),la * (nn + n0)^y)
     muvec = mu * rep(1,lnn)
 } else {
 if(ddep == 3)
@@ -47,7 +58,7 @@ if(ddep == 5)
 { 
     lavec = pmax(rep(0,lnn),la - 1/(r+1)*(la-mu)/K * nn)
     muvec = muvec = mu + r/(r+1)*(la-mu)/K * nn
-}}}}}
+}}}}}}}
 xx = c(0,x[1:lx],0)
 
 dx = lavec[(2:(lx+1))+kk] * nn[(2:(lx+1))+2*kk] * xx[(2:(lx+1))+1] + muvec[(2:(lx+1))+kk] * nn[(2:(lx+1))] * xx[(2:(lx+1))-1] - (lavec[(2:(lx+1))+kk] + muvec[(2:(lx+1))+kk]) * nn[(2:(lx+1))+kk] * xx[2:(lx+1)]

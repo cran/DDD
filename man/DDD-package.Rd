@@ -95,6 +95,8 @@ under diversity-dependent diversification models.\cr \cr
    - Fix of bug in bd_loglik where NA was output to screen for a nonexistent parameter under diversity-dependence without extinction
    - Fix of bug in dd_KI_loglik when m is a two-element vector
    - Fix of bug in dd_KI_loglik, introduced in v2.3
+   New in version 2.6\cr
+   - Allows linear dependence of speciation with parameter K' (= diversity where speciation = 0)
    Forthcoming:\cr
    - Using Bigmemory package to resolve memory issues with dd_KI_loglik when cond = 1
    - High-precision arithmetic in numerically unstable regions of bd_loglik
@@ -104,8 +106,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 2.5\cr
-Date: \tab 2014-05-23\cr
+Version: \tab 2.6\cr
+Date: \tab 2014-12-17\cr
 License: \tab GPL 2.0\cr
 }
 dd_loglik computes the likelihood of any of 4 different models of diversity-dependent
@@ -138,25 +140,4 @@ Maintainer: Rampal S. Etienne (r.s.etienne@rug.nl)
 \keyword{ models }
 \seealso{
 \code{TESS}
-}
-\examples{
-\donttest{
-cat("Estimate the parameters of the diversity-dependent model")
-cat("for a set of branching times with the default settings:")
-brts = 1:20
-dd_ML(brts)
-
-cat("Estimating the parameters of the diversity-dependent model with shiftting rates")
-cat("for a set of branching times brts with the default settings:")
-brts = 1:20
-dd_SR_ML(brts)
-
-cat("Estimating the parameters of the diversity-dependent model with decoupling")
-cat("for a set of branching times with the default settings:")
-brtsM = 1:20
-brtsS = seq(0.2,1.5,0.3)
-tsplit = 5
-dd_ML(brtsM,brtsS,tsplit)
-
-}
 }

@@ -113,9 +113,10 @@ as explained in the supplementary material to Etienne et al. 2012.
 }
 \examples{
 \donttest{
-cat("Estimating parameters for a set of branching times brts with the default settings:")
-brts = 1:20
-dd_SR_ML(brts)
+cat("Estimating parameters for a set of branching times brts with conditioning on clade survival:")
+brts = 1:10
+dd_SR_ML(brts = brts, initparsopt = c(0.54, 0.03, 10000, 10.8, 8.9999), idparsopt = c(1:3,6,7),
+         idparsfix = NULL, parsfix = NULL, idparsnoshift = c(4,5), cond = 1)
 }
 \dontshow{
 dd_SR_ML(1:4,initparsopt = c(2.23,0.0002,1.58,4.41,3.01),idparsopt = c(1:3,6,7),tol = c(0.01,0.01,0.01))

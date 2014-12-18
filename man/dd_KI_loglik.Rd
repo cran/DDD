@@ -23,14 +23,16 @@
     \code{pars2[1]} sets the maximum number of species for which a probability must be computed.
     This must be larger than 1 + missnumspec + length(brts). \cr \cr
     \code{pars2[2]} sets the model of diversity-dependence: \cr
-    - \code{pars2[2] == 1} linear dependence in speciation rate \cr
-    - \code{pars2[2] == 2} exponential dependence in speciation rate \cr
+    - \code{pars2[2] == 1} linear dependence in speciation rate with parameter K (= diversity where speciation = extinction)\cr
+    - \code{pars2[2] == 1.3} linear dependence in speciation rate with parameter K' (= diversity where speciation = 0)\cr 
+    - \code{pars2[2] == 2} exponential dependence in speciation rate with parameter K (= diversity where speciation = extinction)\cr
     - \code{pars2[2] == 2.1} variant of exponential dependence in speciation rate with offset at infinity\cr
     - \code{pars2[2] == 2.2} 1/n dependence in speciation rate\cr
+    - \code{pars2[2] == 2.3} exponential dependence in speciation rate with parameter x (= exponent)\cr
     - \code{pars2[2] == 3} linear dependence in extinction rate \cr
     - \code{pars2[2] == 4} exponential dependence in extinction rate \cr
     - \code{pars2[2] == 4.1} variant of exponential dependence in extinction rate with offset at infinity\cr
-    - \code{pars2[2] == 4.2} 1/n dependence in extinction rate\cr \cr
+    - \code{pars2[2] == 4.2} 1/n dependence in extinction rate\cr\cr
     \code{pars2[3]} sets the conditioning: \cr
     - \code{cond == 0} no conditioning \cr
     - \code{cond == 1} conditioning on non-extinction of the phylogeny \cr \cr
@@ -55,8 +57,9 @@
 }
 \examples{
 \donttest{
+# This will take quite some time to run
 pars1 = c(0.25,0.12,25.51,1.0,0.16,8.61,9.8)
-pars2 = c(200,1,TRUE,18.8)
+pars2 = c(200,1,0,18.8,1,2)
 missnumspec = 0
 brtsM = c(25.2,24.6,24.0,22.5,21.7,20.4,19.9,19.7,18.8,17.1,15.8,11.8,9.7,8.9,5.7,5.2)
 brtsS = c(9.6,8.6,7.4,4.9,2.5)

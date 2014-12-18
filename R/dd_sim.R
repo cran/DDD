@@ -11,10 +11,12 @@ dd_sim = function(pars,age,ddmodel = 1)
 #  . r = ratio of diversity-dependence in extinction rate over speciation rate
 # age = crown age
 # ddmodel = mode of diversity-dependence
-#  . ddmodel == 1 : linear dependence in speciation rate
+#  . ddmodel == 1 : linear dependence in speciation rate with parameter K
+#  . ddmodel == 1.3: linear dependence in speciation rate with parameter K'
 #  . ddmodel == 2 : exponential dependence in speciation rate
 #  . ddmodel == 2.1: variant with offset at infinity
 #  . ddmodel == 2.2: 1/n dependence in speciation rate
+#  . ddmodel == 2.3: exponential dependence in speciation rate with parameter x
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
 #  . ddmodel == 4.1: variant with offset at infinity
@@ -37,10 +39,23 @@ lamuN = function(ddmodel,pars,N)
         laN = max(0,la - (la - mu) * N/K)
         muN = mu
     }
+    if(ddmodel == 1.3)
+    {
+        # linear dependence in speciation rate
+        laN = max(0,la - (1 - N/K))
+        muN = mu
+    }
     if(ddmodel == 2 | ddmodel == 2.1 | ddmodel == 2.2)
     {
         # exponential dependence in speciation rate
         al = (log(la/mu)/log(K+n0))^(ddmodel != 2.2)
+        laN = la * (N + n0)^(-al)
+        muN = mu
+    }
+    if(ddmodel == 2.3)
+    {
+        # exponential dependence in speciation rate
+        al = K
         laN = la * (N + n0)^(-al)
         muN = mu
     }

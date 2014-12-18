@@ -9,10 +9,12 @@ dd_loglik = function(pars1,pars2,brts,missnumspec)
 # - pars1[4] = r = ratio of diversity-dependence in extinction rate over speciation rate
 # - pars2[1] = lx = length of ODE variable x
 # - pars2[2] = ddep = diversity-dependent model,mode of diversity-dependence
-#  . ddep == 1 : linear dependence in speciation rate
+#  . ddep == 1 : linear dependence in speciation rate with parameter K
+#  . ddep == 1.3 : linear dependence in speciation rate with parameter K'
 #  . ddep == 2 : exponential dependence in speciation rate
 #  . ddep == 2.1: variant with offset at infinity
 #  . ddep == 2.2: 1/n dependence in speciation rate
+#  . ddep == 2.3: exponential dependence in speciation rate with parameter x
 #  . ddep == 3 : linear dependence in extinction rate
 #  . ddep == 4 : exponential dependence in extinction rate
 #  . ddep == 4.1: variant with offset at infinity
@@ -44,10 +46,14 @@ K = pars1[3]
 if(ddep == 5) {r = pars1[4]} else {r = 0}
 if(ddep == 1 | ddep == 5)
 { 
-    lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * (r + 1) * K)),round(pars2[1]))
+    lx = min(max(1 + missnumspec,1 + ceiling(la/(la - mu) * (r + 1) * K)),ceiling(pars2[1]))
+} else {
+if(ddep == 1.3)
+{
+    lx = min(ceiling(K),ceiling(pars2[1]))
 } else {
     lx = round(pars2[1])
-}
+}}
 n0 = (ddep == 2 | ddep == 4)
 if((ddep == 1) & ((mu == 0 & missnumspec == 0 & floor(K) != ceiling(K) & la > 0.05) | K == Inf))
 {
@@ -68,8 +74,10 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
     cat("These parameter values cannot satisfy lambda(N) = mu(N) for a positive and finite N.\n")
     loglik = -Inf
 } else {
-    if((ddep == 1 | ddep == 5) & ceiling(la/(la - mu) * (r + 1) * K) < (S + missnumspec)) { loglik = -Inf } else
+    if(((ddep == 1 | ddep == 5) & ceiling(la/(la - mu) * (r + 1) * K) < (S + missnumspec)) | ((ddep == 1.3) & (S + missnumspec > ceiling(K))))
     {
+       loglik = -Inf
+    } else {
        loglik = (btorph == 0) * lgamma(S)
        if(cond != 3)
        {
@@ -116,8 +124,10 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
           }
        }
 
-       if(probs[1 + missnumspec]<=0 | loglik == -Inf) { loglik = -Inf } else
-       {        
+       if(probs[1 + missnumspec] <= 0 | loglik == -Inf)
+       {
+          loglik = -Inf
+       } else  {        
           loglik = loglik + (cond != 3 | soc == 1) * log(probs[1 + (cond != 3) * missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
   
           logliknorm = 0

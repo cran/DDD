@@ -13,10 +13,12 @@ dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
 # - pars1[7] = tinn = time of key innovation
 # - pars2[1] = lx = length of ODE variable x
 # - pars2[2] = ddep = diversity-dependent model, mode of diversity-dependence
-#  . ddep == 1 : linear dependence in speciation rate
+#  . ddep == 1 : linear dependence in speciation rate with parameter K
+#  . ddep == 1.3 : linear dependence in speciation rate with parameter K'
 #  . ddep == 2 : exponential dependence in speciation rate
 #  . ddep == 2.1: variant with offset at infinity
 #  . ddep == 2.2: 1/n dependence in speciation rate
+#  . ddep == 2.3: exponential dependence in speciation rate with parameter x
 #  . ddep == 3 : linear dependence in extinction rate
 #  . ddep == 4 : exponential dependence in extinction rate
 #  . ddep == 4.1: variant with offset at infinity
@@ -36,20 +38,29 @@ abstol = 1e-16
 reltol = 1e-14
 m = missnumspec
 # order branching times
-brts=-sort(abs(c(brtsM,brtsS)),decreasing = TRUE)
-if(sum(brts == 0) == 0) { brts[length(brts) + 1] = 0 }
+brts = -sort(abs(c(brtsM,brtsS)),decreasing = TRUE)
+if(sum(brts == 0) == 0)
+{ 
+   brts[length(brts) + 1] = 0
+}
 soc = pars2[6]
 S = length(brts) + (soc - 2)
-brtsM =-sort(abs(brtsM),decreasing = TRUE)
-if(sum(brtsM == 0) == 0) { brtsM[length(brtsM) + 1] = 0 }
-brtsS =-sort(abs(brtsS),decreasing = TRUE)
-if(sum(brtsS == 0) == 0) { brtsS[length(brtsS) + 1] = 0 }
+brtsM = -sort(abs(brtsM),decreasing = TRUE)
+if(sum(brtsM == 0) == 0)
+{ 
+   brtsM[length(brtsM) + 1] = 0
+}
+brtsS = -sort(abs(brtsS),decreasing = TRUE)
+if(sum(brtsS == 0) == 0)
+{
+   brtsS[length(brtsS) + 1] = 0
+}
 
-if(min(pars1) < 0 || -pars1[7] <= min(brtsM) || -pars1[7] >= min(brtsS))
+if(min(pars1) < 0 | -pars1[7] <= min(brtsM) | -pars1[7] >= min(brtsS))
 {
     loglik = -Inf
 } else {
-if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || pars1[3] == 0) && pars2[2] == 4) || pars1[1] <= pars1[2] || pars1[4] <= pars1[5])
+if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1[3] == 0) & pars2[2] == 4) | pars1[1] <= pars1[2] | pars1[4] <= pars1[5])
 { 
     cat("These parameter values cannot satisfy lambda(N) = mu(N) for some finite N.\n")
     loglik = -Inf
@@ -65,20 +76,39 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
     ddep = pars2[2]
     if(ddep == 1)
     {
-        lxM = min(max(1 + m[1],1 + ceiling(laM/(laM - muM) * KM)),round(lmax))
-        lxS = min(max(1 + m[1],1 + ceiling(laS/(laS - muS) * KS)),round(lmax))
+        lxM = min(max(1 + m[1],1 + ceiling(laM/(laM - muM) * KM)),ceiling(lmax))
+        lxS = min(max(1 + m[1],1 + ceiling(laS/(laS - muS) * KS)),ceiling(lmax))
     } else {
-        lxM = round(lmax)
-        lxS = round(lmax)
+       if(ddep == 1.3)
+       {
+          lxM = min(max(1 + m[1],1 + ceiling(KM)),ceiling(lmax))
+          lxS = min(max(1 + m[1],1 + ceiling(KS)),ceiling(lmax))         
+       } else {
+          lxM = round(lmax)
+          lxS = round(lmax)
+       }
     }
 
     n0 = (ddep == 2 | ddep == 4)
     cond = pars2[3]
     tsplit = -pars2[4]    
-    S1 = length(brtsM)-1 + (soc - 2)
+    S1 = length(brtsM) - 1 + (soc - 2)
     if(sum(brtsS == tinn) == 0) { brtsS = c(tinn,brtsS) }
-    S2 = length(brtsS)-1
-    if(ddep == 1 && (ceiling(laM/(laM - muM) * KM) < S1 || (ceiling(laS/(laS - muS) * KS) < S2 ))) { loglik = -Inf } else {
+    S2 = length(brtsS) - 1
+    S1a = S1
+    S2a = S2
+    summ = sum(m)
+    if(length(m) == 2)
+    {
+       S1a = S1 + m[1]
+       S2a = S2 + m[2]
+       summ = 0
+    }  
+    if((ddep == 1 & ( (ceiling(laM/(laM - muM) * KM) < S1a) | (ceiling(laS/(laS - muS) * KS) < S2a) )) |
+       (ddep == 1.3 & ( (ceiling(KM) < S1a) | (ceiling(KS) < S2a) | (ceiling(KM) + ceiling(KS) < S1a + S2a + summ) )))
+    { 
+       loglik = -Inf
+    } else {
 
     # avoid coincidence of branching time and key innovation time
     if(sum(abs(brtsM - tinn) < 1E-14) == 1) { tinn = tinn - 1E-8 }
@@ -96,7 +126,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        t1 = brtsM[k-1]; t2 = min(c(tinn,brtsM[k]))
        y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx+1)]
-       if(t2<tinn)
+       if(t2 < tinn)
        {
            probs = flavec(ddep,laM,muM,KM,0,lxM,k1,n0) * probs # speciation event
            if(sum(probs) <= 0)
@@ -115,7 +145,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        t1 = max(tinn,brtsM[k-1]); t2 = brtsM[k];
        y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx+1)]
-       if(k<(S1+1))
+       if(k < (S1+1))
        {
            probs = flavec(ddep,laM,muM,KM,0,lxM,k1,n0) * probs # speciation event
            if(sum(probs) <= 0) { loglik = -Inf } else
@@ -141,7 +171,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        t1 = brtsS[k]; t2 = brtsS[k+1]
        y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol)
        probs = y[2,2:(lx+1)]
-       if(k<S2)
+       if(k < S2)
        {
            probs = flavec(ddep,laS,muS,KS,0,lxS,k,n0) * probs # speciation event
            if(sum(probs) <= 0)
@@ -205,7 +235,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        loglik = -Inf
     }   
 
-    if(cond == 0 || loglik == -Inf)
+    if(cond == 0 | loglik == -Inf)
     {
        logliknorm = 0
     } else {   
@@ -220,12 +250,23 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
            lavec = pmax(rep(0,lx + 2),laS - (laS-muS)/KS * nx)
            muvec = muS * rep(1,lx + 2)
        } 
+       if(ddep == 1.3) 
+       { 
+           lavec = pmax(rep(0,lx + 2),laS * (1 - nx/KS))
+           muvec = muS * rep(1,lx + 2)
+       } 
        if(ddep == 2 | ddep == 2.1 | ddep == 2.2)
        {
            x = -(log(laS/muS)/log(KS+n0))^(ddep != 2.2) 
            lavec = pmax(rep(0,lx + 2),laS * (nx + n0)^x)
            muvec = muS * rep(1,lx + 2)
        }
+       if(ddep == 2.3)
+       {
+           x = KS 
+           lavec = pmax(rep(0,lx + 2),laS * (nx + n0)^x)
+           muvec = muS * rep(1,lx + 2)
+       }       
        if(ddep == 3)
        {
            lavec = laS * rep(1,lx + 2)
@@ -257,12 +298,23 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
            lavec = pmax(matrix(0,lx + 2,lx + 2),laM - (laM-muM)/KM * nxt)
            muvec = muM * matrix(1,lx + 2,lx + 2)
        } 
+       if(ddep == 1.3) 
+       { 
+           lavec = pmax(matrix(0,lx + 2,lx + 2),laM * (1 - nxt/KM))
+           muvec = muM * matrix(1,lx + 2,lx + 2)
+       } 
        if(ddep == 2 | ddep == 2.1 | ddep == 2.2)
        { 
            x = -(log(laM/muM)/log(KM+n0))^(ddep != 2.2)
            lavec = pmax(matrix(0,lx + 2,lx + 2),laM * (nxt + n0)^x)
            muvec = muM * matrix(1,lx + 2,lx + 2)
        }
+       if(ddep == 2.3)
+       { 
+           x = KM
+           lavec = pmax(matrix(0,lx + 2,lx + 2),laM * (nxt + n0)^x)
+           muvec = muM * matrix(1,lx + 2,lx + 2)
+       }    
        if(ddep == 3)
        {
            lavec = laM * matrix(1,lx + 2,lx + 2)
@@ -310,7 +362,12 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) || ((pars1[1] == 0 || par
        PM2 = sum(probs[2:lx,1])
        logliknorm = log(2)+log(PM12+PS*PM2)
     }
-    if(length(m) > 1) { Sv = c(S1,S2) } else { Sv = S }
+    if(length(m) > 1)
+    {
+       Sv = c(S1,S2)
+    } else {
+       Sv = S
+    }
     loglik = loglik - logliknorm - sum(lgamma(Sv + m + 1) - lgamma(Sv + 1) - lgamma(m + 1))
 }
 }}

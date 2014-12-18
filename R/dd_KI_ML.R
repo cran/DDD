@@ -18,12 +18,12 @@ dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(
 # - pars[7] = t_d = time of decoupling
 # - res = resolution of the method; res should be larger than the total number of species
 # - ddmodel = diversity-dependent model,mode of diversity-dependence
-#  . ddmodel == 1 : linear dependence in speciation rate
-#  . ddmodel == 2 : exponential dependence in speciation rate
-#  . ddmodel == 1 : linear dependence in speciation rate
+#  . ddmodel == 1 : linear dependence in speciation rate with parameter K
+#  . ddmodel == 1.3: linear dependence in speciation rate with parameter K'
 #  . ddmodel == 2 : exponential dependence in speciation rate
 #  . ddmodel == 2.1: variant with offset at infinity
 #  . ddmodel == 2.2: 1/n dependence in speciation rate
+#  . ddmodel == 2.3: exponential dependence in speciation rate with parameter x
 #  . ddmodel == 3 : linear dependence in extinction rate
 #  . ddmodel == 4 : exponential dependence in extinction rate
 #  . ddmodel == 4.1: variant with offset at infinity
@@ -37,10 +37,10 @@ dd_KI_ML = function(brtsM, brtsS, tsplit, initparsopt = c(0.5,0.1,2*(1 + length(
 #  . reltolf = relative tolerance of function value in optimization
 #  . abstolx = absolute tolerance of parameter values in optimization
 # - maxiter = the maximum number of iterations in the optimization
-options(warn=-1)
+options(warn = -1)
 brtsM = sort(abs(as.numeric(brtsM)),decreasing = TRUE)
 brtsS = sort(abs(as.numeric(brtsS)),decreasing = TRUE)
-if(cond == 1 && soc == 1)
+if(cond == 1 & soc == 1)
 {
    cat("Conditioning on survival of a clade with stem age currently not implemented.\n")
    out2 = data.frame(row.names = "results",lambda_M = -1, mu_M = -1, K_M = -1, lambda_S = -1, mu_S = -1, K_S = -1, t_d = -1, loglik = -1, df = -1, conv = -1)

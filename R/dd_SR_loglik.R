@@ -13,9 +13,11 @@ dd_SR_loglik = function(pars1,pars2,brts,missnumspec)
 # - pars2[1] = lx = length of ODE variable x
 # - pars2[2] = ddep = diversity-dependent model, mode of diversity-dependence
 #  . ddep == 1 : linear dependence in speciation rate
+#  . ddep == 1.3 : linear dependence in speciation rate with parameter K'
 #  . ddep == 2 : exponential dependence in speciation rate
 #  . ddep == 2.1: variant with offset at infinity
 #  . ddep == 2.2: 1/n dependence in speciation rate
+#  . ddep == 2.3: exponential dependence in speciation rate with parameter x
 #  . ddep == 3 : linear dependence in extinction rate
 #  . ddep == 4 : exponential dependence in extinction rate
 #  . ddep == 4.1: variant with offset at infinity
@@ -63,15 +65,23 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
     n0 = (ddep == 2 | ddep == 4)
     if(ddep == 1) 
     { 
-       lx = min(max(1 + missnumspec,1 + ceiling(max(la/(la - mu) * K,la2/(la2 - mu2) * K2))),round(pars2[1]))
+       lx = min(max(1 + missnumspec,1 + ceiling(max(la/(la - mu) * K,la2/(la2 - mu2) * K2))),ceiling(pars2[1]))
     } else {
-       lx = round(pars2[1])
-    }     
+       if(ddep == 1.3)
+       {
+          lx = min(max(ceiling(K),ceiling(K2)),ceiling(pars2[1]))
+       } else {
+          lx = round(pars2[1])
+       }     
+    }
     cond = pars2[3]
     btorph = pars2[4]
 
-    if(ddep == 1 && (ceiling(la/(la - mu) * K) < kshift || ceiling(la2/(la2 - mu2) * K2) < (S + missnumspec))) { loglik = -Inf } else
-    {
+    if((ddep == 1 & (ceiling(la/(la - mu) * K) < kshift | ceiling(la2/(la2 - mu2) * K2) < (S + missnumspec))) | 
+       (ddep == 1.3 & (ceiling(K) < kshift | ceiling(K2) < (S + missnumspec))))
+    { 
+       loglik = -Inf
+    } else {
        loglik = (btorph == 0) * lgamma(S)
        if(cond != 3)
        {
@@ -85,7 +95,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
                  k1 = k + (soc - 2)
                  y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
                  probs = y[2,2:(lx+1)]
-                 if(k<(S + 2 - soc))
+                 if(k < (S + 2 - soc))
                  {
                      probs = flavec(ddep,la,mu,K,0,lx,k1,n0) * probs # speciation event
                      if(sum(probs) <= 0)
@@ -105,11 +115,14 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
            probs = y[2,2:(lx+1)]
            y = lsoda(probs,c(tshift,brts[k]),dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
            probs = y[2,2:(lx+1)] 
-           if(k<(S + 2 - soc))
+           if(k < (S + 2 - soc))
            {
                probs = flavec(ddep,la2,mu2,K2,0,lx,k1,n0) * probs # speciation event
-               if(sum(probs) <= 0) { loglik = -Inf } else
+               if(sum(probs) <= 0)
                {
+                  loglik = -Inf
+                  break
+               } else {
                   loglik = loglik + log(sum(probs))
                }
                probs = probs/sum(probs)
@@ -121,11 +134,14 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
                  k1 = k + (soc - 2)
                  y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
                  probs = y[2,2:(lx+1)]
-                 if(k<(S + 2 - soc))
+                 if(k < (S + 2 - soc))
                  {
                      probs = flavec(ddep,la2,mu2,K2,0,lx,k1,n0) * probs # speciation event
-                     if(sum(probs) <= 0) { loglik = -Inf } else
-                     {
+                     if(sum(probs) <= 0)
+                     { 
+                        loglik = -Inf
+                        break
+                     } else {
                         loglik = loglik + log(sum(probs))
                      }
                      probs = probs/sum(probs)
@@ -194,8 +210,10 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
            }
        }
  
-       if(probs[1 + (cond != 3) * missnumspec] <= 0 || loglik == -Inf) { loglik = -Inf } else
-       {
+       if(probs[1 + (cond != 3) * missnumspec] <= 0 || loglik == -Inf)
+       { 
+          loglik = -Inf
+       } else {
           loglik = loglik + (cond != 3 & soc == 2) * log(probs[1 + (cond != 3) * missnumspec]) - lgamma(S + missnumspec + 1) + lgamma(S + 1) + lgamma(missnumspec + 1)
                     
           logliknorm = 0
