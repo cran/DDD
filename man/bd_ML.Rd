@@ -20,7 +20,8 @@ bd_ML(
    btorph = 1,
    soc = 2,
    tol = c(1E-3, 1E-4, 1E-6), 
-   maxiter = 1000 * round((1.25)^length(idparsopt))
+   maxiter = 1000 * round((1.25)^length(idparsopt)),
+   changeloglikifnoconv = FALSE   
    )
 }
 \arguments{
@@ -61,6 +62,8 @@ not specified in idparsopt.
    abstolx = absolute tolerance of parameter values in optimization
   }
   \item{maxiter}{ Sets the maximum number of iterations in the optimization}
+  \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
+
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.

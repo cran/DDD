@@ -1,4 +1,4 @@
-dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec),2*(1+length(brts)+missnumspec),max(brts)/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1, soc = 2, allbp = FALSE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec),2*(1+length(brts)+missnumspec),max(brts)/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1, soc = 2, allbp = FALSE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -39,6 +39,7 @@ dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec)
 #  . reltolf = relative tolerance of function value in optimization
 #  . abstolx = absolute tolerance of parameter values in optimization
 # - maxiter = the maximum number of iterations in the optimization
+# - changeloglikifnoconv = if T the loglik will be set to -Inf if ML does not converge
 
 brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
 options(warn=-1)
@@ -83,7 +84,7 @@ if(out$conv > 0)
    out2 = data.frame(row.names = "results",lambda_1 = -1, mu_1 = -1, K_1 = -1, lambda_2 = -1, mu_2 = -1, K_2 = -1, t_shift = -1, loglik = -1, df = -1, conv = unlist(out$conv))
 } else {
 MLtrpars = as.numeric(unlist(out$par))
-MLpars = MLtrpars/(1-MLtrpars)
+MLpars = MLtrpars/(1 - MLtrpars)
 out$par = list(MLpars)
 MLpars1 = rep(0,7)
 MLpars1[idparsopt] = MLpars
@@ -114,14 +115,15 @@ if(sum(idparsfix == 7) == 0 && allbp == TRUE)
 }
 if(length(idparsfix) != 0) {MLpars1[idparsfix] = parsfix }
 if(length(idparsnoshift) != 0) { MLpars1[idparsnoshift] = MLpars1[idparsnoshift - 3] }
-if(MLpars1[3] > 10^7){MLpars1[3] = Inf}
-if(MLpars1[6] > 10^7){MLpars1[6] = Inf}
+if(MLpars1[3] > 10^7){ MLpars1[3] = Inf}
+if(MLpars1[6] > 10^7){ MLpars1[6] = Inf}
 s1 = sprintf('Maximum likelihood parameter estimates: %f %f %f %f %f %f %f',MLpars1[1],MLpars1[2],MLpars1[3],MLpars1[4],MLpars1[5],MLpars1[6],MLpars1[7])
 s2 = sprintf('Maximum loglikelihood: %f',ML)
 cat("\n",s1,"\n",s2,"\n")
 out$par = list(MLpars1)
 out$fvalues = list(ML)
 out2 = data.frame(row.names = "results",lambda_1 = MLpars1[1],mu_1 = MLpars1[2],K_1 = MLpars1[3],lambda_2 = MLpars1[4],mu_2 = MLpars1[5],K_2 = MLpars1[6],t_shift = MLpars1[7],loglik = ML,df = length(initparsopt),conv = unlist(out$conv))
+if(out2$conv != 0 & changeloglikifnoconv == T) { out2$loglik = -Inf }
 }
 }
 }

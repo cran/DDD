@@ -26,7 +26,8 @@ dd_KI_ML(
     cond = 1,
     soc = 2,
     tol = c(1E-3,1E-4,1E-6),
-    maxiter = 1000 * round((1.25)^length(idparsopt))
+    maxiter = 1000 * round((1.25)^length(idparsopt)),
+    changeloglikifnoconv = FALSE
     )
 }
 \arguments{
@@ -78,6 +79,8 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
    abstolx = absolute tolerance of parameter values in optimization
   }
   \item{maxiter}{Sets the maximum number of iterations in the optimization}
+  \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
+  
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.
@@ -110,15 +113,15 @@ as explained in the supplementary material to Etienne et al. 2012.
  \code{\link{dd_SR_ML}},
 }
 \examples{
-\donttest{
-# This will take quite some time to run
-cat("Estimating parameters for two sets of branching times brtsM, brtsS without conditioning:")
-brtsM = 1:10
-brtsS = seq(0.1,3.9,0.5)
+cat("This will estimate parameters for two sets of branching times brtsM, brtsS\n")
+cat("without conditioning.\n")
+cat("The tolerance of the optimization is set high so runtime is fast in this example.\n")
+cat("In real applications, use the default or more stringent settins for tol.\n")
+brtsM = 4:10
+brtsS = seq(0.1,3.5,0.7)
 tsplit = 5
 dd_KI_ML(brtsM = brtsM, brtsS = brtsS, tsplit = tsplit, idparsopt = c(1:3,6,7),
-         initparsopt = c(0.41, 1e-14, 11.8, 57.9, 3.61), idparsfix = NULL, parsfix = NULL,
-         idparsnoshift = c(4,5), cond = 0)
-}
+          initparsopt = c(0.885, 2e-14, 6.999, 6.848, 4.001), idparsfix = NULL, parsfix = NULL,
+          idparsnoshift = c(4,5), cond = 0, tol = c(3E-1,3E-1,3E-1))
 }
 \keyword{ models }

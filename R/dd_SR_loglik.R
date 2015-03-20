@@ -93,7 +93,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
               for(k in 2:(kshift-1))
               {
                  k1 = k + (soc - 2)
-                 y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
+                 y = ode(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
                  probs = y[2,2:(lx+1)]
                  if(k < (S + 2 - soc))
                  {
@@ -111,9 +111,9 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
            }   
            k = kshift
            k1 = k + (soc - 2)
-           y = lsoda(probs,c(brts[k-1],tshift),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
+           y = ode(probs,c(brts[k-1],tshift),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
            probs = y[2,2:(lx+1)]
-           y = lsoda(probs,c(tshift,brts[k]),dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
+           y = ode(probs,c(tshift,brts[k]),dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
            probs = y[2,2:(lx+1)] 
            if(k < (S + 2 - soc))
            {
@@ -132,7 +132,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
               for(k in (kshift + 1):(S + 2 - soc))
               {
                  k1 = k + (soc - 2)
-                 y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
+                 y = ode(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
                  probs = y[2,2:(lx+1)]
                  if(k < (S + 2 - soc))
                  {
@@ -156,7 +156,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
               for(k in (S + 2 - soc):(kshift + 1))
               {
                  k1 = k + (soc - 2)
-                 y = lsoda(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
+                 y = ode(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
                  probs = y[2,2:(lx+2)]
                  if(k > soc)
                  {
@@ -174,9 +174,9 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
            }
            k = kshift
            k1 = k + (soc - 2)
-           y = lsoda(probs,-c(brts[k],tshift),dd_loglik_bw_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol)
+           y = ode(probs,-c(brts[k],tshift),dd_loglik_bw_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
            probs = y[2,2:(lx+2)]
-           y = lsoda(probs,-c(tshift,brts[k-1]),dd_loglik_bw_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
+           y = ode(probs,-c(tshift,brts[k-1]),dd_loglik_bw_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
            probs = y[2,2:(lx+2)]
            if(k > soc)
            {
@@ -193,7 +193,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
            for(k in (kshift-1):2)
            {
               k1 = k + (soc - 2)
-              y = lsoda(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
+              y = ode(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
               probs = y[2,2:(lx+2)]
               if(k > soc)
               {
@@ -222,9 +222,9 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
              probs = rep(0,lx)
              probs[1] = 1 # change if other species at crown age
              k = soc
-             y = lsoda(probs,c(brts[1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol);
+             y = ode(probs,c(brts[1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol, method = "lsoda");
              probs = y[2,2:(lx+1)]
-             y = lsoda(probs,c(tshift,brts[length(brts)]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol);
+             y = ode(probs,c(tshift,brts[length(brts)]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol, method = "lsoda");
              probs = y[2,2:(lx+1)]
              if(soc == 1) { aux = 1:lx }
              if(soc == 2) { aux = (2:(lx+1)) * (3:(lx+2))/6 }
@@ -237,16 +237,16 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
              probsn = rep(0,lx + 1)
              probsn[S + missnumspec + 1] = 1
              T = max(1,1/abs(la - mu),1/abs(la2 - mu2)) * 100 * max(abs(brts)) # make this more efficient later
-             y = lsoda(probsn,c(0,-tshift),dd_loglik_bw_rhs,c(pars1[4:6],0,ddep),rtol = reltol,atol = abstol)
+             y = ode(probsn,c(0,-tshift),dd_loglik_bw_rhs,c(pars1[4:6],0,ddep),rtol = reltol,atol = abstol, method = "lsoda")
              probsn = y[2,2:(lx+2)]
-             y = lsoda(probsn,c(-tshift,T),dd_loglik_bw_rhs,c(pars1[1:3],0,ddep),rtol = reltol,atol = abstol)
+             y = ode(probsn,c(-tshift,T),dd_loglik_bw_rhs,c(pars1[1:3],0,ddep),rtol = reltol,atol = abstol, method = "lsoda")
              logliknorm = log(y[2,lx + 2])
              if(soc == 2)
              {
                 probsn = rep(0,lx + 1)
                 probsn[1:lx] = probs[1:lx]
                 probsn = c(flavec(ddep,la,mu,K,0,lx,1,n0),1) * probsn # speciation event
-                y = lsoda(probsn,c(max(abs(brts)),T),dd_loglik_bw_rhs,c(pars1[1:3],1,ddep),rtol = reltol,atol = abstol)
+                y = ode(probsn,c(max(abs(brts)),T),dd_loglik_bw_rhs,c(pars1[1:3],1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
                 logliknorm = logliknorm - log(y[2,lx + 2])
              }
           }

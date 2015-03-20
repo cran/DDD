@@ -24,7 +24,8 @@ dd_SR_ML(
    soc = 2,
    allbp = FALSE,
    tol = c(1E-3,1E-4,1E-6),
-   maxiter = 1000 * round((1.25)^length(idparsopt))
+   maxiter = 1000 * round((1.25)^length(idparsopt)),
+   changeloglikifnoconv = FALSE
    )
 }
 \arguments{
@@ -80,6 +81,8 @@ This conditioning turns out, for the diversity-dependent model, to provide the l
    abstolx = absolute tolerance of parameter values in optimization
   }
   \item{maxiter}{Sets the maximum number of iterations in the optimization}
+  \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
+  
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.
@@ -112,14 +115,13 @@ as explained in the supplementary material to Etienne et al. 2012.
  \code{\link{dd_KI_ML}},
 }
 \examples{
-\donttest{
-cat("Estimating parameters for a set of branching times brts with conditioning on clade survival:")
+cat("This will estimate parameters for two sets of branching times brtsM, brtsS\n")
+cat("without conditioning.\n")
+cat("The tolerance of the optimization is set high so runtime is fast in this example.\n")
+cat("In real applications, use the default or more stringent settings for tol.\n")
 brts = 1:10
-dd_SR_ML(brts = brts, initparsopt = c(0.54, 0.03, 10000, 10.8, 8.9999), idparsopt = c(1:3,6,7),
-         idparsfix = NULL, parsfix = NULL, idparsnoshift = c(4,5), cond = 1)
-}
-\dontshow{
-dd_SR_ML(1:4,initparsopt = c(2.23,0.0002,1.58,4.41,3.01),idparsopt = c(1:3,6,7),tol = c(0.01,0.01,0.01))
-}
+dd_SR_ML(brts = brts, initparsopt = c(0.4581, 1E-6, 17.69, 11.09, 8.9999), idparsopt = c(1:3,6,7),
+         idparsfix = NULL, parsfix = NULL, idparsnoshift = c(4,5), cond = 0, tol = c(1E-2,1E-2,1E-2)
+)
 }
 \keyword{ models }

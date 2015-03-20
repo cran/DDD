@@ -23,7 +23,8 @@ else {c(0.2,0.1,2*(length(brts) + missnumspec),0.01)},
    btorph = 1,
    soc = 2,
    tol = c(1E-3,1E-4,1E-6),
-   maxiter = 1000 * round((1.25)^length(idparsopt))
+   maxiter = 1000 * round((1.25)^length(idparsopt)),
+   changeloglikifnoconv = FALSE
    )
 }
 \arguments{
@@ -78,6 +79,7 @@ The default value has therefore been changed from 1 to 3 starting with DDD versi
    abstolx = absolute tolerance of parameter values in optimization
   }
   \item{maxiter}{Sets the maximum number of iterations in the optimization}
+  \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.
@@ -107,15 +109,10 @@ as explained in the supplementary material to Etienne et al. 2012.
  \code{\link{dd_KI_ML}},
 }
 \examples{
-\donttest{
 cat("Estimating the intrinsic speciation rate lambda and the carrying capacity K")
 cat("for a fixed extinction rate of 0.1, conditioning on clade survival and two missing species:")
-brts = 1:10
-dd_ML(brts = brts,initparsopt = c(0.2,100), idparsopt = c(1,3), parsfix = 0.1,
-      cond = 1, missnumspec = 2)
-}
-\dontshow{
-dd_ML(1:3,c(1.1,1E-13,4), cond = 1)
-}
+brts = 1:5
+dd_ML(brts = brts,initparsopt = c(1.3078,7.4188), idparsopt = c(1,3), parsfix = 0.1,
+      cond = 1, missnumspec = 2, tol = c(1E-3,1E-3,1E-4))
 }
 \keyword{ models }

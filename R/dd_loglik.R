@@ -86,7 +86,7 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
           for(k in 2:(S + 2 - soc))
           {
              k1 = k + (soc - 2)
-             y = lsoda(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol)
+             y = ode(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
              probs = y[2,2:(lx+1)]
              if(k < (S + 2 - soc))
              {
@@ -107,7 +107,7 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
           for(k in (S + 2 - soc):2)
           {
              k1 = k + (soc - 2)
-             y = lsoda(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol)
+             y = ode(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol, method = "lsoda")
              probs = y[2,2:(lx+2)]
              if(k > soc)
              {
@@ -123,7 +123,6 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
              }    
           }
        }
-
        if(probs[1 + missnumspec] <= 0 | loglik == -Inf)
        {
           loglik = -Inf
@@ -138,7 +137,7 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
              k = soc
              t1 = brts[1] 
              t2 = brts[S + 2 - soc]
-             y = lsoda(probsn,c(t1,t2),dd_loglik_rhs,c(pars1,k,ddep),rtol = reltol,atol = abstol);
+             y = ode(probsn,c(t1,t2),dd_loglik_rhs,c(pars1,k,ddep),rtol = reltol,atol = abstol, method = "lsoda");
              probsn = y[2,2:(lx+1)]
              if(soc == 1) { aux = 1:lx }
              if(soc == 2) { aux = (2:(lx+1)) * (3:(lx+2))/6 }
@@ -151,14 +150,14 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
              probsn = rep(0,lx + 1)
              probsn[S + missnumspec + 1] = 1
              T = max(1,1/abs(la - mu)) * 100 * max(abs(brts)) # make this more efficient later
-             y = lsoda(probsn,c(0,T),dd_loglik_bw_rhs,c(pars1,0,ddep),rtol = reltol,atol = abstol)
+             y = ode(probsn,c(0,T),dd_loglik_bw_rhs,c(pars1,0,ddep),rtol = reltol,atol = abstol, method = "lsoda")
              logliknorm = log(y[2,lx + 2])
              if(soc == 2)
              {
                 probsn = rep(0,lx + 1)
                 probsn[1:lx] = probs[1:lx]
                 probsn = c(flavec(ddep,la,mu,K,r,lx,1,n0),1) * probsn # speciation event
-                y = lsoda(probsn,c(max(abs(brts)),T),dd_loglik_bw_rhs,c(pars1,1,ddep),rtol = reltol,atol = abstol)
+                y = ode(probsn,c(max(abs(brts)),T),dd_loglik_bw_rhs,c(pars1,1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
                 logliknorm = logliknorm - log(y[2,lx + 2])
              }
           }

@@ -27,6 +27,8 @@ dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
 #  . cond == 0 : no conditioning
 #  . cond == 1 : conditioning on non-extinction of the phylogeny
 # - pars2[4] = tsplit = time of split of innovative branch
+# - pars2[5] = printing of parameters and likelihood (1) or not (0)
+# - pars2[6] = likelihood is for a tree with crown age (2) or stem age (1)
 # missnumspec = number of missing species in main clade M and subclade S
 
 if(length(pars2) == 4)
@@ -119,40 +121,42 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     probs = rep(0,lx)
     probs[1] = 1 # change if other species at crown age
 
-    ka = sum(brtsM<tinn);
+    ka = sum(brtsM < tinn);
     for(k in 2:(ka+1))
     {
        k1 = k + (soc - 2)
-       t1 = brtsM[k-1]; t2 = min(c(tinn,brtsM[k]))
-       y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol)
-       probs = y[2,2:(lx+1)]
+       t1 = brtsM[k - 1]; t2 = min(c(tinn,brtsM[k]))
+       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
+       probs = y[2,2:(lx + 1)]
        if(t2 < tinn)
        {
            probs = flavec(ddep,laM,muM,KM,0,lxM,k1,n0) * probs # speciation event
-           if(sum(probs) <= 0)
+           sumprobs = sum(probs)
+           if(sumprobs <= 0)
            { 
               loglik = -Inf
               break
            } else {
-              loglikM = loglikM + log(sum(probs))
+              loglikM = loglikM + log(sumprobs)
            }
-           probs = probs/sum(probs)
+           probs = probs/sumprobs
        }
     }
-    for(k in (ka+1):(S1+1))
+    for(k in (ka + 1):(S1 + 1))
     {
        k1 = k + (soc - 2)
-       t1 = max(tinn,brtsM[k-1]); t2 = brtsM[k];
-       y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol)
-       probs = y[2,2:(lx+1)]
+       t1 = max(tinn,brtsM[k - 1]); t2 = brtsM[k];
+       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
+       probs = y[2,2:(lx + 1)]
        if(k < (S1+1))
        {
-           probs = flavec(ddep,laM,muM,KM,0,lxM,k1,n0) * probs # speciation event
-           if(sum(probs) <= 0) { loglik = -Inf } else
+           probs = flavec(ddep,laM,muM,KM,0,lxM,k1-1,n0) * probs # speciation event
+           sumprobs = sum(probs)
+           if(sumprobs <= 0) { loglik = -Inf } else
            {
-              loglikM = loglikM + log(sum(probs))
+              loglikM = loglikM + log(sumprobs)
            }
-           probs = probs/sum(probs)
+           probs = probs/sumprobs
        }
     }
     if(length(m) == 1)
@@ -169,18 +173,19 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     for(k in 1:S2)
     {
        t1 = brtsS[k]; t2 = brtsS[k+1]
-       y = lsoda(probs,c(t1,t2),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol)
+       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol,method = "lsoda")
        probs = y[2,2:(lx+1)]
        if(k < S2)
        {
            probs = flavec(ddep,laS,muS,KS,0,lxS,k,n0) * probs # speciation event
-           if(sum(probs) <= 0)
+           sumprobs = sum(probs)
+           if(sumprobs <= 0)
            {
               loglik = -Inf
            } else  {
-              loglikS = loglikS + log(sum(probs))
+              loglikS = loglikS + log(sumprobs)
            }
-           probs = probs/sum(probs)
+           probs = probs/sumprobs
        }
     }
     if(length(m) == 1)
@@ -204,7 +209,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     #   for(k in (S2 + 1):2)
     #   {
     #      k1 = k - 1
-    #      y = lsoda(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol)
+    #      y = ode(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
     #      probs = y[2,2:(lx+2)]
     #      if(k1 > 1)
     #      {
@@ -247,7 +252,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
        nx = -1:lx
        if(ddep == 1) 
        { 
-           lavec = pmax(rep(0,lx + 2),laS - (laS-muS)/KS * nx)
+           lavec = pmax(rep(0,lx + 2),laS - (laS - muS)/KS * nx)
            muvec = muS * rep(1,lx + 2)
        } 
        if(ddep == 1.3) 
@@ -279,11 +284,11 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
            muvec = (nx + n0)^x
        }    
        m1 = lavec[1:lx] * nx[1:lx]
-       m2 = muvec[3:(lx+2)] * nx[3:(lx+2)]
-       m3 = (lavec[2:(lx+1)] + muvec[2:(lx+1)]) * nx[2:(lx+1)]
+       m2 = muvec[3:(lx + 2)] * nx[3:(lx + 2)]
+       m3 = (lavec[2:(lx + 1)] + muvec[2:(lx + 1)]) * nx[2:(lx + 1)]
        probs = rep(0,lx) # probs[1] = extinction probability
        probs[2] = 1 # clade S starts with one species
-       y = lsoda(probs,c(tinn,tpres),dd_logliknorm_rhs1,c(m1,m2,m3),rtol = reltol,atol = abstol)
+       y = ode(probs,c(tinn,tpres),dd_logliknorm_rhs1,c(m1,m2,m3),rtol = reltol,atol = abstol,method = "lsoda")
        probs = y[2,2:(lx+1)]   
        PS = 1 - probs[1]
    
@@ -340,8 +345,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
        probs[2,2] = 1 # clade M starts with two species
        # STEP 1: integrate from tcrown to tinn
        dim(probs) = c(lx*lx,1)
-       ##y = lsoda(probs,c(tcrown,tinn),dd_logliknorm_rhs2,c(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol)
-       y = ode(probs,c(tcrown,tinn),dd_logliknorm_rhs2,list(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol, method = "lsoda")
+       y = ode(probs,c(tcrown,tinn),dd_logliknorm_rhs2,list(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol, method = "ode45")
        probs = y[2,2:(lx * lx + 1)]
        dim(probs) = c(lx,lx)
        probs[1,1:lx] = 0
@@ -350,17 +354,16 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
        nx1a = nx1[2:(lx+1),2:(lx+1)]
        nx2a = nx2[2:(lx+1),2:(lx+1)]
        probs = probs * nx1a/(nx1a+nx2a)
-       probs = t(c(t(probs[2:lx,1:lx]), rep(0,lx)))
-       dim(probs) = c(lx,lx)
+       #probs = c(t(probs[2:lx,1:lx]), rep(0,lx))
+       probs = rbind(probs[2:lx,1:lx], rep(0,lx))
+       dim(probs) = c(lx * lx,1)
        # STEP 3: integrate from tinn to tpres
-       dim(probs) = c(lx*lx,1);
-       ##y = lsoda(probs,c(tinn,tpres),dd_logliknorm_rhs2,c(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol)
-       y = ode(probs,c(tinn,tpres),dd_logliknorm_rhs2,list(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol, method = "lsoda")
+       y = ode(probs,c(tinn,tpres),dd_logliknorm_rhs2,list(m1,m2,m3,m4,m5,m6),rtol = reltol,atol = abstol, method = "ode45")
        probs = y[2,2:(lx * lx + 1)]
        dim(probs) = c(lx,lx)
-       PM12 = sum(sum(probs[2:lx,2:lx]))
-       PM2 = sum(probs[2:lx,1])
-       logliknorm = log(2)+log(PM12+PS*PM2)
+       PM12 = sum(probs[2:lx,2:lx])
+       PM2 = sum(probs[1,2:lx])
+       logliknorm = log(2) + log(PM12 + PS * PM2)
     }
     if(length(m) > 1)
     {

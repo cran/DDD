@@ -11,7 +11,7 @@ dd_SR_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,idpars
       trpars1[idparsnoshift] = trpars1[idparsnoshift - 3]
    }
    brts = -sort(abs(as.numeric(brts)),decreasing = TRUE)
-   pars1 = trpars1/(1-trpars1)
+   pars1 = trpars1/(1 - trpars1)
    if(max(trpars1) > 1 || min(trpars1) < 0 || trpars1[1] <= trpars1[2] || trpars1[4] <= trpars1[5] || -pars1[7] <= min(brts))
    {
       loglik = -Inf

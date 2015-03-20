@@ -21,7 +21,7 @@ nn = pmax(rep(0,lnn),nn)
 
 if(ddep == 1)
 {
-    lavec = pmax(rep(0,lnn),la - (la-mu)/K * nn)
+    lavec = pmax(rep(0,lnn),la - (la - mu)/K * nn)
     muvec = mu * rep(1,lnn)
 } else {
 if(ddep == 1.3)
@@ -54,8 +54,8 @@ if(ddep == 4 | ddep == 4.1 | ddep == 4.2)
 } else {
 if(ddep == 5)
 { 
-    lavec = pmax(rep(0,lnn),la - 1/(r+1)*(la-mu)/K * nn)
-    muvec = muvec = mu + r/(r+1)*(la-mu)/K * nn
+    lavec = pmax(rep(0,lnn),la - 1/(r + 1)*(la - mu)/K * nn)
+    muvec = muvec = mu + r/(r + 1)*(la - mu)/K * nn
 }}}}}}}
 xx = c(0,x,0)
 

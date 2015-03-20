@@ -1,4 +1,4 @@
-bd_ML = function(brts, initparsopt = c(0.1,0.05 * (tdmodel <= 1) + 10 * (length(brts) + missnumspec) * (tdmodel > 1)), idparsopt = c(1,2 + (tdmodel > 1)), idparsfix = (1:4)[-idparsopt], parsfix = rep(0,4)[idparsfix], missnumspec = 0, tdmodel = 0, cond = 1, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+bd_ML = function(brts, initparsopt = c(0.1,0.05 * (tdmodel <= 1) + 10 * (length(brts) + missnumspec) * (tdmodel > 1)), idparsopt = c(1,2 + (tdmodel > 1)), idparsfix = (1:4)[-idparsopt], parsfix = rep(0,4)[idparsfix], missnumspec = 0, tdmodel = 0, cond = 1, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -24,6 +24,7 @@ bd_ML = function(brts, initparsopt = c(0.1,0.05 * (tdmodel <= 1) + 10 * (length(
 #  . reltolf = relative tolerance of function value in optimization
 #  . abstolx = absolute tolerance of parameter values in optimization
 # - maxiter = the maximum number of iterations in the optimization
+# - changeloglikifnoconv = if T the loglik will be set to -Inf if ML does not converge
 
 options(warn=-1)
 brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
@@ -73,6 +74,7 @@ MLpars1[idparsopt] = MLpars
 if(length(idparsfix) != 0) { MLpars1[idparsfix] = parsfix }
 ML = as.numeric(unlist(out$fvalues))
 out2 = data.frame(lambda0 = MLpars1[1], mu0 = MLpars1[2], lambda1 = MLpars1[3], mu1 = MLpars1[4], loglik = ML, df = length(initparsopt), conv = unlist(out$conv))
+if(out2$conv != 0 & changeloglikifnoconv == T) { out2$loglik = -Inf }
 s1 = sprintf('Maximum likelihood parameter estimates: lambda0: %f, mu0: %f, lambda1: %f, mu1: %f: ',MLpars1[1],MLpars1[2],MLpars1[3],MLpars1[4])
 s2 = sprintf('Maximum loglikelihood: %f',ML)
 cat("\n",s1,"\n",s2,"\n")

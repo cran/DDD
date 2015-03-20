@@ -1,4 +1,4 @@
-dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) + missnumspec))} else {c(0.2,0.1,2*(length(brts) + missnumspec),0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt], res = 10*(1+length(brts)+missnumspec), ddmodel = 1, missnumspec = 0, cond = 3, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)))
+dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) + missnumspec))} else {c(0.2,0.1,2*(length(brts) + missnumspec),0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt], res = 10*(1+length(brts)+missnumspec), ddmodel = 1, missnumspec = 0, cond = 3, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE)
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -31,6 +31,7 @@ dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) 
 #  . reltolf = relative tolerance of function value in optimization
 #  . abstolx = absolute tolerance of parameter values in optimization
 # - maxiter = the maximum number of iterations in the optimization
+# - changeloglikifnoconv = if T the loglik will be set to -Inf if ML does not converge
 
 options(warn=-1)
 brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
@@ -89,8 +90,9 @@ s1 = sprintf('Maximum likelihood parameter estimates: lambda: %f, mu: %f, K: %f'
 if(ddmodel == 5)
 {
    s1 = sprintf('%s, r: %f',s1,MLpars1[4])
-   out2 = data.frame(lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], r = MLpars1[4], loglik = ML, df = length(initparsopt), conv = unlist(out$conv))
+   out2 = data.frame(lambda = MLpars1[1],mu = MLpars1[2],K = MLpars1[3], r = MLpars1[4], loglik = ML, df = length(initparsopt), conv = unlist(out$conv))   
 }
+if(out2$conv != 0 & changeloglikifnoconv == T) { out2$loglik = -Inf }
 s2 = sprintf('Maximum loglikelihood: %f',ML)
 cat("\n",s1,"\n",s2,"\n")
 }
