@@ -25,7 +25,9 @@ dd_SR_ML(
    allbp = FALSE,
    tol = c(1E-3,1E-4,1E-6),
    maxiter = 1000 * round((1.25)^length(idparsopt)),
-   changeloglikifnoconv = FALSE
+   changeloglikifnoconv = FALSE,
+   optimmethod = 'subplex',
+   methode = 'ode45'   
    )
 }
 \arguments{
@@ -82,7 +84,8 @@ This conditioning turns out, for the diversity-dependent model, to provide the l
   }
   \item{maxiter}{Sets the maximum number of iterations in the optimization}
   \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
-  
+  \item{optimmethod}{ Method used in optimization of the likelihood. Current default is 'subplex'. Alternative is 'simplex' (default of previous versions)}        
+  \item{methode}{The method used in the ode solver, default is ode45 }   
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.
@@ -115,13 +118,13 @@ as explained in the supplementary material to Etienne et al. 2012.
  \code{\link{dd_KI_ML}},
 }
 \examples{
-cat("This will estimate parameters for two sets of branching times brtsM, brtsS\n")
-cat("without conditioning.\n")
-cat("The tolerance of the optimization is set high so runtime is fast in this example.\n")
+cat("This will estimate parameters for a sets of branching times brts without conditioning.\n")
+cat("The tolerance of the optimization is set ridiculously high to make runtime fast.\n")
 cat("In real applications, use the default or more stringent settings for tol.\n")
 brts = 1:10
 dd_SR_ML(brts = brts, initparsopt = c(0.4581, 1E-6, 17.69, 11.09, 8.9999), idparsopt = c(1:3,6,7),
-         idparsfix = NULL, parsfix = NULL, idparsnoshift = c(4,5), cond = 0, tol = c(1E-2,1E-2,1E-2)
+         idparsfix = NULL, parsfix = NULL, idparsnoshift = c(4,5), cond = 0,
+         tol = c(1E-1,1E-1,1E-1),optimmethod = 'simplex'
 )
 }
 \keyword{ models }

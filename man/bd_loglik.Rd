@@ -5,7 +5,7 @@
   This function computes loglikelihood of a diversity-independent diversification model
   for a given set of branching times and parameter values.
 }
-\usage{bd_loglik(pars1, pars2, brts, missnumspec)}
+\usage{bd_loglik(pars1, pars2, brts, missnumspec, methode = 'ode45')}
 \arguments{
   \item{pars1}{Vector of parameters: \cr \cr
     \code{pars1[1]} corresponds to lambda0 (speciation rate)\cr
@@ -18,7 +18,8 @@
     - \code{pars2[1] == 0} no time dependence \cr
     - \code{pars2[1] == 1} speciation and/or extinction rate is exponentially declining with time \cr
     - \code{pars2[1] == 2} stepwise decline in speciation rate as in diversity-dependence without extinction \cr
-    - \code{pars2[1] == 3} decline in speciation rate following deterministic logistic equation for ddmodel = 1 \cr \cr
+    - \code{pars2[1] == 3} decline in speciation rate following deterministic logistic equation for ddmodel = 1 \cr
+    - \code{pars2[1] == 4} decline in speciation rate such that the expected number of species matches with that of ddmodel = 1 with the same mu \cr \cr
     \code{pars2[2]} sets the conditioning: \cr
     - \code{pars[2] == 0} conditioning on stem or crown age \cr
     - \code{pars[2] == 1} conditioning on stem or crown age and non-extinction of the phylogeny \cr
@@ -30,13 +31,14 @@
 }
   \item{brts}{A set of branching times of a phylogeny, all positive }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
+  \item{methode}{The method used in the ode solver, default is ode45 } 
 }
 \value{The loglikelihood}
 \references{
 - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
 - Etienne, R.S. & B. Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
 }
-\author{Rampal S. Etienne & Bart Haegeman}
+\author{Rampal S. Etienne, Bart Haegeman & Cesar Martinez}
 \seealso{
  \code{\link{bd_ML}}
 }

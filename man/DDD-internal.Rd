@@ -3,22 +3,40 @@
 \alias{bd_loglik_choosepar}
 \alias{dd_SR_loglik_choosepar}
 \alias{dd_KI_loglik_choosepar}
+\alias{dd_MS_loglik_choosepar}
 \alias{dd_loglik_rhs}
+\alias{dd_loglik_M}
 \alias{dd_KI_loglikold}
 \alias{dd_loglik_bw_rhs}
 \alias{dd_logliknorm_rhs1}
 \alias{dd_logliknorm_rhs2}
+\alias{dd_logliknorm_rhs3}
 \alias{td_loglik_rhs}
 \alias{td_loglik_bw_rhs}
+\alias{td_loglik_rhs_sim}
+\alias{td_sim}
 \alias{dd_simplex}
 \alias{bd_simplex}
 \alias{dd_SR_simplex}
 \alias{dd_KI_simplex}
+\alias{dd_MS_simplex}
 \alias{brts2phylo}
 \alias{L2phylo}
 \alias{conv}
 \alias{flavec}
+\alias{expn_dd_sp}
+\alias{predictsp}
+\alias{expn_dd}
+\alias{sample2}
+\alias{lamu_dd_td}
+\alias{dd_lamuN}
+\alias{dd_MS_lamuN}
+\alias{dd_KI_lamuN}
 \alias{dd_bootstrap_sim}
+\alias{optimizer}
+\alias{simplex}
+\alias{roundn}
+\alias{sample2}
 \title{Internal DDD Functions}
 \description{Internal DDD functions}
 \details{These are not to be called by the user.}

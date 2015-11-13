@@ -21,7 +21,9 @@ bd_ML(
    soc = 2,
    tol = c(1E-3, 1E-4, 1E-6), 
    maxiter = 1000 * round((1.25)^length(idparsopt)),
-   changeloglikifnoconv = FALSE   
+   changeloglikifnoconv = FALSE,
+   optimmethod = 'subplex',
+   methode = 'ode45'      
    )
 }
 \arguments{
@@ -46,7 +48,8 @@ not specified in idparsopt.
    tdmodel == 0 : constant speciation and extinction rates \cr
    tdmodel == 1 : speciation and/or extinction rate is exponentially declining with time \cr
    tdmodel == 2 : stepwise decline in speciation rate as in diversity-dependence without extinction \cr
-   tdmodel == 3 : decline in speciation rate following deterministic logistic equation for ddmodel = 1
+   tdmodel == 3 : decline in speciation rate following deterministic logistic equation for ddmodel = 1 \cr
+   tdmodel == 4 : decline in speciation rate such that the expected number of species matches with that of ddmodel = 1 with the same mu
   }
   \item{cond}{ Conditioning: \cr
     cond == 0 : conditioning on stem or crown age \cr
@@ -63,7 +66,8 @@ not specified in idparsopt.
   }
   \item{maxiter}{ Sets the maximum number of iterations in the optimization}
   \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
-
+  \item{optimmethod}{ Method used in optimization of the likelihood. Current default is 'subplex'. Alternative is 'simplex' (default of previous versions)}
+  \item{methode}{The method used in the ode solver, default is ode45 }     
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.

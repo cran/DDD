@@ -1,35 +1,37 @@
-\name{dd_KI_ML}
-\alias{dd_KI_ML}
+\name{dd_MS_ML}
+\alias{dd_MS_ML}
 \title{ Maximization of the loglikelihood under a diversity-dependent diversification model with decoupling of a subclade's diversication dynamics from the main clade's dynamics
 }
 \description{
    This function computes the maximum likelihood estimates of the parameters of a
-   diversity-dependent diversification model with decoupling of the diversification dynamics of
-   a subclade from the dynamics of the main clade for a given set of phylogenetic branching times
-   of main clade and subclade and the time of splitting of the lineage that will form the subclade.
-   It also outputs the corresponding loglikelihood that can be used in model comparisons.
+   diversity-dependent diversification model where the diversity-dependent dynamics
+   of an innovative subclade have different parameters from the dynamics of the main clade from time t_d, 
+   but both are governed by the same carrying capacity and experience each other's diversity.
+   Required isa given set of phylogenetic branching times of main clade and subclade and the time of splitting
+   of the lineage that will form the subclade.
+   The function also outputs the corresponding loglikelihood that can be used in model comparisons.
 }
 \usage{
-dd_KI_ML(
+dd_MS_ML(
     brtsM,
     brtsS,
     tsplit,
-    initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + missnumspec[1]),
-2 * (1 + length(brtsS) + missnumspec[length(missnumspec)]),(tsplit + max(brtsS))/2),
+    initparsopt = c(0.5, 0.1, 2 * (1 + length(brtsM) + length(brtsS) + sum(missnumspec)),
+(tsplit + max(brtsS))/2),
     parsfix = NULL,
-    idparsopt = c(1:3, 6:7),
+    idparsopt = c(1:3, 6),
     idparsfix = NULL,
-    idparsnoshift = (1:7)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
+    idparsnoshift = (1:6)[c(-idparsopt, (-1)^(length(idparsfix) != 0) * idparsfix)],
     res = 10 * (1 + length(c(brtsM, brtsS)) + sum(missnumspec)),
-    ddmodel = 1, 
+    ddmodel = 1.3, 
     missnumspec = 0,
-    cond = 1,
+    cond = 0,
     soc = 2,
     tol = c(1E-3,1E-4,1E-6),
     maxiter = 1000 * round((1.25)^length(idparsopt)),
     changeloglikifnoconv = FALSE,
     optimmethod = 'subplex',
-    methode = 'ode45'
+    methode = 'ode45'    
     )
 }
 \arguments{
@@ -46,8 +48,7 @@ dd_KI_ML(
    id == 3 corresponds to K_M (clade-level carrying capacity) of the main clade \cr
    id == 4 corresponds to lambda_S (speciation rate) of the subclade \cr
    id == 5 corresponds to mu_S (extinction rate) of the subclade \cr
-   id == 6 corresponds to K_S (clade-level carrying capacity) of the subclade \cr
-   id == 7 corresponds to t_d (the time of decoupling)
+   id == 6 corresponds to t_d (the time of the key innovation)
    }
   \item{idparsfix}{
 The ids of the parameters that should not be optimized, e.g. c(1,3,4,6) if lambda and K
@@ -83,7 +84,7 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
   \item{maxiter}{Sets the maximum number of iterations in the optimization}
   \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
   \item{optimmethod}{ Method used in optimization of the likelihood. Current default is 'subplex'. Alternative is 'simplex' (default of previous versions)}
-  \item{methode}{The method used in the ode solver, default is ode45 }               
+  \item{methode}{The method used in the ode solver, default is ode45 }          
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.
@@ -98,8 +99,7 @@ as explained in the supplementary material to Etienne et al. 2012.
  \item{K_M}{ gives the maximum likelihood estimate of K of the main clade}
  \item{lambda_2}{ gives the maximum likelihood estimate of lambda of the subclade}
  \item{mu_S}{ gives the maximum likelihood estimate of mu of the subclade}
- \item{K_S}{ gives the maximum likelihood estimate of K of the subclade}
- \item{t_d}{ gives the time of the decoupling event}
+ \item{t_d}{ gives the time of the key innovation event}
  \item{loglik}{ gives the maximum loglikelihood}
  \item{df}{ gives the number of estimated parameters, i.e. degrees of feedom}
  \item{conv}{ gives a message on convergence of optimization; conv = 0 means convergence}}
@@ -111,8 +111,9 @@ as explained in the supplementary material to Etienne et al. 2012.
 \note{The optimization may get trapped in local optima. Try different starting values to search for the global optimum.
 }
 \seealso{
- \code{\link{dd_KI_loglik}},
+ \code{\link{dd_MS_loglik}},
  \code{\link{dd_ML}},
+ \code{\link{dd_KI_ML}},
  \code{\link{dd_SR_ML}},
 }
 \examples{
@@ -123,8 +124,8 @@ cat("In real applications, use the default or more stringent settins for tol.\n"
 brtsM = 4:10
 brtsS = seq(0.1,3.5,0.7)
 tsplit = 5
-dd_KI_ML(brtsM = brtsM, brtsS = brtsS, tsplit = tsplit, idparsopt = c(1:3,6,7),
-          initparsopt = c(0.885, 2e-14, 6.999, 6.848, 4.001), idparsfix = NULL, parsfix = NULL,
+dd_MS_ML(brtsM = brtsM, brtsS = brtsS, tsplit = tsplit, idparsopt = c(1:3,6),
+          initparsopt = c(0.885, 2e-14, 10, 4.001), idparsfix = NULL, parsfix = NULL,
           idparsnoshift = c(4,5), cond = 0, tol = c(3E-1,3E-1,3E-1))
 }
 \keyword{ models }

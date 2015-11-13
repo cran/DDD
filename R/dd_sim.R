@@ -1,29 +1,4 @@
-dd_sim = function(pars,age,ddmodel = 1)
-{
-# Simulation of diversity-dependent process
-#  . start from crown age
-#  . no additional species at crown node
-#  . no missing species in present
-# pars = [la mu K]
-#  . la = speciation rate per species
-#  . mu = extinction rate per species
-#  . K = diversification carrying capacity
-#  . r = ratio of diversity-dependence in extinction rate over speciation rate
-# age = crown age
-# ddmodel = mode of diversity-dependence
-#  . ddmodel == 1 : linear dependence in speciation rate with parameter K
-#  . ddmodel == 1.3: linear dependence in speciation rate with parameter K'
-#  . ddmodel == 2 : exponential dependence in speciation rate
-#  . ddmodel == 2.1: variant with offset at infinity
-#  . ddmodel == 2.2: 1/n dependence in speciation rate
-#  . ddmodel == 2.3: exponential dependence in speciation rate with parameter x
-#  . ddmodel == 3 : linear dependence in extinction rate
-#  . ddmodel == 4 : exponential dependence in extinction rate
-#  . ddmodel == 4.1: variant with offset at infinity
-#  . ddmodel == 4.2: 1/n dependence in speciation rate
-#  . ddmodel == 5 : linear dependence in speciation rate and in extinction rate
-
-lamuN = function(ddmodel,pars,N)
+dd_lamuN = function(ddmodel,pars,N)
 {
     la = pars[1]
     mu = pars[2]
@@ -81,6 +56,31 @@ lamuN = function(ddmodel,pars,N)
     return(c(laN,muN))
 }
 
+dd_sim = function(pars,age,ddmodel = 1)
+{
+# Simulation of diversity-dependent process
+#  . start from crown age
+#  . no additional species at crown node
+#  . no missing species in present
+# pars = [la mu K]
+#  . la = speciation rate per species
+#  . mu = extinction rate per species
+#  . K = diversification carrying capacity
+#  . r = ratio of diversity-dependence in extinction rate over speciation rate
+# age = crown age
+# ddmodel = mode of diversity-dependence
+#  . ddmodel == 1 : linear dependence in speciation rate with parameter K
+#  . ddmodel == 1.3: linear dependence in speciation rate with parameter K'
+#  . ddmodel == 2 : exponential dependence in speciation rate
+#  . ddmodel == 2.1: variant with offset at infinity
+#  . ddmodel == 2.2: 1/n dependence in speciation rate
+#  . ddmodel == 2.3: exponential dependence in speciation rate with parameter x
+#  . ddmodel == 3 : linear dependence in extinction rate
+#  . ddmodel == 4 : exponential dependence in extinction rate
+#  . ddmodel == 4.1: variant with offset at infinity
+#  . ddmodel == 4.2: 1/n dependence in speciation rate
+#  . ddmodel == 5 : linear dependence in speciation rate and in extinction rate
+
 done = 0
 while(done == 0)
 {
@@ -101,7 +101,7 @@ while(done == 0)
     L[2,1:4] = c(0,-1,2,-1)
     linlist = c(-1,2)
     newL = 2
-    ff = lamuN(ddmodel,pars,N[i])
+    ff = dd_lamuN(ddmodel,pars,N[i])
     laN = ff[1]
     muN = ff[2]
     denom = (laN + muN) * N[i]
@@ -109,7 +109,7 @@ while(done == 0)
     while(t[i + 1] <= age)
     {
         i = i + 1
-        ranL = sample(linlist,1)
+        ranL = sample2(linlist,1)
         if((laN * N[i - 1] / denom) >= runif(1))
         {
             # speciation event
@@ -129,7 +129,7 @@ while(done == 0)
         {
             t[i + 1] = Inf
         } else {
-            ff = lamuN(ddmodel,pars,N[i])
+            ff = dd_lamuN(ddmodel,pars,N[i])
             laN = ff[1]
             muN = ff[2]
             denom = (laN + muN) * N[i]
@@ -150,7 +150,7 @@ L[notmin1,4] = age - c(L[notmin1,4])
 L[which(L[,4] == age + 1),4] = -1
 tes = L2phylo(L,dropextinct = T)
 tas = L2phylo(L,dropextinct = F)
-out = list(tes,tas,L)
+out = list(tes = tes,tas = tas,L = L)
 return(out)
 
 }

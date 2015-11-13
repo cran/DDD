@@ -1,4 +1,4 @@
-dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec),2*(1+length(brts)+missnumspec),max(brts)/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1, soc = 2, allbp = FALSE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE)
+dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec),2*(1+length(brts)+missnumspec),max(brts)/2), parsfix = NULL, idparsopt = c(1:3,6:7), idparsfix = NULL, idparsnoshift = (1:7)[c(-idparsopt,(-1)^(length(idparsfix) != 0) * idparsfix)], res = 10*(1 + length(brts) + missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1, soc = 2, allbp = FALSE, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE, optimmethod = 'subplex', methode = 'ode45')
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -40,6 +40,8 @@ dd_SR_ML = function(brts, initparsopt = c(0.5,0.1,2*(1+length(brts)+missnumspec)
 #  . abstolx = absolute tolerance of parameter values in optimization
 # - maxiter = the maximum number of iterations in the optimization
 # - changeloglikifnoconv = if T the loglik will be set to -Inf if ML does not converge
+# - optimmethod = 'subplex' (current default) or 'simplex' (default of previous versions)
+# - methode = the method used in the numerical solving of the set of the ode's
 
 brts = sort(abs(as.numeric(brts)),decreasing = TRUE)
 options(warn=-1)
@@ -69,7 +71,8 @@ trparsopt[which(initparsopt == Inf)] = 1
 trparsfix = parsfix/(1 + parsfix)
 trparsfix[which(parsfix == Inf)] = 1
 pars2 = c(res,ddmodel,cond,btorph,0,soc,tol,maxiter)
-initloglik = dd_SR_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,pars2 = pars2,brts = brts,missnumspec = missnumspec)
+optimpars = c(tol,maxiter)
+initloglik = dd_SR_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,pars2 = pars2,brts = brts,missnumspec = missnumspec, methode = methode)
 cat("The loglikelihood for the initial parameter values is",initloglik,"\n")
 if(initloglik == -Inf)
 {
@@ -77,8 +80,8 @@ if(initloglik == -Inf)
    out2 = data.frame(row.names = "results",lambda_1 = -1, mu_1 = -1, K_1 = -1, lambda_2 = -1, mu_2 = -1, K_2 = -1, t_shift = -1, loglik = -1, df = -1, conv = -1)
 } else {
 #code up to DDD v1.6: out = optimx2(trparsopt,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = pars2[8],reltol = pars2[7],trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,idparsnoshift = idparsnoshift,brts = brts,pars2 = pars2,missnumspec = missnumspec)
-out = dd_SR_simplex(trparsopt,idparsopt,trparsfix,idparsfix,idparsnoshift,pars2,brts,missnumspec)
-if(out$conv > 0)
+out = optimizer(optimmethod = optimmethod,optimpars = optimpars,fun = dd_SR_loglik_choosepar,trparsopt = trparsopt,idparsopt = idparsopt,trparsfix = trparsfix,idparsfix = idparsfix,idparsnoshift = idparsnoshift,pars2 = pars2,brts = brts,missnumspec = missnumspec, methode = methode)
+if(out$conv != 0)
 {
    cat("Optimization has not converged. Try again with different initial values.\n")
    out2 = data.frame(row.names = "results",lambda_1 = -1, mu_1 = -1, K_1 = -1, lambda_2 = -1, mu_2 = -1, K_2 = -1, t_shift = -1, loglik = -1, df = -1, conv = unlist(out$conv))
@@ -102,7 +105,7 @@ if(sum(idparsfix == 7) == 0 && allbp == TRUE)
          trparsopt1 = initparsopt1/(1 + initparsopt1)
          trparsfix1 = parsfix1/(1 + parsfix1)
          #code up to DDD v1.6: out = optimx2(trparsopt1,dd_SR_loglik_choosepar,hess=NULL,method = "Nelder-Mead",hessian = FALSE,control = list(maximize = TRUE,abstol = 1E-10,reltol = pars2[2],trace = 0,starttests = FALSE,kkt = FALSE),trparsfix = trparsfix1,idparsopt = idparsopt1,idparsfix = idparsfix1,idparsnoshift = idparsnoshift,brts = brts,pars2 = pars2,missnumspec = missnumspec)
-         out = dd_SR_simplex(trparsopt1,idparsopt1,trparsfix1,idparsfix1,idparsnoshift,pars2,brts,missnumspec)
+         out = optimizer(optimmethod = optimmethod,optimpars = optimpars,fun = dd_SR_loglik_choosepar,trparsopt = trparsopt1,idparsopt = idparsopt1,trparsfix = trparsfix1,idparsfix = idparsfix1,idparsnoshift = idparsnoshift,pars2 = pars2,brts = brts,missnumspec = missnumspec, methode = methode)
          if(as.numeric(out$fvalues) > ML)
          {
             MLtrpars = as.numeric(unlist(out$par))

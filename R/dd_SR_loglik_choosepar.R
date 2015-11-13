@@ -1,4 +1,4 @@
-dd_SR_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,idparsnoshift,pars2,brts,missnumspec)
+dd_SR_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,idparsnoshift,pars2,brts,missnumspec,methode)
 {
    trpars1 = rep(0,7)
    trpars1[idparsopt] = trparsopt
@@ -16,7 +16,7 @@ dd_SR_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,idpars
    {
       loglik = -Inf
    } else {
-      loglik = dd_SR_loglik(pars1,pars2,brts,missnumspec)
+      loglik = dd_SR_loglik(pars1 = pars1,pars2 = pars2,brts = brts,missnumspec = missnumspec, methode = methode)
       if(is.nan(loglik) || is.na(loglik))
       {
           cat("There are parameter values used which cause numerical problems.\n")

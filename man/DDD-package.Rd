@@ -98,9 +98,14 @@ under diversity-dependent diversification models.\cr \cr
    New in version 2.6\cr
    - Allows linear dependence of speciation with parameter K' (= diversity where speciation = 0)\cr\cr
    New in version 2.7\cr
-   - Fixes bugs in dd_LI_loglik, for cond = 0 introduced in v2.3, and for cond = 1 introduced in v2.0\cr
+   - Fixes bugs in dd_KI_loglik, for cond = 0 introduced in v2.3, and for cond = 1 introduced in v2.0\cr
    - Solves (some) memory problems with dd_KI_ML and dd_KI_loglik when cond = 1\cr
    - Provides option to set loglikelihood to -Inf if optimization did not converge\cr\cr 
+   New in version 3.0\cr
+   - Includes a model of macroevolutionary succession in which there is no decoupling of diversity-dependence but parameters may change\cr
+   - Computes LRb, a bootstrap version of the likelihood ratio\cr
+   - Allows use of alternative ODE solvers\cr   
+   - Allows use of subplex as optimization algorithm.\cr\cr
    Forthcoming:\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik\cr
 }
@@ -109,9 +114,9 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 2.7\cr
-Date: \tab 2015-03-19\cr
-License: \tab GPL 2.0\cr
+Version: \tab 3.0\cr
+Date: \tab 2015-11-13\cr
+License: \tab GPL 3.0\cr
 }
 bd_loglik compues the likelihood under the constant-rate birth-death model of several specific 
 time-dependent birth-death models.
@@ -133,7 +138,14 @@ from the main clade's dynamics potentially accompanied by a shift in parameters 
 
 dd_KI_ML finds the parameters that maximizes the likelihood computed by dd_KI_loglik.
 
+dd_MS_loglik is the same as dd_KI_loglik except that the subclade's dynamics do not decouple
+from the main clade's dynamics but they do get different parameters at time t_d.
+
+dd_MS_ML finds the parameters that maximizes the likelihood computed by dd_MS_loglik.
+
 dd_sim simulates the diversity-dependent process
+
+dd_LR performs a bootstrap likelihood ratio test
 }
 \author{
 Rampal S. Etienne & Bart Haegeman\cr

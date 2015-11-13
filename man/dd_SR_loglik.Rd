@@ -6,7 +6,7 @@
   This function computes loglikelihood of a diversity-dependent diversification model
   for a given set of branching times and parameter values where the parameters are allowed to shift at time t = tshift
 }
-\usage{dd_SR_loglik(pars1, pars2, brts, missnumspec)}
+\usage{dd_SR_loglik(pars1, pars2, brts, missnumspec, methode = 'ode45')}
 \arguments{
   \item{pars1}{Vector of parameters: \cr \cr
    \code{pars1[1]} corresponds to lambda (speciation rate) before the shift \cr
@@ -40,7 +40,8 @@
     \code{pars2[6]} sets whether the first data point is stem age (1) or crown age (2)
 }
   \item{brts}{A set of branching times of a phylogeny, all positive }
-  \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
+  \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny }
+  \item{methode}{The method used in the ode solver, default is ode45 }    
 }
 \value{The loglikelihood}
 \references{

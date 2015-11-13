@@ -1,4 +1,4 @@
-dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
+dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec,methode = 'ode45')
 {
 # brtsM = branching times of main clade M (positive, from present to past)
 # brtsS = branching times of subclade S (positive, from present to past)
@@ -30,6 +30,7 @@ dd_KI_loglik = function(pars1,pars2,brtsM,brtsS,missnumspec)
 # - pars2[5] = printing of parameters and likelihood (1) or not (0)
 # - pars2[6] = likelihood is for a tree with crown age (2) or stem age (1)
 # missnumspec = number of missing species in main clade M and subclade S
+# methode = the method used in the numerical solving of the set of the ode's
 
 if(length(pars2) == 4)
 {
@@ -126,7 +127,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     {
        k1 = k + (soc - 2)
        t1 = brtsM[k - 1]; t2 = min(c(tinn,brtsM[k]))
-       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
+       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol,method = methode)
        probs = y[2,2:(lx + 1)]
        if(t2 < tinn)
        {
@@ -146,7 +147,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     {
        k1 = k + (soc - 2)
        t1 = max(tinn,brtsM[k - 1]); t2 = brtsM[k];
-       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
+       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol,method = methode)
        probs = y[2,2:(lx + 1)]
        if(k < (S1+1))
        {
@@ -173,7 +174,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     for(k in 1:S2)
     {
        t1 = brtsS[k]; t2 = brtsS[k+1]
-       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol,method = "lsoda")
+       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol,method = methode)
        probs = y[2,2:(lx+1)]
        if(k < S2)
        {
@@ -209,7 +210,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     #   for(k in (S2 + 1):2)
     #   {
     #      k1 = k - 1
-    #      y = ode(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol,method = "lsoda")
+    #      y = ode(probs,-brts[k:(k-1)],dd_loglik_bw_rhs,c(pars1,k1,ddep),rtol = reltol,atol = abstol,method = methode)
     #      probs = y[2,2:(lx+2)]
     #      if(k1 > 1)
     #      {
@@ -230,7 +231,12 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     # total likelihood = likelihood clade M x likelihood clade S
     if(length(m) == 1)
     {
-       loglik = log(sum(exp(loglikM + loglikS[length(loglikS):1])))
+       #loglik = log(sum(exp(loglikM + loglikS[length(loglikS):1])))
+       loglikMmax = max(loglikM)
+       loglikSmax = max(loglikS)
+       loglikMdelta = loglikM - loglikMmax
+       loglikSdelta = loglikS - loglikSmax
+       loglik = loglikMmax + loglikSmax + log(sum(exp(loglikMdelta + loglikSdelta[length(loglikSdelta):1])))
     } else {
        loglik = loglikM + loglikS
     }
@@ -288,7 +294,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
        m3 = (lavec[2:(lx + 1)] + muvec[2:(lx + 1)]) * nx[2:(lx + 1)]
        probs = rep(0,lx) # probs[1] = extinction probability
        probs[2] = 1 # clade S starts with one species
-       y = ode(probs,c(tinn,tpres),dd_logliknorm_rhs1,c(m1,m2,m3),rtol = reltol,atol = abstol,method = "lsoda")
+       y = ode(probs,c(tinn,tpres),dd_logliknorm_rhs1,c(m1,m2,m3),rtol = reltol,atol = abstol,method = methode)
        probs = y[2,2:(lx+1)]   
        PS = 1 - probs[1]
    
@@ -302,7 +308,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
        { 
            lavec = pmax(matrix(0,lx + 2,lx + 2),laM - (laM-muM)/KM * nxt)
            muvec = muM * matrix(1,lx + 2,lx + 2)
-       } 
+       }         
        if(ddep == 1.3) 
        { 
            lavec = pmax(matrix(0,lx + 2,lx + 2),laM * (1 - nxt/KM))
