@@ -1,10 +1,10 @@
 Package: DDD
 Type: Package
 Title: Diversity-Dependent Diversification
-Version: 3.0
-Date: 2015-11-13
+Version: 3.1
+Date: 2016-1-19
 Depends: R (>= 3.0.2), deSolve, ape, ade4
-Imports: phytools, subplex, Matrix
+Imports: phytools, subplex, Matrix, expoRkit, SparseM
 Author: Rampal S. Etienne & Bart Haegeman
 Maintainer: Rampal S. Etienne <r.s.etienne@rug.nl>
 License: GPL-3
@@ -15,6 +15,6 @@ Description:
    See Etienne & Haegeman 2012, Am. Nat. 180: E75-E89, doi: 10.1086/667574.
    Finally, DDD contains a function to simulate the diversity-dependent process.
 NeedsCompilation: no
-Packaged: 2015-11-13 19:19:28 UTC; rampa
+Packaged: 2016-01-19 11:35:49 UTC; rampa
 Repository: CRAN
-Date/Publication: 2015-11-13 23:54:50
+Date/Publication: 2016-01-19 13:09:25

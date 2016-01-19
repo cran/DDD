@@ -17,7 +17,7 @@ dd_lamuN = function(ddmodel,pars,N)
     if(ddmodel == 1.3)
     {
         # linear dependence in speciation rate
-        laN = max(0,la - (1 - N/K))
+        laN = max(0,la * (1 - N/K))
         muN = mu
     }
     if(ddmodel == 2 | ddmodel == 2.1 | ddmodel == 2.2)

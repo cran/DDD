@@ -27,7 +27,7 @@ dd_SR_ML(
    maxiter = 1000 * round((1.25)^length(idparsopt)),
    changeloglikifnoconv = FALSE,
    optimmethod = 'subplex',
-   methode = 'ode45'   
+   methode = 'analytical'   
    )
 }
 \arguments{
@@ -71,8 +71,7 @@ This can only apply to ids 4, 5 and 6, e.g. idparsnoshift = c(4,5) means that la
     cond == 3 : conditioning on the total number of extant taxa (including missing species) \cr
 (including missing species) \cr
    Note: cond == 3 assumes a uniform prior on stem age, as is the standard in constant-rate birth-death models, see
-e.g. D. Aldous & L. Popovic 2004. Adv. Appl. Prob. 37: 1094-1115 and T. Stadler 2009. J. Theor. Biol. 261: 58-66.
-This conditioning turns out, for the diversity-dependent model, to provide the least-biased parameter estimates when extinction is low, but may still contain considerable bias if extinction is high. The default value has therefore been changed from 1 to 3 starting with DDD version 2.3. 
+e.g. D. Aldous & L. Popovic 2004. Adv. Appl. Prob. 37: 1094-1115 and T. Stadler 2009. J. Theor. Biol. 261: 58-66. 
 }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{soc}{Sets whether stem or crown age should be used (1 or 2) }
@@ -85,7 +84,7 @@ This conditioning turns out, for the diversity-dependent model, to provide the l
   \item{maxiter}{Sets the maximum number of iterations in the optimization}
   \item{changeloglikifnoconv}{ if TRUE the loglik will be set to -Inf if ML does not converge}
   \item{optimmethod}{ Method used in optimization of the likelihood. Current default is 'subplex'. Alternative is 'simplex' (default of previous versions)}        
-  \item{methode}{The method used in the ode solver, default is ode45 }   
+  \item{methode}{The method used to solve the master equation, default is 'analytical' which uses matrix exponentiation; alternatively numerical ODE solvers can be used, such as 'lsoda' or 'ode45'. These were used in the package before version 3.1.}   
 }
 \details{
 The output is a dataframe containing estimated parameters and maximum loglikelihood.

@@ -31,7 +31,7 @@ dd_MS_ML(
     maxiter = 1000 * round((1.25)^length(idparsopt)),
     changeloglikifnoconv = FALSE,
     optimmethod = 'subplex',
-    methode = 'ode45'    
+    methode = 'analytical'    
     )
 }
 \arguments{

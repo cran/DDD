@@ -8,7 +8,7 @@
   of a subclade decouple from the dynamics of the main clade at time t_d, potentially
   accompanied by a shift in parameters.
 }
-\usage{dd_KI_loglik(pars1, pars2, brtsM, brtsS, missnumspec, methode = 'ode45')}
+\usage{dd_KI_loglik(pars1, pars2, brtsM, brtsS, missnumspec, methode = 'analytical')}
 \arguments{
   \item{pars1}{Vector of parameters: \cr \cr
    \code{pars1[1]} corresponds to lambda_M (speciation rate) of the main clade \cr
@@ -34,8 +34,8 @@
     - \code{pars2[2] == 4.1} variant of exponential dependence in extinction rate with offset at infinity\cr
     - \code{pars2[2] == 4.2} 1/n dependence in extinction rate\cr\cr
     \code{pars2[3]} sets the conditioning: \cr
-    - \code{cond == 0} no conditioning \cr
-    - \code{cond == 1} conditioning on non-extinction of the phylogeny \cr \cr
+    - \code{pars2[3] == 0} no conditioning \cr
+    - \code{pars2[3] == 1} conditioning on non-extinction of the phylogeny \cr \cr
     \code{pars2[4]} sets the time of splitting of the branch that will decouple \cr \cr
     \code{pars2[5]} sets whether the parameters and likelihood should be shown on screen (1) or not (0) \cr \cr
     \code{pars2[6]} sets whether the first data point is stem age (1) or crown age (2)
@@ -43,7 +43,7 @@
   \item{brtsM}{A set of branching times of the main clade in the phylogeny, all positive }
   \item{brtsS}{A set of branching times of the subclade in the phylogeny, all positive }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny. One can specify the sum of the missing species in main clade and subclade or a vector c(missnumspec_M,missnumspec_S) with missing species in main clade and subclade respectively.}
-  \item{methode}{The method used in the ode solver, default is ode45 } 
+  \item{methode}{The method used to solve the master equation, default is 'analytical' which uses matrix exponentiation; alternatively numerical ODE solvers can be used, such as 'lsoda' or 'ode45'. These were used in the package before version 3.1. } 
 }
 \value{The loglikelihood}
 \references{

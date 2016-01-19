@@ -5,7 +5,7 @@
   This function computes loglikelihood of a diversity-dependent diversification model
   for a given set of branching times and parameter values.
 }
-\usage{dd_loglik(pars1, pars2, brts, missnumspec, methode = 'ode45')}
+\usage{dd_loglik(pars1, pars2, brts, missnumspec, methode = 'analytical')}
 \arguments{
   \item{pars1}{Vector of parameters: \cr \cr
     \code{pars1[1]} corresponds to lambda (speciation rate) \cr
@@ -28,17 +28,17 @@
     - \code{pars2[2] == 4.2} 1/n dependence in extinction rate\cr
     - \code{pars2[2] == 5} linear dependence in speciation and extinction rate \cr \cr
     \code{pars2[3]} sets the conditioning: \cr
-    - \code{pars[2] == 0} conditioning on stem or crown age \cr
-    - \code{pars[2] == 1} conditioning on stem or crown age and non-extinction of the phylogeny \cr
-    - \code{pars[2] == 2} conditioning on stem or crown age and on the total number of extant taxa (including missing species) \cr
-    - \code{pars[2] == 3} conditioning on the total number of extant taxa (including missing species) \cr \cr
+    - \code{pars2[3] == 0} conditioning on stem or crown age \cr
+    - \code{pars2[3] == 1} conditioning on stem or crown age and non-extinction of the phylogeny \cr
+    - \code{pars2[3] == 2} conditioning on stem or crown age and on the total number of extant taxa (including missing species) \cr
+    - \code{pars2[3] == 3} conditioning on the total number of extant taxa (including missing species) \cr \cr
     \code{pars2[4]} sets whether the likelihood is for the branching times (0) or the phylogeny (1) \cr \cr
     \code{pars2[5]} sets whether the parameters and likelihood should be shown on screen (1) or not (0)\cr \cr
     \code{pars2[6]} sets whether the first data point is stem age (1) or crown age (2)
 }
   \item{brts}{A set of branching times of a phylogeny, all positive }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny }
-  \item{methode}{The method used in the ode solver, default is ode45 }    
+  \item{methode}{The method used to solve the master equation, default is 'analytical' which uses matrix exponentiation; alternatively numerical ODE solvers can be used, such as 'lsoda' or 'ode45'. These were used in the package before version 3.1.}    
 }
 \value{The loglikelihood}
 \references{

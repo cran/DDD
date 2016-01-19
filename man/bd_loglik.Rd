@@ -5,7 +5,7 @@
   This function computes loglikelihood of a diversity-independent diversification model
   for a given set of branching times and parameter values.
 }
-\usage{bd_loglik(pars1, pars2, brts, missnumspec, methode = 'ode45')}
+\usage{bd_loglik(pars1, pars2, brts, missnumspec, methode = 'lsoda')}
 \arguments{
   \item{pars1}{Vector of parameters: \cr \cr
     \code{pars1[1]} corresponds to lambda0 (speciation rate)\cr
@@ -31,7 +31,7 @@
 }
   \item{brts}{A set of branching times of a phylogeny, all positive }
   \item{missnumspec}{The number of species that are in the clade but missing in the phylogeny } 
-  \item{methode}{The method used in the ode solver, default is ode45 } 
+  \item{methode}{The method used to solve the master equation, default is 'lsoda'.} 
 }
 \value{The loglikelihood}
 \references{

@@ -106,6 +106,10 @@ under diversity-dependent diversification models.\cr \cr
    - Computes LRb, a bootstrap version of the likelihood ratio\cr
    - Allows use of alternative ODE solvers\cr   
    - Allows use of subplex as optimization algorithm.\cr\cr
+   New in version 3.1\cr
+   - Fixes bug with dd_sim and dd_KI_sim for ddmodel 1.3 (Thanks to Giovanni Laudanno)\cr\cr
+   - Fixes bug with cond = 3\cr\cr   
+   - Includes matrix exponentiation as an alternative to numerical ODE solvers\cr\cr   
    Forthcoming:\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik\cr
 }
@@ -114,8 +118,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 3.0\cr
-Date: \tab 2015-11-13\cr
+Version: \tab 3.1\cr
+Date: \tab 2016-1-19\cr
 License: \tab GPL 3.0\cr
 }
 bd_loglik compues the likelihood under the constant-rate birth-death model of several specific 

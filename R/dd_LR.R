@@ -17,7 +17,7 @@ dd_LR = function(
    maxiter = 2000,
    changeloglikifnoconv = FALSE,
    optimmethod = 'subplex',
-   methode = 'ode45'   
+   methode = 'analytical'   
    )
 {
   if(!is.null(seed))

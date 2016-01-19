@@ -1,4 +1,4 @@
-bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
+bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'lsoda')
 # pars1 contains model parameters
 # - pars1[1] = la0 = speciation rate
 # - pars1[2] = mu0 = extinction rate
@@ -99,8 +99,8 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
       {
         brts = c(brts[1],brts)
       }
-      T = brts[1]
-      t = T - brts
+      TT = brts[1]
+      t = TT - brts
       
       S = length(brts)
       N = S + m
@@ -111,7 +111,7 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
       abstol = 1e-16
       reltol = 1e-10 
       
-      T0 = T
+      T0 = TT
       la0 = pars1[1]
       mu0 = pars1[2]
       if(length(pars1) > 2)
@@ -132,8 +132,8 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
       
       if(tdmodel == 1)
       {
-        la0 = la0 * exp(-la1 * (T0 - T))
-        mu0 = mu0 * exp(-mu1 * (T0 - T))
+        la0 = la0 * exp(-la1 * (T0 - TT))
+        mu0 = mu0 * exp(-mu1 * (T0 - TT))
       } 
       
       loglik = (btorph == 0) * lgamma(S)
@@ -143,22 +143,21 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
         if(abs(la0 - mu0) < 1E-10)
         {
           lamu = max(la0,mu0)
-          PtT = 1/(1 + lamu * (T - t))
-          ux = lamu * (T - t)/(1 + lamu * (T - t))
+          PtT = 1/(1 + lamu * (TT - t))
+          ux = lamu * (TT - t)/(1 + lamu * (TT - t))
         } else {
-          PtT = (la0 - mu0)/(la0 - mu0 * exp(-(la0 - mu0) * (T - t)))
-          ux = la0 * (1 - exp(-(la0 - mu0) * (T - t)))/(la0 - mu0 * exp(-(la0 - mu0) * (T - t)))
+          PtT = (la0 - mu0)/(la0 - mu0 * exp(-(la0 - mu0) * (TT - t)))
+          ux = la0 * (1 - exp(-(la0 - mu0) * (TT - t)))/(la0 - mu0 * exp(-(la0 - mu0) * (TT - t)))
         }
       }
       if(tdmodel == 1 & (la1 != 0 | mu1 != 0))
       {
         for(i in 1:S)
         {
-          PtT[i] = (1 + integrate(PtTint, lower = t[i], upper = T, t1 = t[i], pars = pars1, subdivisions = 10000L)$value)^(-1)
-          ux[i] = 1 - PtT[i] * exp(rhotaut(T,t[i],pars1))
+          PtT[i] = (1 + integrate(PtTint, lower = t[i], upper = TT, t1 = t[i], pars = pars1, subdivisions = 10000L)$value)^(-1)
+          ux[i] = 1 - PtT[i] * exp(rhotaut(TT,t[i],pars1))
         }
-      }
-      if(tdmodel == 2)
+      } else if(tdmodel == 2)
       {
         if(N > ceiling(K))
         {
@@ -176,13 +175,11 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
           ux[i] = 1 - exp(-sum(ladx[(i - 1):(S - 1)]))
         }
         ux[1] = ux[2]
-      }    
-      if(tdmodel == 3)
+      } else if(tdmodel == 3)
       {
-        PtT = 1/(1 + intPtTint2(t,T,pars1))
-        ux = 1 - PtT * exprhotaut2(T,t,pars1)
-      }
-      if(tdmodel == 4)
+        PtT = 1/(1 + intPtTint2(t,TT,pars1))
+        ux = 1 - PtT * exprhotaut2(TT,t,pars1)
+      } else if(tdmodel == 4)
       {
         Kprime = la0/(la0 - mu0) * K
              
@@ -219,7 +216,7 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
         sig = expn[1:(np - 1)] * variables[(lx + 1):(lx + np - 1)]
         PtT = 1/(1 + sig)
         ux = 1 - PtT * expn[1:(np - 1)]/expn[np]
-        if (soc == 2)
+        if(soc == 2)
         {
            PtT = c(PtT[1], PtT)
            ux = c(ux[1], ux)
@@ -231,20 +228,16 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
         if(tdmodel == 0)
         {
           lavec = rep(la0,S - 1)
-        }
-        if(tdmodel == 1)
+        } else if(tdmodel == 1)
         { 
           lavec = la0 * exp(-la1 * t[2:S])
-        }
-        if(tdmodel == 2)
+        } else if(tdmodel == 2)
         {
           lavec = la0 * (1 - (1:(S - 1))/K)
-        }
-        if(tdmodel == 3)
+        } else if(tdmodel == 3)
         {
           lavec = la0 * (1 - (1 - mu0/la0)/(K * ff(t[2:S],pars1)))
-        }
-        if(tdmodel == 4)
+        } else if(tdmodel == 4)
         {
           lavec = latd[1:(np - 1)]
         }
@@ -265,9 +258,16 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
         {
           eps = 1E-6
           K2 = K
-          if(floor(K) == ceiling(K)) { K2 = K + eps } else {
-            if(floor(K + eps) == ceiling(K)) { K2 = K - eps } else {
-              if(ceiling(K - eps) == floor(K)) { K2 = K + eps }}}
+          if(floor(K) == ceiling(K))
+          { 
+             K2 = K + eps
+          } else if(floor(K + eps) == ceiling(K))
+          { 
+             K2 = K - eps
+          } else if(ceiling(K - eps) == floor(K))
+          {
+             K2 = K + eps
+          }
           s = (1:N) * pmax(0,la0 * (1 - (1:N)/K2))
           logsdiff = rep(0,N)
           sgnsdiff = rep(0,N)
@@ -297,9 +297,8 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
           {
             #         logp = sum(log(s[2:(N-1)])) + log(sum(sgnsdiff[2:N] * exp(-s[2:N]*T - logsdiff[2:N])))
             #         logp = log(sum(sgnsdiff[2:N] * exp(sum(log(s[2:(N-1)])) - s[2:N]*T - logsdiff[2:N])))
-            logp = log(sum(sgnsdiff[2:N] * exp(-s[2:N]*T + logsdiff3[2:N])))
-          }
-          if(cond == 3)
+            logp = log(sum(sgnsdiff[2:N] * exp(-s[2:N]*TT + logsdiff3[2:N])))
+          } else if(cond == 3)
           {
             logp = sum(log(s[1:(N-1)])) + log(sum(sgnsdiff2[1:N] * 1/s[1:N] * exp(-logsdiff2[1:N])))
           }
@@ -308,8 +307,7 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
           if(cond == 2)
           {
             logp = (soc == 2) * log(S + m - 1) + soc * log(PtT[1]) + soc * log(1 - ux[1]) + (S + m - soc) * log(ux[1])
-          }
-          if(cond == 3)
+          } else if(cond == 3)
           {
             logp = log(PtT[1]) - log(S + missnumspec) - (soc == 2) * log(lavec[1])
           }
@@ -344,12 +342,10 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'ode45')
         if(tdmodel == 0)
         {
           s1 = sprintf('Parameters: %f %f',pars1[1],pars1[2])
-        }
-        if(tdmodel == 1)
+        } else if(tdmodel == 1)
         {
           s1 = sprintf('Parameters: %f %f %f %f',pars1[1],pars1[2],pars1[3],pars1[4])
-        }
-        if(tdmodel >= 2)
+        } else if(tdmodel >= 2)
         {
           s1 = sprintf('Parameters: %f %f %f',pars1[1],pars1[2],pars1[3])
         }

@@ -1,11 +1,26 @@
 \name{DDD-internal}
+\alias{dd_loglik1}
+\alias{dd_loglik2}
 \alias{dd_loglik_choosepar}
 \alias{bd_loglik_choosepar}
+\alias{dd_SR_loglik1}
+\alias{dd_SR_loglik2}
 \alias{dd_SR_loglik_choosepar}
+\alias{dd_KI_loglik1}
+\alias{dd_KI_loglik2}
 \alias{dd_KI_loglik_choosepar}
+\alias{dd_MS_loglik1}
+\alias{dd_MS_loglik2}
 \alias{dd_MS_loglik_choosepar}
 \alias{dd_loglik_rhs}
 \alias{dd_loglik_M}
+\alias{dd_loglik_M_bw}
+\alias{dd_loglik_M_aux}
+\alias{dd_loglik_M_bw_aux}
+\alias{dd_loglik_M2}
+\alias{dd_loglik_M2_aux}
+\alias{dd_loglik_M3}
+\alias{dd_loglik_M3_aux}
 \alias{dd_KI_loglikold}
 \alias{dd_loglik_bw_rhs}
 \alias{dd_logliknorm_rhs1}
@@ -24,6 +39,9 @@
 \alias{L2phylo}
 \alias{conv}
 \alias{flavec}
+\alias{lambdamu}
+\alias{lambdamu2}
+\alias{lambdamu3}
 \alias{expn_dd_sp}
 \alias{predictsp}
 \alias{expn_dd}
@@ -37,6 +55,8 @@
 \alias{simplex}
 \alias{roundn}
 \alias{sample2}
+\alias{lambdamu}
+\alias{changepars}
 \title{Internal DDD Functions}
 \description{Internal DDD functions}
 \details{These are not to be called by the user.}
