@@ -1,4 +1,4 @@
-781254bef2f4776da6c2dd9f7f6a5ce1 *DESCRIPTION
+99280cf0c3c7effd6209ec2b0424e336 *DESCRIPTION
 5d9cb5e4f404a8419678875f762c2e81 *NAMESPACE
 4722f36414b4d04c8d0362cbad77a7b0 *R/bd_ML.R
 b70be53dc249c82fc136c8de97d94ec3 *R/bd_loglik.R
@@ -7,8 +7,8 @@ abbd6a6498e1cddff801e5ba469a8786 *R/bd_loglik_choosepar.R
 a0abc731c915dcc17b64d9645ea392a1 *R/dd_KI_loglik.R
 380b4c0e5c1132cad8c547b056046261 *R/dd_KI_loglik_choosepar.R
 727a1da555adf55d4a28488b1e208c08 *R/dd_KI_sim.R
-367ea5a642e8ca1b034e1662d52955e7 *R/dd_LR.R
-78d35c9f489bd13ba17272f4e6647370 *R/dd_ML.R
+7611478119104452107fd32005e87054 *R/dd_LR.R
+52e9dfd64a7297c43f6582660890f02b *R/dd_ML.R
 83eb0b46127c8ce756368c9e0f9c42ef *R/dd_MS_ML.R
 089059f34f1c7b89c33ed81b11938184 *R/dd_MS_loglik.R
 7f0cecde751e25656cffb40bb4b9f727 *R/dd_MS_loglik_choosepar.R
@@ -17,10 +17,10 @@ c0e929dce3783e833e88762a28e4d9f5 *R/dd_SR_ML.R
 82e23b490a26ec7a3f326ffdac6597ba *R/dd_SR_loglik.R
 4cc410da8c37b379e8adec2e750eea1d *R/dd_SR_loglik_choosepar.R
 6ecff57c7aa84ebe74cb46dd8600ae66 *R/dd_bootstrap_sim.R
-3e8e472a71dde371fcf94051f0630416 *R/dd_loglik.R
+1f151dccc3b1a6522a793c4444263f6a *R/dd_loglik.R
 0a2f2e865eb5080513f4b32b32ba9b56 *R/dd_loglik_M.R
 3cb98599c710a2faff53fc88c5a471c5 *R/dd_loglik_bw_rhs.R
-dbe8c2e9a569ceb30f284e733c53ddba *R/dd_loglik_choosepar.R
+05c5b3c28b89b481fb580f2abe8cb960 *R/dd_loglik_choosepar.R
 39c7b9d9df2d8345095d1868f18bd128 *R/dd_loglik_rhs.R
 a5cc17840c29a39ad6cdcadda6fdbe19 *R/dd_logliknorm_rhs1.R
 fa6fca8f3c6a3b0a9ee80f5ace3c4f82 *R/dd_logliknorm_rhs2.R
@@ -33,7 +33,7 @@ bd10b0be042a8ce3714830f27c1c3632 *R/dd_utils.R
 fce9c15c74e28e4976b6f5c550d74393 *R/td_loglik_rhs_sim.R
 878fa2c4808ef7c602ba85dcdc3484ea *R/td_sim.R
 fb7034d25636580ae67ddf9e899042bb *man/DDD-internal.Rd
-faf88b4e85a4774a19c5e0d3a4d3f34e *man/DDD-package.Rd
+afd31ad7da8a2eeb08bd5eab87d6bb7a *man/DDD-package.Rd
 84b6f710328861a857d54f66d1648a43 *man/bd_ML.Rd
 ff01edf773f763de869e8028dd749989 *man/bd_loglik.Rd
 1ff84489c12136f1a6d8e6c0b4a3b08e *man/dd_KI_ML.Rd

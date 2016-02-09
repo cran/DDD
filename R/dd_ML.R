@@ -66,6 +66,7 @@ pars2 = c(res,ddmodel,cond,btorph,0,soc,tol,maxiter)
 optimpars = c(tol,maxiter)
 initloglik = dd_loglik_choosepar(trparsopt = trparsopt,trparsfix = trparsfix,idparsopt = idparsopt,idparsfix = idparsfix,pars2 = pars2,brts = brts,missnumspec = missnumspec, methode = methode)
 cat("The loglikelihood for the initial parameter values is",initloglik,"\n")
+flush.console()
 if(initloglik == -Inf)
 {
    cat("The initial parameter values have a likelihood that is equal to 0 or below machine precision. Try again with different initial values.\n")

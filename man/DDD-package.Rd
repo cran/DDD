@@ -107,9 +107,13 @@ under diversity-dependent diversification models.\cr \cr
    - Allows use of alternative ODE solvers\cr   
    - Allows use of subplex as optimization algorithm.\cr\cr
    New in version 3.1\cr
-   - Fixes bug with dd_sim and dd_KI_sim for ddmodel 1.3 (Thanks to Giovanni Laudanno)\cr\cr
-   - Fixes bug with cond = 3\cr\cr   
+   - Fixes bug with dd_sim and dd_KI_sim for ddmodel 1.3 (Thanks to Giovanni Laudanno)\cr
+   - Fixes bug with cond = 3\cr   
    - Includes matrix exponentiation as an alternative to numerical ODE solvers\cr\cr   
+   New in version 3.2\cr
+   - Fixes bug with dd_loglik when lambda becomes infinite\cr
+   - Changes default tolerance of subplex\cr
+   - Fixes tiny bug in p-value computation in dd_LR\cr\cr
    Forthcoming:\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik\cr
 }
@@ -118,8 +122,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 3.1\cr
-Date: \tab 2016-1-19\cr
+Version: \tab 3.2\cr
+Date: \tab 2016-2-5\cr
 License: \tab GPL 3.0\cr
 }
 bd_loglik compues the likelihood under the constant-rate birth-death model of several specific 

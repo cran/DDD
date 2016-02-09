@@ -254,7 +254,7 @@ if((mu == 0 & (ddep == 2 | ddep == 2.1 | ddep == 2.2)) | (la == 0 & (ddep == 4 |
     cat("These parameter values cannot satisfy lambda(N) = mu(N) for a positive and finite N.\n")
     loglik = -Inf
 } else {
-    if(((ddep == 1 | ddep == 5) & ceiling(la/(la - mu) * (r + 1) * K) < (S + missnumspec)) | ((ddep == 1.3) & (S + missnumspec > ceiling(K))))
+    if(((ddep == 1 | ddep == 5) & ceiling(la/(la - mu) * (r + 1) * K) < (S + missnumspec)) | ((ddep == 1.3) & ((S + missnumspec) > ceiling(K))))
     {
        loglik = -Inf
     } else {
@@ -379,7 +379,7 @@ if(pars2[5] == 1)
 }
 }
 loglik = as.numeric(loglik)
-if(is.nan(loglik) | is.na(loglik))
+if(is.nan(loglik) | is.na(loglik) | loglik == Inf)
 {
     loglik = -Inf
 }

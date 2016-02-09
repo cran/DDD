@@ -71,10 +71,10 @@ dd_LR = function(
         maxLLDD = outDD1$loglik
      } else {
         maxLLDD = max(outDD1$loglik,outDD2$loglik)
-     }
-     LR = max(0,maxLLDD - outCR$loglik)
+     }   
+     LR = pmax(0,maxLLDD - outCR$loglik)
      outff = cbind(1,mc,outCR,outDD1,outDD2,LR)
-     outff = outff[,-c(5,7,13,19)]
+     outff = outff[,-c(5,7,13,19)]     
      names(outff) = newnames
      out = rbind(out,outff)
      if(!is.null(outputfilename))
@@ -107,14 +107,14 @@ dd_LR = function(
         maxLLDD = max(outDD1$loglik,outDD2$loglik)
         opt[mc] = 1 + min(which(c(outDD1$loglik,outDD2$loglik) == maxLLDD))
      }
-     LR = max(0,maxLLDD - outCR$loglik)
+     LR = pmax(0,maxLLDD - outCR$loglik)
      outff = cbind(1,mc,outCR,outDD1,outDD2,LR)
      outff = outff[,-c(5,7,13,19)]
      names(outff) = newnames
      out = rbind(out,outff)
      if(!is.null(outputfilename))
      {
-        save(seed,brts,out,treeCR,treeDD,file = outputfilename)
+        save(seed,brts,out,opt,treeCR,treeDD,file = outputfilename)
      }
   }
   inverse_quantile = function(samples,x)
@@ -135,9 +135,25 @@ dd_LR = function(
      }
      return(invquant)
   }
-  pvalue = 1 - inverse_quantile(out$LR[2:(endmc + 1)],out$LR[1])
+  funpvalue = function(samples,x)
+  {
+     samplessort = sort(samples)
+     pup = which(samplessort > x)
+     pvalue = (length(pup) + 1)/ (length(samples) + 1)
+     return(pvalue)
+  }
+  funpoweroftest = function(samples,x)
+  {
+     samplessort = sort(samples)
+     pup = which(samplessort > x)
+     poweroftest = length(pup)/(length(samples) + 1)
+     return(poweroftest)     
+  }
+  #pvalue = 1 - inverse_quantile(out$LR[2:(endmc + 1)],out$LR[1])
+  pvalue = funpvalue(out$LR[2:(endmc + 1)],out$LR[1])
   LRalpha = as.numeric(quantile(out$LR[2:(endmc + 1)],1 - alpha,type = 4))
-  poweroftest = 1 - inverse_quantile(out$LR[(endmc + 2):(2 * endmc + 1)],LRalpha)
+  #poweroftest = 1 - inverse_quantile(out$LR[(endmc + 2):(2 * endmc + 1)],LRalpha)
+  poweroftest = funpoweroftest(out$LR[(endmc + 2):(2 * endmc + 1)],LRalpha)
   if(plotit == TRUE)
   {
       try(dev.off())
@@ -186,7 +202,7 @@ dd_LR = function(
   }
   if(!is.null(outputfilename))
   {
-      save(seed,brts,out,treeCR,treeDD,pvalue,LRalpha,poweroftest,file = outputfilename)
+      save(seed,brts,out,opt,treeCR,treeDD,pvalue,LRalpha,poweroftest,file = outputfilename)
   }
   return(list(treeCR = treeCR,treeDD = treeDD,out = out,pvalue = pvalue,LRalpha = LRalpha,poweroftest = poweroftest))
 }
