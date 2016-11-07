@@ -114,6 +114,10 @@ under diversity-dependent diversification models.\cr \cr
    - Fixes bug with dd_loglik when lambda becomes infinite\cr
    - Changes default tolerance of subplex\cr
    - Fixes tiny bug in p-value computation in dd_LR\cr\cr
+   New in version 3.3\cr
+   - Documentation for several previously internal functions that were used by other packages\cr
+   - Small bug fix of L2phylo function (previously digits could be dropped in conversion from numbers as characters to numeric)\cr\cr
+   - Contains a function to simulate the SR model \cr\cr
    Forthcoming:\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik\cr
 }
@@ -122,8 +126,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 3.2\cr
-Date: \tab 2016-2-5\cr
+Version: \tab 3.3\cr
+Date: \tab 2016-7-13\cr
 License: \tab GPL 3.0\cr
 }
 bd_loglik compues the likelihood under the constant-rate birth-death model of several specific 
@@ -151,9 +155,11 @@ from the main clade's dynamics but they do get different parameters at time t_d.
 
 dd_MS_ML finds the parameters that maximizes the likelihood computed by dd_MS_loglik.
 
-dd_sim simulates the diversity-dependent process
+dd_sim, dd_SR_sim, dd_KI_sim and dd_MS_sim simulate the diversity-dependent process according
+to the simple, rate shift, key innovation and macro-evolutionary models respectively.
 
-dd_LR performs a bootstrap likelihood ratio test
+dd_LR performs a bootstrap likelihood ratio test of the standard diversity-dependent model against
+the constant-rates diversity-independent model.
 }
 \author{
 Rampal S. Etienne & Bart Haegeman\cr

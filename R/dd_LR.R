@@ -52,7 +52,7 @@ dd_LR = function(
   {
       save(seed,brts,out,treeCR,treeDD,file = outputfilename)
   }
-  cat('Performing bootstrap for determining critical LR ...\n')  
+  cat('Performing bootstrap to determine critical LR ...\n')  
   for(mc in 1:endmc)
   {
      cat('Analyzing simulation:',mc,'\n')
@@ -83,10 +83,10 @@ dd_LR = function(
      }
   }
   opt = rep(0,endmc)
-  cat('Performing bootstrap for determine power ...\n')
+  cat('Performing bootstrap to determine power ...\n')
   for(mc in 1:endmc)
   {
-     print(mc)
+     cat('Analyzing simulation:',mc,'\n')
      brtsDD = branching.times(treeDD[[mc]][[1]])
      outCR = dd_ML(brtsDD,initparsopt = parsCR,idparsopt = 1:2, idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
      outDD1 = dd_ML(brtsDD,initparsopt = parsDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)

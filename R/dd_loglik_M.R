@@ -61,7 +61,7 @@ changepars = function(pars)
     {
        sel = 1:2
     } else {
-       sel = c(1:2,4:5)
+       sel = c(1:2,4:min(length(pars),5))
     }
     if(sum(pars[sel] == Inf) > 0)
     {

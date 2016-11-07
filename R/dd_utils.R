@@ -119,7 +119,9 @@ L2phylo = function(L,dropextinct = T)
       tend = (L[,4] == -1) * age + (L[,4] > -1) * L[,4]
    }
    L = L[,-4]
-   linlist = cbind(L[sall,],paste("t",abs(L[sall,3]),sep = ""),tend)
+   linlist = cbind(data.frame(L[sall,]),paste("t",abs(L[sall,3]),sep = ""),tend)
+   linlist[,4] = as.character(linlist[,4])
+   names(linlist) = 1:5
    done = 0
    while(done == 0)
    {
@@ -130,19 +132,19 @@ L2phylo = function(L,dropextinct = T)
       parentinlist = length(parentj)
       if(parentinlist == 1)
       {
-         spec1 = paste(linlist[parentj,4],":",as.numeric(linlist[parentj,5]) - as.numeric(linlist[j,1]),sep = "")
-         spec2 = paste(linlist[j,4],":",as.numeric(linlist[j,5]) - as.numeric(linlist[j,1]),sep = "")
+         spec1 = paste(linlist[parentj,4],":",linlist[parentj,5] - linlist[j,1],sep = "")
+         spec2 = paste(linlist[j,4],":",linlist[j,5] - linlist[j,1],sep = "")
          linlist[parentj,4] = paste("(",spec1,",",spec2,")",sep = "")
          linlist[parentj,5] = linlist[j,1]
          linlist = linlist[-j,]
       } else {
          #linlist[j,1:3] = L[abs(as.numeric(parent)),1:3]
-         linlist[j,1:3] = L[which(L[,3] == as.numeric(parent)),1:3]
+         linlist[j,1:3] = L[which(L[,3] == parent),1:3]
       }
-      if(is.null(nrow(linlist))) { done = 1 }
+      if(nrow(linlist) == 1) { done = 1 }
    }
    linlist[4] = paste(linlist[4],":",linlist[5],";",sep = "")
-   phy = read.tree(text = linlist[4])
+   phy = read.tree(text = linlist[1,4])
    tree = as.phylo(phy)
    return(tree)
 }
@@ -150,7 +152,8 @@ L2phylo = function(L,dropextinct = T)
 roundn = function(x, digits = 0)
 {
     fac = 10^digits
-    return(trunc(fac * x + 0.5)/fac)
+    n = trunc(fac * x + 0.5)/fac
+    return(n)
 }
 
 sample2 = function(x,size,replace = FALSE,prob = NULL)
@@ -160,7 +163,8 @@ sample2 = function(x,size,replace = FALSE,prob = NULL)
         x = c(x,x)
         prob = c(prob,prob)
     }
-    return(sample(x,size,replace,prob))
+    sam = sample(x,size,replace,prob)
+    return(sam)
 }
 
 simplex = function(fun,trparsopt,optimpars,...)

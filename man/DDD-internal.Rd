@@ -36,7 +36,6 @@
 \alias{dd_KI_simplex}
 \alias{dd_MS_simplex}
 \alias{brts2phylo}
-\alias{L2phylo}
 \alias{conv}
 \alias{flavec}
 \alias{lambdamu}
@@ -45,16 +44,12 @@
 \alias{expn_dd_sp}
 \alias{predictsp}
 \alias{expn_dd}
-\alias{sample2}
 \alias{lamu_dd_td}
 \alias{dd_lamuN}
 \alias{dd_MS_lamuN}
 \alias{dd_KI_lamuN}
 \alias{dd_bootstrap_sim}
-\alias{optimizer}
 \alias{simplex}
-\alias{roundn}
-\alias{sample2}
 \alias{lambdamu}
 \alias{changepars}
 \title{Internal DDD Functions}
