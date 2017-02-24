@@ -154,7 +154,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
            probs = probs/sumprobs
        }
     }
-    for(k in (ka + 1):(S1 + 1))
+    for(k in (ka + 1):max(ka + 1,S1 + 1))
     {
        k1 = k + (soc - 2)
        t1 = max(tinn,brtsM[k - 1]); t2 = brtsM[k];
@@ -251,7 +251,6 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     } else {
        loglik = loglikM + loglikS
     }
-   
     if(is.nan(loglik) | is.na(loglik))
     {
        loglik = -Inf
@@ -371,7 +370,6 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
        nx1a = nx1[2:(lx+1),2:(lx+1)]
        nx2a = nx2[2:(lx+1),2:(lx+1)]
        probs = probs * nx1a/(nx1a+nx2a)
-       #probs = c(t(probs[2:lx,1:lx]), rep(0,lx))
        probs = rbind(probs[2:lx,1:lx], rep(0,lx))
        dim(probs) = c(lx * lx,1)
        # STEP 3: integrate from tinn to tpres
@@ -526,7 +524,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
            probs = probs/sumprobs
        }
     }
-    for(k in (ka + 1):(S1 + 1))
+    for(k in (ka + 1):max(ka + 1,S1 + 1))
     {
        k1 = k + (soc - 2)
        t1 = max(tinn,brtsM[k - 1]); t2 = brtsM[k];
@@ -597,7 +595,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     } else {
        loglik = loglikM + loglikS
     }
-   
+
     if(is.nan(loglik) | is.na(loglik))
     {
        loglik = -Inf

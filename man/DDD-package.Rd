@@ -116,8 +116,11 @@ under diversity-dependent diversification models.\cr \cr
    - Fixes tiny bug in p-value computation in dd_LR\cr\cr
    New in version 3.3\cr
    - Documentation for several previously internal functions that were used by other packages\cr
-   - Small bug fix of L2phylo function (previously digits could be dropped in conversion from numbers as characters to numeric)\cr\cr
+   - Small bug fix of L2phylo function (previously digits could be dropped in conversion from numbers as characters to numeric)\cr
    - Contains a function to simulate the SR model \cr\cr
+   New in version 3.4\cr
+   - Contains a function to convert the L table directly to branching times\cr
+   - Bug fix in dd_KI_loglik for stem age with no further branching in the main clade after the decoupling.\cr\cr
    Forthcoming:\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik\cr
 }
@@ -126,8 +129,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 3.3\cr
-Date: \tab 2016-7-13\cr
+Version: \tab 3.4\cr
+Date: \tab 2017-02-23\cr
 License: \tab GPL 3.0\cr
 }
 bd_loglik compues the likelihood under the constant-rate birth-death model of several specific 
@@ -168,6 +171,7 @@ Maintainer: Rampal S. Etienne (r.s.etienne@rug.nl)
 \references{
 - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309, doi: 10.1098/rspb.2011.1439 \cr
 - Etienne, R.S. & B. Haegeman 2012. Am. Nat. 180: E75-E89, doi: 10.1086/667574
+- Etienne, R.S. et al. 2016, Meth. Ecol. Evol. 7: 1092-1099, doi: 10.1111/2041-210X.12565
 }
 \keyword{ models }
 \seealso{

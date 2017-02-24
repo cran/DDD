@@ -69,9 +69,6 @@ not specified in idparsopt.
     cond == 3 : conditioning on the total number of extant taxa (including missing species) \cr
    Note: cond == 3 assumes a uniform prior on stem age, as is the standard in constant-rate birth-death models, see
 e.g. D. Aldous & L. Popovic 2004. Adv. Appl. Prob. 37: 1094-1115 and T. Stadler 2009. J. Theor. Biol. 261: 58-66.
-This conditioning turns out, for the diversity-dependent model, 
-to provide the least-biased parameter estimates when extinction is low, but may still contain considerable bias if extinction is high.
-The default value has therefore been changed from 1 to 3 starting with DDD version 2.2.
   }
   \item{btorph}{Sets whether the likelihood is for the branching times (0) or the phylogeny (1)}
   \item{soc}{Sets whether stem or crown age should be used (1 or 2) }

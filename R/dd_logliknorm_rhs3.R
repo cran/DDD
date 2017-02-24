@@ -1,6 +1,6 @@
  dd_logliknorm_rhs3 = function(t,x,m)
 {
-   nx = round((length(x))^(1/3))
+   nx = roundn((length(x))^(1/3))
    dim(x) = c(nx,nx,nx)     
    xx = array(0,dim = c(nx+2,nx+2,nx+2))
    xx[2:(nx+1),2:(nx+1),2:(nx+1)] = x

@@ -62,7 +62,7 @@ if(length(namepars[idparsopt]) == 0) { optstr = "nothing" } else { optstr = name
 cat("You are optimizing",optstr,"\n")
 if(length(namepars[idparsfix]) == 0) { fixstr = "nothing" } else { fixstr = namepars[idparsfix] }
 cat("You are fixing",fixstr,"\n")
-if(length(namepars[idparsnoshift]) == 0) { noshiftstr = "none" } else { noshiftstr = namepars[idparsnoshift] }
+if(length(namepars[idparsnoshift]) == 0) { noshiftstr = "anything" } else { noshiftstr = namepars[idparsnoshift] }
 cat("You are not shifting",noshiftstr,"\n")
 cat("Optimizing the likelihood - this may take a while.","\n")
 flush.console()

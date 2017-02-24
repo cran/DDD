@@ -29,15 +29,15 @@
   }
 }
 \value{
-  \item{ out }{ A list with the following three elements:
+  \item{ out }{ A list with the following four elements:
    The first element is the tree of extant species in phylo format \cr
    The second element is the tree of all species, including extinct species, in phylo format \cr
    The third element is a matrix of all species where \cr
    - the first column is the time at which a species is born \cr
    - the second column is the label of the parent of the species; positive and negative values only indicate whether the species belongs to the left or right crown lineage \cr
    - the third column is the label of the daughter species itself; positive and negative values only indicate whether the species belongs to the left or right crown lineage \cr
-   - the fourth column is the time of extinction of the species \cr
-   If the fourth element equals -1, then the species is still extant.
+   - the fourth column is the time of extinction of the species If this equals -1, then the species is still extant.\cr
+   The fourth element is the set of branching times of the tree of extant species.\cr
   }
 }
 \references{

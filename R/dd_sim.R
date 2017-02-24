@@ -150,7 +150,8 @@ L[notmin1,4] = age - c(L[notmin1,4])
 L[which(L[,4] == age + 1),4] = -1
 tes = L2phylo(L,dropextinct = T)
 tas = L2phylo(L,dropextinct = F)
-out = list(tes = tes,tas = tas,L = L)
+brts = L2brts(L,dropextinct = T)
+out = list(tes = tes,tas = tas,L = L,brts = brts)
 return(out)
 
 }
