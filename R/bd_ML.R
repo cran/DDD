@@ -37,7 +37,7 @@ bd_ML = function(brts, initparsopt = c(0.1,0.05 * (tdmodel <= 1) + 10 * (length(
      return(out2)
   }
   idpars = sort(c(idparsopt,idparsfix))
-  if((sum(idpars == (1:4)) != 4) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
+  if((prod(idpars == (1:4)) != 1) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
   {
      cat("The parameters to be optimized and/or fixed are incoherent.\n")
      return(out2)

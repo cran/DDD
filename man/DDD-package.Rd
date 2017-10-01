@@ -121,7 +121,10 @@ under diversity-dependent diversification models.\cr \cr
    New in version 3.4\cr
    - Contains a function to convert the L table directly to branching times\cr
    - Bug fix in dd_KI_loglik for stem age with no further branching in the main clade after the decoupling.\cr\cr
+   New in version 3.5\cr
+   - Fixes bug in dd_SR_sim\cr\cr
    Forthcoming:\cr
+   - Computation of the likelihood according to a lineage-specific rate shift model under an otherwise constant-rate birth-death model.\cr\cr
    - High-precision arithmetic in numerically unstable regions of bd_loglik\cr
 }
 
@@ -129,8 +132,8 @@ under diversity-dependent diversification models.\cr \cr
 \tabular{ll}{
 Package: \tab DDD\cr
 Type: \tab Package\cr
-Version: \tab 3.4\cr
-Date: \tab 2017-02-23\cr
+Version: \tab 3.5\cr
+Date: \tab 2017-09-30\cr
 License: \tab GPL 3.0\cr
 }
 bd_loglik compues the likelihood under the constant-rate birth-death model of several specific 

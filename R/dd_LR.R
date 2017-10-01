@@ -24,10 +24,15 @@ dd_LR = function(
   {
      set.seed(roundn(seed))
   }
+  if(cond > 1)
+  {
+    cat("Conditioning on number of tips is not possible.\n")
+    return(NULL)
+  }
   age = max(brts)
-  cat("Estimating parameters under the constant-rate model ...\n")  
+  cat("\nEstimating parameters under the constant-rate model ...\n")  
   outCRO = dd_ML(brts = brts,initparsopt = initparsoptCR,idparsopt = 1:2,idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
-  cat("Estimating parameters under the diversity-dependent model ...\n")  
+  cat("\nEstimating parameters under the diversity-dependent model ...\n")  
   outDDO = dd_ML(brts = brts,initparsopt = initparsoptDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
   LRO = outDDO$loglik - outCRO$loglik
   out = cbind(NA,NA,outCRO,outDDO,NA,NA,NA,NA,NA,LRO)
@@ -42,20 +47,20 @@ dd_LR = function(
   parsDD = as.numeric(outDDO[1:3])
   treeCR = list()
   treeDD = list()
-  cat('Simulating trees under CR and DD models ...\n')
+  cat('\nSimulating trees under CR and DD models ...\n')
   for(mc in 1:endmc)
   {
-     treeCR[[mc]] = dd_sim(pars = c(parsCR,Inf),age = age,ddmodel = 1)
-     treeDD[[mc]] = dd_sim(pars = parsDD,age = age,ddmodel = 1)
+     treeCR[[mc]] = dd_sim(pars = c(parsCR,Inf),age = age,ddmodel = ddmodel)
+     treeDD[[mc]] = dd_sim(pars = parsDD,age = age,ddmodel = ddmodel)
   }
   if(!is.null(outputfilename))
   {
       save(seed,brts,out,treeCR,treeDD,file = outputfilename)
   }
-  cat('Performing bootstrap to determine critical LR ...\n')  
+  cat('\nPerforming bootstrap to determine critical LR ...\n')  
   for(mc in 1:endmc)
   {
-     cat('Analyzing simulation:',mc,'\n')
+     cat('\nAnalyzing simulation:',mc,'\n')
      brtsCR = branching.times(treeCR[[mc]][[1]])
      outCR = dd_ML(brtsCR,initparsopt = parsCR,idparsopt = 1:2,idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
      outDD1 = dd_ML(brtsCR,initparsopt = parsDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
@@ -83,10 +88,10 @@ dd_LR = function(
      }
   }
   opt = rep(0,endmc)
-  cat('Performing bootstrap to determine power ...\n')
+  cat('\nPerforming bootstrap to determine power ...\n')
   for(mc in 1:endmc)
   {
-     cat('Analyzing simulation:',mc,'\n')
+     cat('\nAnalyzing simulation:',mc,'\n')
      brtsDD = branching.times(treeDD[[mc]][[1]])
      outCR = dd_ML(brtsDD,initparsopt = parsCR,idparsopt = 1:2, idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
      outDD1 = dd_ML(brtsDD,initparsopt = parsDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)

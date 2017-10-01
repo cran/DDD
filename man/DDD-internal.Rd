@@ -52,6 +52,9 @@
 \alias{simplex}
 \alias{lambdamu}
 \alias{changepars}
+\alias{expfun}
+\alias{logH}
+\alias{logLL}
 \title{Internal DDD Functions}
 \description{Internal DDD functions}
 \details{These are not to be called by the user.}

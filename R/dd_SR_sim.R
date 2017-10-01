@@ -53,7 +53,7 @@ while(done == 0)
     t[i + 1] = t[i] - log(stats::runif(1))/denom
     shifted = 0
     tshift = pars[7]
-    while(t[i + 1] <= age)
+    while(t[i + 1] <= age | shifted == 0)
     {
         if(t[i + 1] >= age - tshift & shifted == 0)
         {
@@ -61,7 +61,7 @@ while(done == 0)
             laN = ff[1]
             muN = ff[2]
             denom = (laN + muN) * N[i]
-            t[i + 1] = tshift - log(stats::runif(1))/denom
+            t[i + 1] = age - tshift - log(stats::runif(1))/denom
             shifted = 1
         }
         i = i + 1

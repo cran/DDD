@@ -44,7 +44,7 @@ if(is.numeric(brts) == FALSE)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {
 idpars = sort(c(idparsopt,idparsfix))
-if((sum(idpars == (1:3)) != 3) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
+if((prod(idpars == (1:3)) != 1) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
 {
    cat("The parameters to be optimized and/or fixed are incoherent.\n")
    out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = -1)
