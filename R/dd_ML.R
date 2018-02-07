@@ -1,4 +1,40 @@
-dd_ML = function(brts, initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) + missnumspec))} else {c(0.2,0.1,2*(length(brts) + missnumspec),0.01)}, idparsopt = 1:length(initparsopt), idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt], parsfix = (ddmodel < 5) * c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt] + (ddmodel == 5) * c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt], res = 10*(1+length(brts)+missnumspec), ddmodel = 1, missnumspec = 0, cond = 1, btorph = 1, soc = 2, tol = c(1E-3, 1E-4, 1E-6), maxiter = 1000 * round((1.25)^length(idparsopt)), changeloglikifnoconv = FALSE, optimmethod = 'subplex', methode = 'analytical')
+initparsoptdefault = function(ddmodel,brts,missnumspec)
+{
+  if(ddmodel < 5)
+  {
+    return(c(0.2,0.1,2 * (length(brts) + missnumspec)^(ddmodel != 2.3)))
+  } else {
+    return(c(0.2,0.1,2 * (length(brts) + missnumspec),0.01))
+  }
+}
+
+parsfixdefault = function(ddmodel,brts,missnumspec,idparsopt)
+{
+  if(ddmodel < 5)
+  {
+    return(c(0.2,0.1,2*(length(brts) + missnumspec))[-idparsopt])
+  } else {
+    return(c(0.2,0.1,2*(length(brts) + missnumspec),0)[-idparsopt])
+  }
+}
+
+dd_ML = function(
+  brts,
+  initparsopt = initparsoptdefault(ddmodel,brts,missnumspec),
+  idparsopt = 1:length(initparsopt),
+  idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt],
+  parsfix = parsfixdefault(ddmodel,brts,missnumspec,idparsopt),
+  res = 10*(1+length(brts)+missnumspec),
+  ddmodel = 1,
+  missnumspec = 0,
+  cond = 1,
+  btorph = 1,
+  soc = 2,
+  tol = c(1E-3, 1E-4, 1E-6),
+  maxiter = 1000 * round((1.25)^length(idparsopt)),
+  changeloglikifnoconv = FALSE,
+  optimmethod = 'subplex',
+  methode = 'analytical')
 {
 # brts = branching times (positive, from present to past)
 # - max(brts) = crown age
@@ -44,7 +80,7 @@ if(is.numeric(brts) == FALSE)
    if(ddmodel == 5) {out2 = data.frame(lambda = -1,mu = -1,K = -1, r = -1, loglik = -1, df = -1, conv = -1)}
 } else {
 idpars = sort(c(idparsopt,idparsfix))
-if((prod(idpars == (1:3)) != 1) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
+if((prod(idpars == (1:(3 + (ddmodel == 5)))) != 1) || (length(initparsopt) != length(idparsopt)) || (length(parsfix) != length(idparsfix)))
 {
    cat("The parameters to be optimized and/or fixed are incoherent.\n")
    out2 = data.frame(lambda = -1,mu = -1,K = -1, loglik = -1, df = -1, conv = -1)

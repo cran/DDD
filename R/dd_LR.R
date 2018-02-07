@@ -62,9 +62,9 @@ dd_LR = function(
   {
      cat('\nAnalyzing simulation:',mc,'\n')
      brtsCR = branching.times(treeCR[[mc]][[1]])
-     outCR = dd_ML(brtsCR,initparsopt = parsCR,idparsopt = 1:2,idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
-     outDD1 = dd_ML(brtsCR,initparsopt = parsDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
-     outDD2 = dd_ML(brtsCR,initparsopt = c(parsCR + 0.05,length(brts) + 1000),idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
+     outCR = dd_ML(brtsCR,initparsopt = parsCR,idparsopt = 1:2,idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = 0,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
+     outDD1 = dd_ML(brtsCR,initparsopt = parsDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = 0,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
+     outDD2 = dd_ML(brtsCR,initparsopt = c(parsCR + 0.05,length(brts) + 1000),idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = 0,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
      if(outDD1$conv == -1 & outDD2$conv == -1)
      {
         maxLLDD = outCR$loglik
@@ -93,9 +93,9 @@ dd_LR = function(
   {
      cat('\nAnalyzing simulation:',mc,'\n')
      brtsDD = branching.times(treeDD[[mc]][[1]])
-     outCR = dd_ML(brtsDD,initparsopt = parsCR,idparsopt = 1:2, idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
-     outDD1 = dd_ML(brtsDD,initparsopt = parsDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
-     outDD2 = dd_ML(brtsDD,initparsopt = c(parsCR + 0.05,length(brts) + 1000), idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = missnumspec,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
+     outCR = dd_ML(brtsDD,initparsopt = parsCR,idparsopt = 1:2, idparsfix = 3,parsfix = Inf,res = res,ddmodel = ddmodel,missnumspec = 0,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
+     outDD1 = dd_ML(brtsDD,initparsopt = parsDD,idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = 0,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
+     outDD2 = dd_ML(brtsDD,initparsopt = c(parsCR + 0.05,length(brts) + 1000), idparsopt = 1:3,res = res,ddmodel = ddmodel,missnumspec = 0,cond = cond,btorph = btorph,soc = soc,tol = tol,maxiter = maxiter,changeloglikifnoconv = changeloglikifnoconv, optimmethod = optimmethod)
      if(outDD1$conv == -1 & outDD2$conv == -1)
      {
         maxLLDD = outCR$loglik

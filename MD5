@@ -1,4 +1,4 @@
-0808b7dd813e298323a24302950a3d6f *DESCRIPTION
+88ea8a0847c642cb5c65fc72f895595e *DESCRIPTION
 a2490c411df2c2981b5b163b2452d1e9 *NAMESPACE
 9355fc5c3be5656447afa615ad74524b *R/bd_ML.R
 b70be53dc249c82fc136c8de97d94ec3 *R/bd_loglik.R
@@ -7,8 +7,8 @@ abbd6a6498e1cddff801e5ba469a8786 *R/bd_loglik_choosepar.R
 bfc8248e3d9eb1a010b822a2524d590c *R/dd_KI_loglik.R
 380b4c0e5c1132cad8c547b056046261 *R/dd_KI_loglik_choosepar.R
 727a1da555adf55d4a28488b1e208c08 *R/dd_KI_sim.R
-b0e10b3a4d73832f2d025a8b7430a435 *R/dd_LR.R
-22b865bd83267273a130f5b3f290f5bb *R/dd_ML.R
+150669b0cb927402498e145b4551ebdb *R/dd_LR.R
+c9b12a502f7368925e520c5ea454e3a8 *R/dd_ML.R
 fb3b0ea69acdbf6b9cab2879df59a25e *R/dd_MS_ML.R
 089059f34f1c7b89c33ed81b11938184 *R/dd_MS_loglik.R
 7f0cecde751e25656cffb40bb4b9f727 *R/dd_MS_loglik_choosepar.R
@@ -18,7 +18,7 @@ c712141c4fedbab333c426664ef66edb *R/dd_SR_ML.R
 4cc410da8c37b379e8adec2e750eea1d *R/dd_SR_loglik_choosepar.R
 36f16073c4e71a5b9f28a8c6ed7d896f *R/dd_SR_sim.R
 6ecff57c7aa84ebe74cb46dd8600ae66 *R/dd_bootstrap_sim.R
-1f151dccc3b1a6522a793c4444263f6a *R/dd_loglik.R
+f95f5360eee1bd42db601ec4cbb943d2 *R/dd_loglik.R
 27133301e48739cee324294c0c9223ef *R/dd_loglik_M.R
 3cb98599c710a2faff53fc88c5a471c5 *R/dd_loglik_bw_rhs.R
 05c5b3c28b89b481fb580f2abe8cb960 *R/dd_loglik_choosepar.R
@@ -33,8 +33,8 @@ df077bd2123b2387ba9e760b1d197b6b *R/dd_sim.R
 8418cece5421653f09bb5e72216e07d7 *R/td_loglik_rhs.R
 fce9c15c74e28e4976b6f5c550d74393 *R/td_loglik_rhs_sim.R
 878fa2c4808ef7c602ba85dcdc3484ea *R/td_sim.R
-c05aae884e846b1d209d9c268662f3e6 *man/DDD-internal.Rd
-81ccc45f7586a10d021b3a3bb4d31b21 *man/DDD-package.Rd
+aa24c923fc08fc55aff93523d7d41c55 *man/DDD-internal.Rd
+3023e261ae129f2fffab20db59f9a801 *man/DDD-package.Rd
 32d9b3351c0937a3fef741f9c7333580 *man/L2brts.Rd
 dd3f1e77a3852c73fc2b9d0a310472f3 *man/L2phylo.Rd
 84b6f710328861a857d54f66d1648a43 *man/bd_ML.Rd
@@ -43,7 +43,7 @@ ff01edf773f763de869e8028dd749989 *man/bd_loglik.Rd
 c48cd2ac5439e8c17cc854f89470eace *man/dd_KI_loglik.Rd
 42029c36b0a77b55736c53a7349031b6 *man/dd_KI_sim.Rd
 a0d78a735b1132a9a818de6d2cfbadd7 *man/dd_LR.Rd
-d387c31d8282513f7bd3c9af99727920 *man/dd_ML.Rd
+e1d02c073029983ce3e7497ecdeb7f47 *man/dd_ML.Rd
 12b5a98a3132989c299f06d982b27d89 *man/dd_MS_ML.Rd
 1287869c786455cf3e35ba52b6f4019c *man/dd_MS_loglik.Rd
 cd43289326e322d7d1f597f0b72313b6 *man/dd_MS_sim.Rd

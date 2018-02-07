@@ -10,24 +10,21 @@
 \usage{
 dd_ML(
    brts,
-   initparsopt = if(ddmodel < 5) {c(0.2,0.1,2*(length(brts) + missnumspec))}
-else {c(0.2,0.1,2*(length(brts) + missnumspec),0.01)},
+   initparsopt = initparsoptdefault(ddmodel,brts,missnumspec),
    idparsopt = 1:length(initparsopt),
    idparsfix = (1:(3 + (ddmodel == 5)))[-idparsopt],
-   parsfix = (ddmodel < 5) * c(0.2,0.1, 2 * (length(brts) + missnumspec))[-idparsopt]
-+ (ddmodel == 5) * c(0.2, 0.1, 2 * (length(brts) + missnumspec), 0)[-idparsopt],
-   res = 10 * (1 + length(brts) + missnumspec),
+   parsfix = parsfixdefault(ddmodel,brts,missnumspec,idparsopt),
+   res = 10*(1+length(brts)+missnumspec),
    ddmodel = 1,
    missnumspec = 0,
    cond = 1,
    btorph = 1,
    soc = 2,
-   tol = c(1E-3,1E-4,1E-6),
+   tol = c(1E-3, 1E-4, 1E-6),
    maxiter = 1000 * round((1.25)^length(idparsopt)),
    changeloglikifnoconv = FALSE,
    optimmethod = 'subplex',
-   methode = 'analytical'   
-   )
+   methode = 'analytical')
 }
 \arguments{
   \item{brts}{A set of branching times of a phylogeny, all positive }

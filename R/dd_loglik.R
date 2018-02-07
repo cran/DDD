@@ -78,7 +78,6 @@ if(sum(brts == 0) == 0)
 {
    brts[length(brts) + 1] = 0
 }
-
 S = length(brts) + (soc - 2)
 if(min(pars1) < 0)
 {

@@ -1,4 +1,6 @@
 \name{DDD-internal}
+\alias{initparsoptdefault}
+\alias{parsfixdefault}
 \alias{dd_loglik1}
 \alias{dd_loglik2}
 \alias{dd_loglik_choosepar}
