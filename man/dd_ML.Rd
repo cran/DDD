@@ -48,6 +48,8 @@ not specified in idparsopt.
   \item{ddmodel}{ Sets the model of diversity-dependence: \cr
    \code{ddmodel == 1} : linear dependence in speciation rate with parameter K (= diversity where speciation = extinction)\cr
    \code{ddmodel == 1.3} : linear dependence in speciation rate with parameter K' (= diversity where speciation = 0)\cr
+   \code{ddmodel == 1.4} : positive diversity-dependence in speciation rate with parameter K' (= diversity where speciation rate reaches half its maximum); lambda = lambda0 * S/(S + K') where S is species richness\cr
+   \code{ddmodel == 1.5} : positive and negative dependence in speciation rate with parameter K' (= diversity where speciation = 0); lambda = lambda0 * S/K' * (1 - S/K') where S is species richness\cr
    \code{ddmodel == 2} : exponential dependence in speciation rate with parameter K (= diversity where speciation = extinction)\cr
    \code{ddmodel == 2.1} : variant of exponential dependence in speciation rate with offset at infinity\cr
    \code{ddmodel == 2.2} : 1/n dependence in speciation rate\cr

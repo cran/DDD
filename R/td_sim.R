@@ -107,7 +107,7 @@ td_sim = function(pars,age,ddmodel = 1,methode = 'ode45')
       
       latd = mu0 + dEN_dt/expn
             
-      if(latd > lamax)
+      if(lamax-latd<(-1e-10))
       {
          stop('latd should be a decreasing function of time')
       }      

@@ -57,6 +57,14 @@
 \alias{expfun}
 \alias{logH}
 \alias{logLL}
+\alias{dd_loglik_test}
+\alias{dd_integrate}
+\alias{dd_ode_FORTRAN}
+\alias{dd_loglik_rhs_precomp}
+\alias{fill1d}
+\alias{initmod}
+\alias{runmod}
+\alias{runmodbw}
 \title{Internal DDD Functions}
 \description{Internal DDD functions}
 \details{These are not to be called by the user.}

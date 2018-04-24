@@ -124,7 +124,8 @@ brtsM = 4:10
 brtsS = seq(0.1,3.5,0.7)
 tsplit = 5
 dd_KI_ML(brtsM = brtsM, brtsS = brtsS, tsplit = tsplit, idparsopt = c(1:3,6,7),
-          initparsopt = c(0.885, 2e-14, 6.999, 6.848, 4.001), idparsfix = NULL, parsfix = NULL,
-          idparsnoshift = c(4,5), cond = 0, tol = c(3E-1,3E-1,3E-1))
+  initparsopt = c(0.885, 2e-14, 6.999, 6.848, 4.001), idparsfix = NULL,
+  parsfix = NULL,idparsnoshift = c(4,5), cond = 0, tol = c(3E-1,3E-1,3E-1),
+  optimmethod = 'simplex')
 }
 \keyword{ models }

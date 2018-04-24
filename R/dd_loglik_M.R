@@ -82,7 +82,8 @@ dd_loglik_M = function(pars,lx,k,ddep,tt,p)
 {
     pars = changepars(pars)
     MM = dd_loglik_M_aux(pars,lx,k,ddep)
-    p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    #p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    p = expm::expAtv(A = MM,v = p,t = tt,m.max = 50)[[1]]
     return(p)
 }
 
@@ -104,7 +105,8 @@ dd_loglik_M_bw = function(pars,lx,k,ddep,tt,p)
 {
     pars = changepars(pars)
     MM = dd_loglik_M_bw_aux(pars,lx,k,ddep)
-    p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    #p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    p = expm::expAtv(A = MM,v = p,t = tt,m.max = 50)[[1]]
     return(p)
 }
 
@@ -178,7 +180,8 @@ dd_loglik_M2 = function(pars,lx,ddep,tt,p)
 {
     pars = changepars(pars)
     MM = dd_loglik_M2_aux(pars,lx,ddep)
-    p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    #p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    p = expm::expAtv(A = MM,v = p,t = tt,m.max = 50)[[1]]
     return(p)
 }
 
@@ -242,6 +245,7 @@ dd_loglik_M3 = function(pars,lx,ddep,tt,p,kM,kS)
 {
     pars = changepars(pars)
     MM = dd_loglik_M3_aux(pars,lx,ddep,kM,kS)
-    p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    #p = expoRkit::expv(x = MM,v = p,t = tt,m = 50L)
+    p = expm::expAtv(A = MM,v = p,t = tt,m.max = 50)[[1]]
     return(p)
 }

@@ -138,7 +138,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     {
        k1 = k + (soc - 2)
        t1 = brtsM[k - 1]; t2 = min(c(tinn,brtsM[k]))
-       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol,method = methode)
+       y = dd_integrate(probs,c(t1,t2),'dd_loglik_rhs',c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol,method = methode)
        probs = y[2,2:(lx + 1)]
        if(t2 < tinn)
        {
@@ -158,7 +158,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     {
        k1 = k + (soc - 2)
        t1 = max(tinn,brtsM[k - 1]); t2 = brtsM[k];
-       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol,method = methode)
+       y = dd_integrate(probs,c(t1,t2),'dd_loglik_rhs',c(pars1[1:3],k1-1,ddep),rtol = reltol,atol = abstol,method = methode)
        probs = y[2,2:(lx + 1)]
        if(k < (S1+1))
        {
@@ -185,7 +185,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && pars2[2] == 2) | ((pars1[1] == 0 | pars1
     for(k in 1:S2)
     {
        t1 = brtsS[k]; t2 = brtsS[k+1]
-       y = ode(probs,c(t1,t2),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol,method = methode)
+       y = dd_integrate(probs,c(t1,t2),'dd_loglik_rhs',c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol,method = methode)
        probs = y[2,2:(lx+1)]
        if(k < S2)
        {

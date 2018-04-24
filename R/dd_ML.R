@@ -46,6 +46,7 @@ dd_ML = function(
 # - ddmodel = diversity-dependent model,mode of diversity-dependence
 #  . ddmodel == 1 : linear dependence in speciation rate with parameter K
 #  . ddmodel == 1.3: linear dependence in speciation rate with parameter K'
+#  . ddmodel == 1.4: positive and negative linear diversity-dependence in speciation rate with parameter K'
 #  . ddmodel == 2 : exponential dependence in speciation rate
 #  . ddmodel == 2.1: variant with offset at infinity
 #  . ddmodel == 2.2: 1/n dependence in speciation rate

@@ -105,7 +105,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
               for(k in 2:(kshift-1))
               {
                  k1 = k + (soc - 2)
-                 y = ode(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = methode)
+                 y = dd_integrate(probs,brts[(k-1):k],'dd_loglik_rhs_FOTRAN',c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = methode)
                  probs = y[2,2:(lx+1)]
                  if(k < (S + 2 - soc))
                  {
@@ -123,9 +123,9 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
            }   
            k = kshift
            k1 = k + (soc - 2)
-           y = ode(probs,c(brts[k-1],tshift),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = methode)
+           y = dd_integrate(probs,c(brts[k-1],tshift),'dd_loglik_rhs_FORTRAN',c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = methode)
            probs = y[2,2:(lx+1)]
-           y = ode(probs,c(tshift,brts[k]),dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = methode)
+           y = dd_integrate(probs,c(tshift,brts[k]),'dd_loglik_rhs_FORTRAN',c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = methode)
            probs = y[2,2:(lx+1)] 
            if(k < (S + 2 - soc))
            {
@@ -143,7 +143,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
               for(k in (kshift + 1):(S + 2 - soc))
               {
                  k1 = k + (soc - 2)
-                 y = ode(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = methode)
+                 y = dd_integrate(probs,brts[(k-1):k],'dd_loglik_rhs_FORTRAN',c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = methode)
                  probs = y[2,2:(lx+1)]
                  if(k < (S + 2 - soc))
                  {
@@ -231,9 +231,9 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
              probs = rep(0,lx)
              probs[1] = 1 # change if other species at crown age
              k = soc
-             y = ode(probs,c(brts[1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol, method = methode);
+             y = dd_integrate(probs,c(brts[1],tshift),'dd_loglik_rhs_FORTRAN',c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol, method = methode);
              probs = y[2,2:(lx+1)]
-             y = ode(probs,c(tshift,brts[length(brts)]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol, method = methode);
+             y = dd_integrate(probs,c(tshift,brts[length(brts)]),'dd_loglik_rhs_FORTRAN',c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol, method = methode);
              probs = y[2,2:(lx+1)]
              if(soc == 1) { aux = 1:lx }
              if(soc == 2) { aux = (2:(lx+1)) * (3:(lx+2))/6 }
@@ -341,8 +341,6 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
               for(k in 2:(kshift-1))
               {
                  k1 = k + (soc - 2)
-                 #y = ode(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = methode)
-                 #probs = y[2,2:(lx+1)]
                  probs = dd_loglik_M(pars1[1:3],lx,k1,ddep,tt = abs(brts[k] - brts[k-1]),probs)
                  if(k < (S + 2 - soc))
                  {
@@ -361,11 +359,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
            }   
            k = kshift
            k1 = k + (soc - 2)
-           #y = ode(probs,c(brts[k-1],tshift),dd_loglik_rhs,c(pars1[1:3],k1,ddep),rtol = reltol,atol = abstol, method = methode)
-           #probs = y[2,2:(lx+1)]
            probs = dd_loglik_M(pars1[1:3],lx,k1,ddep,tt = abs(tshift - brts[k-1]),probs)
-           #y = ode(probs,c(tshift,brts[k]),dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = methode)
-           #probs = y[2,2:(lx+1)] 
            probs = dd_loglik_M(pars1[4:6],lx,k1,ddep,tt = abs(brts[k] - tshift),probs)
            if(k < (S + 2 - soc))
            {
@@ -384,8 +378,6 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
               for(k in (kshift + 1):(S + 2 - soc))
               {
                  k1 = k + (soc - 2)
-                 #y = ode(probs,brts[(k-1):k],dd_loglik_rhs,c(pars1[4:6],k1,ddep),rtol = reltol,atol = abstol, method = methode)
-                 #probs = y[2,2:(lx+1)]
                  probs = dd_loglik_M(pars1[4:6],lx,k1,ddep,tt = abs(brts[k] - brts[k - 1]),probs)
                  if(k < (S + 2 - soc))
                  {
@@ -485,11 +477,7 @@ if(((pars1[2] == 0 || pars1[4] == 0) && (ddep == 2 | ddep == 2.1 | ddep == 2.2))
              probs = rep(0,lx)
              probs[1] = 1 # change if other species at crown age
              k = soc
-             #y = ode(probs,c(brts[1],tshift),dd_loglik_rhs,c(pars1[1:3],k,ddep),rtol = reltol,atol = abstol, method = methode);
-             #probs = y[2,2:(lx+1)]
              probs = dd_loglik_M(pars1[1:3],lx,k,ddep,tt = abs(tshift - brts[1]),probs)
-             #y = ode(probs,c(tshift,brts[length(brts)]),dd_loglik_rhs,c(pars1[4:6],k,ddep),rtol = reltol,atol = abstol, method = methode);
-             #probs = y[2,2:(lx+1)]
              probs = dd_loglik_M(pars1[4:6],lx,k,ddep,tt = abs(brts[length(brts)] - tshift),probs)           
              if(soc == 1) { aux = 1:lx }
              if(soc == 2) { aux = (2:(lx+1)) * (3:(lx+2))/6 }
