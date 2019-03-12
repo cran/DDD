@@ -36,6 +36,15 @@ test_that("DDD works", {
   r8 <- dd_loglik_test(pars1 = pars1,pars2 = pars2,brts = brts,missnumspec = missnumspec,rhs_func_name = 'dd_loglik_rhs_FORTRAN',methode = methode)
   r9 <- dd_loglik_test(pars1 = c(pars1[1:2],Inf),pars2 = pars2,brts = brts,missnumspec = missnumspec,rhs_func_name = 'dd_loglik_rhs_FORTRAN',methode = methode)
   testthat::expect_equal(r8,r9,tolerance = .00001)
+  
+  pars1 <- c(0.2,0.05,15)
+  pars2 <- c(4,1,0,0,2)
+  brts <- 1:10
+  r10 <- bd_loglik(pars1 = pars1,pars2 = pars2,brts = brts,missnumspec = 0,methode = 'lsoda')
+  testthat::expect_equal(r10,-11.6076802136507471,tolerance = 1E-16)
+
+  r11 <- bd_loglik(pars1 = c(0.4,0.1,20),pars2 = c(4,0,1,0,2), brts = 1:10, missnumspec = 0)
+  testthat::expect_equal(r11,-27.7337684064852610,tolerance = 1E-16)
 })
 
 

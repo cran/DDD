@@ -22,7 +22,11 @@ td_loglik_rhs = function(t,x,pars)
   
   mutd = rep(mu,lrs)
   En = sum((0:(lp - 1)) * x[1:lp] )
+  #En = 0
+  #for(i in 2:lp)
+  #{
+  #  En = En + (i - 1) * x[i]
+  #}
   dsigdiv = mutd / En
-  
   return(list(c(dp,dsigdiv)))  
 }

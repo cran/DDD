@@ -12,7 +12,7 @@ dd_KI_loglik_choosepar = function(trparsopt,trparsfix,idparsopt,idparsfix,idpars
    }
    brtsM = -sort(abs(as.numeric(brtsM)),decreasing = TRUE)
    brtsS = -sort(abs(as.numeric(brtsS)),decreasing = TRUE)
-   pars1 = trpars1/(1-trpars1)
+   pars1 = trpars1/(1 - trpars1)
    if( max(trpars1) > 1 || min(trpars1) < 0 || trpars1[1] <= trpars1[2] || trpars1[4] <= trpars1[5] || -pars1[7] <= -pars2[4]  || -pars1[7] >= min(brtsS) )
    {
       loglik = -Inf

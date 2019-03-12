@@ -1,3 +1,62 @@
+#' Loglikelihood for diversity-independent diversification model
+#' 
+#' This function computes loglikelihood of a diversity-independent
+#' diversification model for a given set of branching times and parameter
+#' values.
+#' 
+#' 
+#' @param pars1 Vector of parameters:
+#' \cr \cr \code{pars1[1]} corresponds to
+#' lambda0 (speciation rate)
+#' \cr \code{pars1[2]} corresponds to mu0 (extinction
+#' rate)
+#' \cr \code{pars1[3]} corresponds to lambda1 (decline parameter in
+#' speciation rate) or K in diversity-dependence-like models
+#' \cr \code{pars1[4]} corresponds to mu1 (decline parameter in extinction rate)
+#' @param pars2 Vector of model settings:
+#' \cr \cr \code{pars2[1]} sets the
+#' model of time-dependence:
+#' \cr - \code{pars2[1] == 0} no time dependence
+#' \cr - \code{pars2[1] == 1} speciation and/or extinction rate is exponentially
+#' declining with time
+#' \cr - \code{pars2[1] == 2} stepwise decline in
+#' speciation rate as in diversity-dependence without extinction
+#' \cr - \code{pars2[1] == 3} decline in speciation rate following deterministic
+#' logistic equation for ddmodel = 1
+#' \cr - \code{pars2[1] == 4} decline in
+#' speciation rate such that the expected number of species matches with that
+#' of ddmodel = 1 with the same mu
+#' \cr \cr \code{pars2[2]} sets the
+#' conditioning:
+#' \cr - \code{pars[2] == 0} conditioning on stem or crown age
+#' \cr - \code{pars[2] == 1} conditioning on stem or crown age and
+#' non-extinction of the phylogeny
+#' \cr - \code{pars[2] == 2} conditioning on
+#' stem or crown age and on the total number of extant taxa (including missing
+#' species)
+#' \cr - \code{pars[2] == 3} conditioning on the total number of
+#' extant taxa (including missing species)
+#' \cr \cr \code{pars2[3]} sets whether
+#' the likelihood is for the branching times (0) or the phylogeny (1)
+#' \cr \cr \code{pars2[4]} sets whether the parameters and likelihood should be shown
+#' on screen (1) or not (0)
+#' \cr \cr \code{pars2[5]} sets whether the first data
+#' point is stem age (1) or crown age (2)
+#' @param brts A set of branching times of a phylogeny, all positive
+#' @param missnumspec The number of species that are in the clade but missing
+#' in the phylogeny
+#' @param methode The method used to solve the master equation, default is
+#' 'lsoda'.
+#' @return The loglikelihood
+#' @author Rampal S. Etienne, Bart Haegeman & Cesar Martinez
+#' @seealso \code{\link{bd_ML}}
+#' @references - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309,
+#' doi: 10.1098/rspb.2011.1439 \cr - Etienne, R.S. & B. Haegeman 2012. Am. Nat.
+#' 180: E75-E89, doi: 10.1086/667574
+#' @keywords models
+#' @examples
+#' bd_loglik(pars1 = c(0.5,0.1), pars2 = c(0,1,1,0,2), brts = 1:10, missnumspec = 0) 
+#' @export bd_loglik
 bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'lsoda')
 # pars1 contains model parameters
 # - pars1[1] = la0 = speciation rate
@@ -154,7 +213,7 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'lsoda')
       {
         for(i in 1:S)
         {
-          PtT[i] = (1 + integrate(PtTint, lower = t[i], upper = TT, t1 = t[i], pars = pars1, subdivisions = 10000L)$value)^(-1)
+          PtT[i] = (1 + stats::integrate(PtTint, lower = t[i], upper = TT, t1 = t[i], pars = pars1, subdivisions = 10000L)$value)^(-1)
           ux[i] = 1 - PtT[i] * exp(rhotaut(TT,t[i],pars1))
         }
       } else if(tdmodel == 2)
@@ -200,13 +259,21 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'lsoda')
            t1 = brts2[k - 1]
            t2 = brts2[k]
            variables[lx + k - 1] = 0
-           y = ode(variables, c(t1, t2), td_loglik_rhs, c(pars1[1:min(4, length(pars1))], tdmodel - 3, lx), rtol = 1e-10, atol = 1e-16, method = methode)
-           variables = y[2, 2:(lx + np)]
+           #y2 = deSolve::ode(variables, c(t1, t2), td_loglik_rhs, c(pars1[1:min(4, length(pars1))], tdmodel - 3, lx), rtol = 1e-10, atol = 1e-16, method = methode)
+           parsvec = c(dd_loglik_rhs_precomp(pars = c(la0,mu0,K,0,1),rep(0,lx)),k - 1) # This gives a vector of lavec, muvec, nn and k - 1
+           y = dd_ode_FORTRAN(initprobs = variables[1:(lx + k - 1)],tvec = c(t1, t2),parsvec = parsvec,rtol = 1e-10, atol = 1e-16,methode = methode,runmod = "dd_runmodtd")
+           variables = y[2, 2:(lx + k)]
+           #variables2 = y2[2, 2:(lx + k)]
+           #if(any(variables2 != variables))
+           #{ 
+           #   print(variables2 - variables)
+           #   unequal <- which(variables != variables2)
+           #  if(length(unequal) > 0) stop('Stop here')
+           #}
            expn[k] = sum((0:(lx - 1)) * variables[1:lx])
            expn2 = sum((0:(lx - 1))^2 * variables[1:lx])
            dEN_dt = (la0 - mu0) * expn[k] - expn2 * (la0 - mu0)/K
            latd[k] = mu0 + dEN_dt/expn[k]
-           #print(variables)
         }
         if(sum(variables[1:lx]) < 0.99 )
         {
@@ -351,7 +418,7 @@ bd_loglik = function(pars1,pars2,brts,missnumspec,methode = 'lsoda')
         }
         s2 = sprintf(', Loglikelihood: %f',loglik)
         cat(s1,s2,"\n",sep = "")
-        flush.console()
+        utils::flush.console()
       } 
     }
     loglik = as.numeric(loglik)

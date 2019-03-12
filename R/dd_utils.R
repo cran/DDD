@@ -1,7 +1,24 @@
+#' Function to convert a set of branching times into a
+#' phylogeny with random topology
+#' This code is taken from the package TESS by Sebastian Hoehna, where the function
+#' is called tess.create.phylo
+#' 
+#' Converting a set of branching times to a phylogeny
+#' 
+#' 
+#' @param times Set of branching times
+#' @param root When root is FALSE, the largest branching time will be assumed to be
+#' the crown age. When root is TRUE, it will be the stem age. 
+#' @param tip.label Tip labels. If set to NULL, the labels will be t1, t2, etc.
+#' @return \item{ phy }{ A phylogeny of the phylo type }
+#' @author Rampal S. Etienne
+#' @references - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309,
+#' doi: 10.1098/rspb.2011.1439 \cr - Etienne, R.S. & B. Haegeman 2012. Am. Nat.
+#' 180: E75-E89, doi: 10.1086/667574
+#' @keywords models
+#' @export brts2phylo
 brts2phylo <- function(times,root=FALSE,tip.label=NULL)
 {
-# This code is taken from the package TESS by Sebastian Hoehna, where the function is called tess.create.phylo
-# It takes a set of branching times and adds a random topology.
   times = sort(times)
   n <- as.integer(length(times))+1
   if ( root ) {
@@ -52,13 +69,30 @@ brts2phylo <- function(times,root=FALSE,tip.label=NULL)
 
   class(phy) <- "phylo"
 
-  phy <- reorder(phy)
+  phy <- stats::reorder(phy)
   ## to avoid crossings when converting with as.hclust:
   phy$edge[phy$edge[, 2] <= n, 2] <- 1:n
 
   return(phy)
 }
 
+#' Function to do convolution of two vectors
+#' 
+#' Convolution of two vectors
+#' 
+#' @param x first vector
+#' @param y second vector
+#' @return vector that is the convolution of x and y
+#' @author Rampal S. Etienne
+#' @references - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309,
+#' doi: 10.1098/rspb.2011.1439 \cr - Etienne, R.S. & B. Haegeman 2012. Am. Nat.
+#' 180: E75-E89, doi: 10.1086/667574
+#' @keywords models
+#' @examples
+#' 
+#' conv(1:10,1:10)
+#' 
+#' @export conv
 conv = function(x,y)
 {
    lx = length(x)
@@ -110,6 +144,37 @@ flavec = function(ddep,la,mu,K,r,lx,kk,n0)
    return(lavec)
 }
 
+
+
+#' Function to convert a table with speciation and extinction events to a
+#' phylogeny
+#' 
+#' Converting a table with speciation and extinction events to a phylogeny
+#' 
+#' 
+#' @param L Matrix of events as produced by dd_sim: \cr \cr - the first column
+#' is the time at which a species is born in Mya\cr - the second column is the
+#' label of the parent of the species; positive and negative values indicate
+#' whether the species belongs to the left or right crown lineage \cr - the
+#' third column is the label of the daughter species itself; positive and
+#' negative values indicate whether the species belongs to the left or right
+#' crown lineage \cr - the fourth column is the time of extinction of the
+#' species; if the fourth element equals -1, then the species is still extant.
+#' @param dropextinct Sets whether the phylogeny should drop species that are
+#' extinct at the present
+#' @return \item{ phy }{ A phylogeny of the phylo type }
+#' @author Rampal S. Etienne
+#' @references - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309,
+#' doi: 10.1098/rspb.2011.1439 \cr - Etienne, R.S. & B. Haegeman 2012. Am. Nat.
+#' 180: E75-E89, doi: 10.1086/667574
+#' @keywords models
+#' @examples
+#' 
+#' sim = dd_sim(c(0.2,0.1,20),10)
+#' phy = L2phylo(sim$L)
+#' plot(phy)
+#' 
+#' @export L2phylo
 L2phylo = function(L,dropextinct = T)
 # makes a phylogeny out of a matrix with branching times, parent and daughter species, and extinction times
 {
@@ -153,11 +218,165 @@ L2phylo = function(L,dropextinct = T)
       if(nrow(linlist) == 1) { done = 1 }
    }
    linlist[4] = paste(linlist[4],":",linlist[5],";",sep = "")
-   phy = read.tree(text = linlist[1,4])
-   tree = as.phylo(phy)
+   phy = ape::read.tree(text = linlist[1,4])
+   tree = ape::as.phylo(phy)
    return(tree)
 }
 
+
+
+#' Function to convert phylogeny to a table with speciation and extinction
+#' events
+#' 
+#' Converting a phylogeny to a table with speciation and extinction events
+#' 
+#' 
+#' @param phy A phylogeny of the phylo type
+#' @return \item{L}{Matrix of events as produced by dd_sim: \cr \cr - the first
+#' column is the time at which a species is born in Mya\cr - the second column
+#' is the label of the parent of the species; positive and negative values
+#' indicate whether the species belongs to the left or right crown lineage \cr
+#' - the third column is the label of the daughter species itself; positive and
+#' negative values indicate whether the species belongs to the left or right
+#' crown lineage \cr - the fourth column is the time of extinction of the
+#' species; if the fourth element equals -1, then the species is still extant.
+#' }
+#' @author Liang Xu
+#' @references - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309,
+#' doi: 10.1098/rspb.2011.1439 \cr - Etienne, R.S. & B. Haegeman 2012. Am. Nat.
+#' 180: E75-E89, doi: 10.1086/667574
+#' @keywords models
+#' @examples
+#' 
+#' sim = dd_sim(c(0.2,0.1,20),10)
+#' phy = sim$tas
+#' L = phylo2L(phy)
+#' phy2 = L2phylo(L, dropextinct = FALSE)
+#' graphics::par(mfrow = c(1,3))
+#' graphics::plot(phy)
+#' graphics::plot(phy2)
+#' graphics::plot(L2phylo(sim$L, dropextinct = FALSE))
+#' 
+#' @export phylo2L
+phylo2L = function(phy)
+{
+  emdata = phy
+  # compute the relative branching times 
+  brt = ape::branching.times(emdata)
+  if(min(brt) < 0)
+  {
+    brt = brt + abs(min(brt))
+  }
+  # number of species including extinct species.
+  num.species = emdata$Nnode+1
+  brt_preL = c(brt[emdata$edge[,1] - length(emdata$tip.label)])
+  # check if the relative branching times are equal to the real branching times.
+  # if not correct it to the real branching times.
+  if(min(brt_preL) == 0)
+  {
+    correction = max(emdata$edge.length[which(brt_preL==0)])
+    brt_preL = brt_preL+correction
+  }
+  # preliminary L table
+  pre.Ltable = cbind(brt_preL,emdata$edge,emdata$edge.length,brt_preL-emdata$edge.length)
+  # identify the extant species and the extinct species
+  extantspecies.index = pre.Ltable[which(pre.Ltable[,5]<=1e-10),3]
+  tipsindex = c(1:num.species)
+  extinct.index3 = subset(tipsindex,!(tipsindex %in% extantspecies.index))
+  # assigen the extinct species with extinct times; the extant species with -1 and
+  # the internal nodes with 0.
+  eeindicator = matrix(0,length(emdata$edge.length),1)
+  eeindicator[match(extantspecies.index,pre.Ltable[,3])]=-1
+  ext.pos = match(extinct.index3,pre.Ltable[,3])
+  eeindicator[ext.pos] = pre.Ltable[ext.pos,5]
+  pre.Ltable = cbind(pre.Ltable,eeindicator)
+  
+  sort.L = pre.Ltable[order(pre.Ltable[,1],decreasing = TRUE),]
+  nodesindex = unique(emdata$edge[,1])
+  L = sort.L
+  realL = NULL
+  do = 0
+  while(do == 0){
+    j = which.min(L[,3])
+    daughter = L[j,3]
+    parent = L[j,2]
+    if(parent %in% nodesindex)
+    {
+      L[which(L[,2]==parent),2] = daughter
+      if(length(which(L[,3] == parent)) == 0){
+        realL = rbind(realL,L[j,],row.names = NULL)
+        L = L[-j,,drop=FALSE]
+      } else {
+        L[which(L[,3] == parent),6] = L[j,6]
+        L[which(L[,3] == parent),3] = daughter
+        L = L[-j,,drop=FALSE]
+      }
+    } else {
+      realL = rbind(realL,L[j,],row.names = NULL)
+      L = L[-j,,drop=FALSE]
+    }
+    
+    if(nrow(L) == 0){
+      do = 1
+    }
+  }
+  realL = realL[order(realL[,1],decreasing = T),]
+  L = realL[,c(1,2,3,6)]
+  
+  daughter.index = L[,3]
+  daughter.realindex = c(1:nrow(L))
+  parent.index = L[,2]
+  parent.realindex = match(parent.index, daughter.index)
+  
+  L[,2] = parent.realindex
+  L[,3] = daughter.realindex
+  L[1,2] = 0
+  L[1,3] = -1
+  L[2,2] = -1
+  for(i in c(2:nrow(L)))
+  {
+    if(L[i-1,3] < 0){
+      mrows = which(L[,2] == abs(L[i-1,3]))
+      L[mrows,2] = L[i-1,3]
+      L[mrows,3] = -1 * L[mrows,3]
+    }
+  }
+  dimnames(L) = NULL
+  return(L)
+}
+
+
+
+#' Function to convert a table with speciation and extinction events to a set
+#' of branching times
+#' 
+#' Converting a table with speciation and extinction events to a set of
+#' branching times
+#' 
+#' 
+#' @param L Matrix of events as produced by dd_sim: \cr \cr - the first column
+#' is the time at which a species is born in Mya\cr - the second column is the
+#' label of the parent of the species; positive and negative values indicate
+#' whether the species belongs to the left or right crown lineage \cr - the
+#' third column is the label of the daughter species itself; positive and
+#' negative values indicate whether the species belongs to the left or right
+#' crown lineage \cr - the fourth column is the time of extinction of the
+#' species; if the fourth element equals -1, then the species is still extant.
+#' @param dropextinct Sets whether the phylogeny should drop species that are
+#' extinct at the present
+#' @return \item{ brts }{ A set of branching times }
+#' @author Rampal S. Etienne
+#' @references - Etienne, R.S. et al. 2012, Proc. Roy. Soc. B 279: 1300-1309,
+#' doi: 10.1098/rspb.2011.1439 \cr - Etienne, R.S. & B. Haegeman 2012. Am. Nat.
+#' 180: E75-E89, doi: 10.1086/667574
+#' @keywords models
+#' @examples
+#' 
+#' sim = dd_sim(c(0.2,0.1,20),10)
+#' phy = L2brts(sim$L)
+#' plot(phy)
+#' 
+#' @export L2brts
 L2brts = function(L,dropextinct = T)
 # makes a phylogeny out of a matrix with branching times, parent and daughter species, and extinction times
 {
@@ -207,6 +426,30 @@ L2brts = function(L,dropextinct = T)
    return(brts)
 }
 
+
+#' Rounds up in the usual manner
+#' 
+#' The standard round function in R rounds x.5 to the nearest even integer.
+#' This is odd behavior that is corrected in roundn
+#' 
+#' 
+#' @param x Number to be rounded
+#' @param digits Sets the number of decimals in rounding.
+#' @return \item{n}{ A number }
+#' @author Rampal S. Etienne
+#' @keywords models
+#' @examples
+#' 
+#' round(2.5)
+#' roundn(2.5)
+#' round(3.5)
+#' roundn(3.5)
+#' round(2.65,digits = 1)
+#' roundn(2.65,digits = 1)
+#' round(2.75,digits = 1)
+#' roundn(2.75,digits = 1)
+#' 
+#' @export roundn
 roundn = function(x, digits = 0)
 {
     fac = 10^digits
@@ -214,6 +457,30 @@ roundn = function(x, digits = 0)
     return(n)
 }
 
+
+
+#' Takes samples in the usual manner
+#' 
+#' The standard sample function in R samples from n numbers when x = n. This is
+#' unwanted behavior when the size of the vector to sample from changes
+#' dynamically. This is corrected in sample2
+#' 
+#' 
+#' @param x A vector of one or more elements
+#' @param size A non-negative integer giving the number of items to choose.
+#' @param replace Should sampling be with replacement?
+#' @param prob A vector of probability weights for obtaining the elements of
+#' the vector being sampled.
+#' @return \item{sam}{A vector of length \code{size} that is sampled from
+#' \code{x}. }
+#' @author Rampal S. Etienne
+#' @keywords models
+#' @examples
+#' 
+#' sample(x = 10,size = 5,replace = TRUE)
+#' sample2(x = 10,size = 5,replace = TRUE)
+#' 
+#' @export sample2
 sample2 = function(x,size,replace = FALSE,prob = NULL)
 {
     if(length(x) == 1)
@@ -225,6 +492,28 @@ sample2 = function(x,size,replace = FALSE,prob = NULL)
     return(sam)
 }
 
+#' Carries out optimization using a simplex algorithm (finding a minimum)
+#' 
+#' Function to optimize target function using a
+#' simplex method adopted from Matlab
+#' 
+#' @param fun Function to be optimized
+#' @param trparsopt Initial guess of the parameters to be optimized
+#' @param ... Any other arguments of the function to be optimimzed, or settings
+#' of the optimization routine
+#' @param optimpars Parameters of the optimization: relative tolerance in
+#' function arguments, relative tolerance in function value, absolute tolerance
+#' in function arguments, and maximum number of iterations
+#' @return \item{out}{ A list containing optimal function arguments
+#' (\code{par}, the optimal function value (\code{fvalues}) and whether the
+#' optimization converged (\code{conv})}.
+#' @author Rampal S. Etienne
+#' @keywords models
+#' @examples
+#' 
+#' cat("No examples")
+#' 
+#' @export simplex
 simplex = function(fun,trparsopt,optimpars,...)
 {
   numpar = length(trparsopt)
@@ -237,8 +526,8 @@ simplex = function(fun,trparsopt,optimpars,...)
   v = t(matrix(rep(trparsopt,each = numpar + 1),nrow = numpar + 1))
   for(i in 1:numpar)
   {
-      parsoptff = 1.05 * trparsopt[i]/(1 - trparsopt[i])
-      trparsoptff = parsoptff/(1 + parsoptff)
+      parsoptff = 1.05 * untransform_pars(trparsopt[i])
+      trparsoptff = transform_pars(parsoptff)
       fac = trparsoptff/trparsopt[i]
       if(v[i,i + 1] == 0)
       {
@@ -259,11 +548,11 @@ simplex = function(fun,trparsopt,optimpars,...)
   string = itercount
   for(i in 1:numpar)
   {
-     string = paste(string, v[i,1]/(1 - v[i,1]), sep = " ")
+     string = paste(string, untransform_pars(v[i,1]), sep = " ")
   }
   string = paste(string, -fv[1], how, "\n", sep = " ")
   cat(string)
-  flush.console()
+  utils::flush.console()
   
   tmp = order(fv)
   if(numpar == 1)
@@ -366,11 +655,11 @@ simplex = function(fun,trparsopt,optimpars,...)
      string = itercount;
      for(i in 1:numpar)
      {
-         string = paste(string, v[i,1]/(1 - v[i,1]), sep = " ")
+         string = paste(string, untransform_pars(v[i,1]), sep = " ")
      }
      string = paste(string, -fv[1], how, "\n", sep = " ")
      cat(string)
-     flush.console()
+     utils::flush.console()
      v2 = t(matrix(rep(v[,1],each = numpar + 1),nrow = numpar + 1))
   }
   if(itercount < maxiter)
@@ -383,20 +672,117 @@ simplex = function(fun,trparsopt,optimpars,...)
   invisible(out)
 }
 
-optimizer = function(optimmethod = 'simplex',optimpars = c(1E-4,1E-4,1E-6,1000),fun,trparsopt, ...)
+#' Carries out optimization (finding a minimum)
+#' 
+#' A wrapper to use several optimization routines, currently only 'simplex' (a
+#' method adopted from Matlab, or 'subplex', from the R package subplex). The
+#' function is called from several packages by the same author.
+#' 
+#' 
+#' @param optimmethod The method to use for optimization, either 'simplex' or
+#' 'subplex'
+#' @param optimpars Parameters of the optimization: relative tolerance in
+#' function arguments, relative tolerance in function value, absolute tolerance
+#' in function arguments, and maximum number of iterations
+#' @param num_cycles Number of cycles of the optimization. When set to Inf, the
+#' optimization will be repeated until the result is, within the tolerance,
+#' equal to the starting values, with a maximum of 5 cycles.
+#' @param fun Function to be optimized
+#' @param trparsopt Initial guess of the parameters to be optimized
+#' @param ... Any other arguments of the function to be optimimzed, or settings
+#' of the optimization routine
+#' @return \item{out}{ A list containing optimal function arguments
+#' (\code{par}, the optimal function value (\code{fvalues}) and whether the
+#' optimization converged (\code{conv})}.
+#' @author Rampal S. Etienne
+#' @keywords models
+#' @examples
+#' 
+#' cat("No examples")
+#' 
+#' @export optimizer
+optimizer = function(
+  optimmethod = 'simplex',
+  optimpars = c(1E-4,1E-4,1E-6,1000),
+  num_cycles = 1,
+  fun,
+  trparsopt,
+  ...)
 {
+  if(num_cycles == Inf)
+  {
+    max_cycles <- 5
+  } else
+  {
+    max_cycles <- num_cycles
+  }
+  cy <- 1
+  fvalue <- rep(-Inf,max_cycles)
+  while(cy <= max_cycles)
+  {
     if(optimmethod == 'simplex')
     {
-        out = simplex(fun = fun,trparsopt = trparsopt,optimpars = optimpars,...)
+      out = simplex(fun = fun,trparsopt = trparsopt,optimpars = optimpars,...)
     }
     if(optimmethod == 'subplex')
     {
-        minfun = function(fun,trparsopt,...)
-        {           
-           return(-fun(trparsopt = trparsopt,...))
-        }
-        out = subplex::subplex(par = trparsopt,fn = minfun,control = list(abstol = optimpars[3],reltol = optimpars[1],maxit = optimpars[4]),fun = fun,...)
-        out = list(par = out$par, fvalues = -out$value, conv = out$convergence)
+      minfun = function(fun,trparsopt,...)
+      {           
+        return(-fun(trparsopt = trparsopt,...))
+      }
+      out = subplex::subplex(par = trparsopt,fn = minfun,control = list(abstol = optimpars[3],reltol = optimpars[1],maxit = optimpars[4]),fun = fun,...)
+      out = list(par = out$par, fvalues = -out$value, conv = out$convergence)
     }
-    return(out)
+    trparsopt <- out$par
+    fvalue[cy + 1] <- out$fvalues
+    if(num_cycles == Inf)
+    {
+      if(abs(fvalue[cy + 1] - fvalue[cy]) < optimpars[3])
+      {
+        cy <- max_cycles
+      } else if(cy == max_cycles)
+      {
+        warning('Not enough cycles in optimization')
+        out$conv <- -1
+      }
+    }
+    cy <- cy + 1
+  }
+  return(out)
+}
+
+#' @name transform_pars
+#' @title Transforming parameters from -Inf to Inf into parameters
+#' from -1 to 1
+#' @description Function to transform pars in a way that is more
+#' useful for optimization: trpars <- sign(pars) * pars/(sign(pars) + pars);
+#' @param pars Parameters to be transformed
+#' @return Transformed parameters
+#' @author Rampal S. Etienne
+#' @export transform_pars
+transform_pars <- function(pars)
+{
+  trpars1 <- sign(pars) * pars/(sign(pars) + pars);
+  trpars1[which(pars == 0)] <- 0;
+  trpars1[which(pars == -Inf)] <- -1;
+  trpars1[which(pars == Inf)] <- 1;
+  return(trpars1);
+}
+
+#' @name untransform_pars
+#' @title Untransforming parameters from -1 to 1 into parameters
+#' from -Inf to Inf.
+#' @description Function to untransform pars after optimization:
+#' pars <- sign(trpars) * trpars/(sign(trpars) - trpars);
+#' @param trpars Parameters to be untransformed
+#' @return Untransformed parameters
+#' @author Rampal S. Etienne
+#' @export untransform_pars
+untransform_pars <- function(trpars)
+{
+  pars <- sign(trpars) * trpars/(sign(trpars) - trpars);
+  pars[which(trpars == 0)] <- 0;
+  pars[which(trpars == 1)] <- Inf;
+  pars[which(trpars == -1)] <- -Inf;
+  return(pars)
 }
