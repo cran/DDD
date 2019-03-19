@@ -1,11 +1,11 @@
 Package: DDD
 Type: Package
 Title: Diversity-Dependent Diversification
-Version: 3.8.1
-Date: 2019-03-12
+Version: 3.9
+Date: 2019-03-19
 Depends: R (>= 3.5.0)
-Imports: deSolve, ape, phytools, subplex, Matrix, expm, SparseM,
-        testthat
+Imports: deSolve, ape, phytools, subplex, Matrix, expm, SparseM
+Suggests: testthat
 Author: Rampal S. Etienne & Bart Haegeman
 Maintainer: Rampal S. Etienne <r.s.etienne@rug.nl>
 License: GPL-3
@@ -25,6 +25,6 @@ Description:
  process.
 RoxygenNote: 6.1.1
 NeedsCompilation: yes
-Packaged: 2019-03-12 09:33:26 UTC; rampa
+Packaged: 2019-03-19 08:43:07 UTC; rampa
 Repository: CRAN
-Date/Publication: 2019-03-12 16:26:20 UTC
+Date/Publication: 2019-03-19 13:03:26 UTC
