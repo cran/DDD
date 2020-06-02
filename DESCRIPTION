@@ -1,8 +1,8 @@
 Package: DDD
 Type: Package
 Title: Diversity-Dependent Diversification
-Version: 4.3
-Date: 2020-03-31
+Version: 4.4
+Date: 2020-06-02
 Depends: R (>= 3.5.0)
 Imports: deSolve, ape, phytools, subplex, Matrix, expm, SparseM
 Suggests: testthat, testit
@@ -23,8 +23,8 @@ Description:
  <DOI:10.1111/2041-210X.12565>.
  Also contains functions to simulate the diversity-dependent
  process.
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 NeedsCompilation: yes
-Packaged: 2020-03-31 15:29:44 UTC; rampa
+Packaged: 2020-06-02 20:14:13 UTC; rampa
 Repository: CRAN
-Date/Publication: 2020-04-01 13:10:07 UTC
+Date/Publication: 2020-06-02 23:20:23 UTC
