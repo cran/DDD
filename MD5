@@ -1,4 +1,4 @@
-dab9f3810f03b1841336d970c464a4c3 *DESCRIPTION
+38eac7b6854c2830f165d0d4c81e4575 *DESCRIPTION
 2d8b1a3e1d272eecd63d9c3845f9d81b *NAMESPACE
 970d7a10fec8ce85e697c59a3bf462c7 *R/DDD-package.R
 28d1ed3c01991b53f2fc6aa9625efab2 *R/RcppExports.R
@@ -20,7 +20,7 @@ f52a6c79cc134f92411466b432149768 *R/dd_SR_loglik.R
 4cc410da8c37b379e8adec2e750eea1d *R/dd_SR_loglik_choosepar.R
 242a275921e78a32eaf07fdb3db32f76 *R/dd_SR_sim.R
 e0777d354c0a2b5ad5ede75ce1473359 *R/dd_bootstrap_sim.R
-22a1296b16309dbeb093d9e6c9db564c *R/dd_loglik.R
+4be8dc694fde0341cd40724d35017896 *R/dd_loglik.R
 e779d98f320715f4c3a723a609c49f76 *R/dd_loglik_M.R
 b9c38a612c320139181a3ba101f791c4 *R/dd_loglik_bw_rhs.R
 05c5b3c28b89b481fb580f2abe8cb960 *R/dd_loglik_choosepar.R
@@ -78,5 +78,5 @@ e303976c221b26d3bc1a25fef8814af1 *src/dd_logliknorm_odeint.cpp
 4358457520ce78d4ab774957caa38ed2 *tests/testthat/test-ddd_sample2.R
 b9cfc4a6beb5789e90effa1adc8cbced *tests/testthat/test-optimizer.R
 7801f52eb8587f5da8041c3a7e00bdae *tests/testthat/test-rng_respecting_sample.R
-981a3afdd19c5f2102da221bf68e819b *tests/testthat/test_DDD.R
+e9e53312be16502edb3ad9e24710e7bd *tests/testthat/test_DDD.R
 c3d3f162eae2f61cd21e379bde439317 *tests/testthat/test_pars_dd_loglik.R
