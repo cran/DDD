@@ -1,8 +1,7 @@
 Package: DDD
 Type: Package
 Title: Diversity-Dependent Diversification
-Version: 5.2.2
-Date: 2023-07-10
+Version: 5.2.4
 Depends: R (>= 3.5.0)
 Imports: deSolve, ape, phytools, subplex, DEoptim, Matrix, expm,
         SparseM, Rcpp (>= 1.0.10)
@@ -47,14 +46,18 @@ Description:
  <DOI:10.1093/sysbio/syaa048>.
  Also contains functions to simulate the diversity-dependent
  process.
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Config/testthat/edition: 3
+URL: https://rsetienne.github.io/DDD/
 NeedsCompilation: yes
-Packaged: 2023-07-10 11:00:23 UTC; rampa
-Author: Rampal S. Etienne [aut, cre] (<https://orcid.org/0000-0003-2142-7612>),
-  Bart Haegeman [aut] (<https://orcid.org/0000-0003-2325-4727>),
-  Hanno Hildenbrandt [ctb] (<https://orcid.org/0000-0002-6784-1037>),
-  Giovanni Laudanno [ctb] (<https://orcid.org/0000-0002-2952-3345>)
+Packaged: 2025-11-28 13:52:39 UTC; rampa
+Author: Rampal S. Etienne [aut, cre] (ORCID:
+    <https://orcid.org/0000-0003-2142-7612>),
+  Bart Haegeman [aut] (ORCID: <https://orcid.org/0000-0003-2325-4727>),
+  Hanno Hildenbrandt [ctb] (ORCID:
+    <https://orcid.org/0000-0002-6784-1037>),
+  Giovanni Laudanno [ctb] (ORCID:
+    <https://orcid.org/0000-0002-2952-3345>)
 Maintainer: Rampal S. Etienne <r.s.etienne@rug.nl>
 Repository: CRAN
-Date/Publication: 2023-07-10 23:40:47 UTC
+Date/Publication: 2025-11-28 14:50:02 UTC
